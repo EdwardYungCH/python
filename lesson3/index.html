@@ -214,7 +214,7 @@ th{background:var(--ground);font-weight:700}
 <!-- 0 登記 -->
 <section class="card" id="s0" data-title="登記" data-short="登記">
   <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
-  <p>這一堂學<b>計算</b>：加減乘除、整除和餘數、簡寫的賦值，以及比較兩個值得出 True 或 False。四章都是「學 → 試 → 練」三步，然後做作品和小測。</p>
+  <p>這一堂有四章：數字、算術、賦值、比較，每章都是「學 → 試 → 練」三步，然後做 BMI 計算器和小測。所有程式都在網頁內的 Thonny 寫和執行，不用另外開軟件。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
   <div class="row">
     <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
     <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
@@ -224,107 +224,116 @@ th{background:var(--ground);font-weight:700}
 </section>
 
 <!-- 1 Numbers -->
-<section class="card" id="s1" data-title="算術：加減乘除和次方" data-short="1 算術">
-  <header><div class="chapter">第 1 章</div><h2>算術：加減乘除和次方</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>+ - * / **</code> 計算</li><li>知道 <code>/</code> 的結果一定是小數，並用 <code>round()</code> 四捨五入</li></ul></div></header>
+<section class="card" id="s1" data-title="數字：整數和小數" data-short="1 數字">
+  <header><div class="chapter">第 1 章</div><h2>數字：整數和小數</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>分辨 <code>int</code> 和 <code>float</code>，知道除法的答案一定是小數</li><li>用 <code>round()</code> 四捨五入</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">Python 就是一部計算機</div>
+    <div class="lead">兩種數字</div>
+    <p>上一堂學過：沒有小數點的是整數 <code>int</code>，有小數點的是小數 <code>float</code>。計算時要留意一條規矩：<b>用 <code>/</code> 除，答案一定是小數</b>，就算除得盡。</p>
+    <pre class="ex">print(10 / 2)      <span class="cm"># 5.0（不是 5）</span>
+print(7 / 2)       <span class="cm"># 3.5</span>
+print(3 + 4.0)     <span class="cm"># 7.0（有一個是小數，答案就是小數）</span></pre>
+    <h3>四捨五入</h3>
+    <p>小數太長時用 <code>round()</code>：第二個數是保留幾個小數位，不寫就取整數。</p>
+    <pre class="ex">print(round(3.14159, 2))   <span class="cm"># 3.14</span>
+print(round(2.718))        <span class="cm"># 3</span>
+print(round(49.95, 1))     <span class="cm"># 50.0</span></pre>
+    <div class="key">之後計 BMI、平均分這類會有很多小數位的東西，記得 <code>round()</code>。</div>
+  </div>
+  <div id="c1"></div>
+  <div class="summary"><b>小結</b>　<code>/</code> 的答案永遠是 <code>float</code>；<code>round(x, n)</code> 保留 n 個小數位。</div>
+</section>
+
+<!-- 2 Arithmetic -->
+<section class="card" id="s2" data-title="算術運算符" data-short="2 算術">
+  <header><div class="chapter">第 2 章</div><h2>算術運算符：加減乘除之外</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>//</code> 取整除、<code>%</code> 取餘數、<code>**</code> 取次方</li><li>知道先乘除後加減，括號最先</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">七個算術運算符</div>
     <div class="tablewrap"><table>
-      <thead><tr><th>運算符</th><th>意思</th><th>例子</th><th>結果</th></tr></thead>
+      <thead><tr><th>運算符</th><th>意思</th><th>例子</th><th>答案</th></tr></thead>
       <tbody>
         <tr><td><code>+</code></td><td>加</td><td><code>7 + 2</code></td><td><code>9</code></td></tr>
         <tr><td><code>-</code></td><td>減</td><td><code>7 - 2</code></td><td><code>5</code></td></tr>
         <tr><td><code>*</code></td><td>乘</td><td><code>7 * 2</code></td><td><code>14</code></td></tr>
         <tr><td><code>/</code></td><td>除</td><td><code>7 / 2</code></td><td><code>3.5</code></td></tr>
-        <tr><td><code>**</code></td><td>次方</td><td><code>2 ** 10</code></td><td><code>1024</code></td></tr>
+        <tr><td><code>//</code></td><td>整除（只要商，不要餘數）</td><td><code>7 // 2</code></td><td><code>3</code></td></tr>
+        <tr><td><code>%</code></td><td>餘數</td><td><code>7 % 2</code></td><td><code>1</code></td></tr>
+        <tr><td><code>**</code></td><td>次方</td><td><code>7 ** 2</code></td><td><code>49</code></td></tr>
       </tbody>
     </table></div>
-    <p>兩個規矩要記住：</p>
-    <ul class="steps-list">
-      <li><code>/</code> 的結果<b>一定是 float</b>，就算除得盡：<code>10 / 2</code> 是 <code>5.0</code>，不是 <code>5</code>。</li>
-      <li>先乘除後加減，括號最先：<code>2 + 3 * 4</code> 是 <code>14</code>；<code>(2 + 3) * 4</code> 是 <code>20</code>。</li>
-    </ul>
-    <h3>四捨五入</h3>
-    <pre class="ex">print(10 / 3)             <span class="cm"># 3.3333333333333335</span>
-print(round(10 / 3, 2))   <span class="cm"># 3.33   保留 2 位小數</span>
-print(round(10 / 3))      <span class="cm"># 3      不寫位數就變整數</span></pre>
-  </div>
-  <div id="c1"></div>
-  <div class="summary"><b>小結</b>　<code>/</code> 必定得 float；<code>**</code> 是次方；<code>round(x, 位數)</code> 四捨五入。</div>
-</section>
-
-<!-- 2 // % -->
-<section class="card" id="s2" data-title="整除與餘數：// 和 %" data-short="2 整除">
-  <header><div class="chapter">第 2 章</div><h2>整除與餘數：<code>//</code> 和 <code>%</code></h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>//</code> 取整數商、<code>%</code> 取餘數</li><li>用它們解決找續、換算時間一類的問題</li></ul></div></header>
-  <div class="step learn"><span class="mark">學</span>
-    <div class="lead">17 除 5，商 3 餘 2</div>
-    <pre class="ex">print(17 / 5)    <span class="cm"># 3.4   普通除法</span>
-print(17 // 5)   <span class="cm"># 3     整除：只要整數部分</span>
-print(17 % 5)    <span class="cm"># 2     餘數</span></pre>
-    <p>這兩個運算符在編程非常常用。例子：</p>
-    <ul class="steps-list">
-      <li><b>找續</b>：368 元要幾多張 100 元？<code>368 // 100</code> 得 3；剩下 <code>368 % 100</code> 得 68 元。</li>
-      <li><b>時間</b>：125 分鐘是幾小時幾分？<code>125 // 60</code> 得 2 小時，<code>125 % 60</code> 得 5 分。</li>
-      <li><b>單雙數</b>：<code>n % 2</code> 是 0 就是雙數，是 1 就是單數。</li>
-    </ul>
-    <div class="key">記法：<code>//</code> 兩條斜線「切走小數」；<code>%</code> 像兩個圈圈「剩下來的」。</div>
+    <p><code>//</code> 和 <code>%</code> 是一對：17 粒糖每包 5 粒，<code>17 // 5</code> 是可以包 3 包，<code>17 % 5</code> 是剩 2 粒。</p>
+    <pre class="ex">sweets = 17
+print("可以包", sweets // 5, "包")    <span class="cm"># 3</span>
+print("剩下", sweets % 5, "粒")      <span class="cm"># 2</span></pre>
+    <h3>先後次序</h3>
+    <p>和數學一樣：括號最先，然後 <code>**</code>，然後乘除（<code>* / // %</code>），最後加減。不肯定就加括號。</p>
+    <pre class="ex">print(2 + 3 * 4)      <span class="cm"># 14</span>
+print((2 + 3) * 4)    <span class="cm"># 20</span></pre>
   </div>
   <div id="c2"></div>
-  <div class="summary"><b>小結</b>　<code>a // b</code> 整數商，<code>a % b</code> 餘數；找續、換算、判斷單雙數都靠它們。</div>
+  <div class="summary"><b>小結</b>　<code>//</code> 商、<code>%</code> 餘數、<code>**</code> 次方；先乘除後加減，括號最先。</div>
 </section>
 
-<!-- 3 Assignment operators -->
-<section class="card" id="s3" data-title="賦值簡寫：+= 和 -=" data-short="3 賦值">
-  <header><div class="chapter">第 3 章</div><h2>賦值簡寫：<code>+=</code>、<code>-=</code>、<code>*=</code></h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>看懂 <code>x = x + 1</code> 是「把 x 加 1 再放回 x」</li><li>用 <code>+=</code> 一類簡寫</li></ul></div></header>
+<!-- 3 Assignment -->
+<section class="card" id="s3" data-title="賦值運算符" data-short="3 賦值">
+  <header><div class="chapter">第 3 章</div><h2>賦值運算符：把變量改一改</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>看懂 <code>x = x + 1</code> 這種「用舊值計新值」的寫法</li><li>用 <code>+=</code>、<code>-=</code>、<code>*=</code> 簡寫</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">x = x + 1 不是數學等式</div>
-    <p>在 Python，<code>=</code> 是「把右邊算好放進左邊」。所以 <code>x = x + 1</code> 的意思是：拿 x 現在的值，加 1，放回 x。</p>
+    <div class="lead">x = x + 1 是甚麼意思</div>
+    <p>數學上 <code>x = x + 1</code> 不成立，但 Python 的 <code>=</code> 是「把右邊放進左邊」：先計右邊 <code>x + 1</code>，再放回 <code>x</code>。所以 <code>x</code> 會大一。</p>
     <pre class="ex">score = 10
-score = score + 5    <span class="cm"># score 變成 15</span>
-score += 5           <span class="cm"># 同一個意思的簡寫，變成 20</span>
-score -= 3           <span class="cm"># 17</span>
-score *= 2           <span class="cm"># 34</span>
-print(score)</pre>
-    <p>常用簡寫：<code>+=</code> 加、<code>-=</code> 減、<code>*=</code> 乘、<code>/=</code> 除、<code>//=</code> 整除、<code>%=</code> 餘數。</p>
-    <div class="key"><code>+=</code> 之後的課堂會不斷用到：計數器 <code>count += 1</code>、累加器 <code>total += n</code>。</div>
+score = score + 5     <span class="cm"># 先計 10 + 5 = 15，放回 score</span>
+print(score)          <span class="cm"># 15</span></pre>
+    <p>這種寫法太常用，所以有簡寫：</p>
+    <div class="tablewrap"><table>
+      <thead><tr><th>簡寫</th><th>等於</th></tr></thead>
+      <tbody>
+        <tr><td><code>score += 5</code></td><td><code>score = score + 5</code></td></tr>
+        <tr><td><code>score -= 5</code></td><td><code>score = score - 5</code></td></tr>
+        <tr><td><code>score *= 2</code></td><td><code>score = score * 2</code></td></tr>
+        <tr><td><code>score /= 2</code></td><td><code>score = score / 2</code></td></tr>
+      </tbody>
+    </table></div>
+    <div class="key">之後學迴圈時，<code>count += 1</code>（計數器）和 <code>total += x</code>（累加器）會天天用。</div>
   </div>
   <div id="c3"></div>
-  <div class="summary"><b>小結</b>　<code>x += 5</code> 等於 <code>x = x + 5</code>；一行一行追蹤變量的值，就知道結果。</div>
+  <div class="summary"><b>小結</b>　<code>x += 1</code> 即 <code>x = x + 1</code>：先用舊值計，再放回去。</div>
 </section>
 
 <!-- 4 Comparison & Booleans -->
-<section class="card" id="s4" data-title="比較與布爾值" data-short="4 比較">
-  <header><div class="chapter">第 4 章</div><h2>比較運算符與布爾值</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>== != &gt; &lt; &gt;= &lt;=</code> 比較兩個值</li><li>知道比較的結果是 <code>True</code> 或 <code>False</code>（bool）</li></ul></div></header>
+<section class="card" id="s4" data-title="比較運算符與布爾值" data-short="4 比較">
+  <header><div class="chapter">第 4 章</div><h2>比較運算符：答案是 True 或 False</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>==</code>、<code>!=</code>、<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code> 比較兩個值</li><li>知道比較的結果是布爾值 <code>True</code>／<code>False</code></li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">比較的答案只有兩個：True 或 False</div>
+    <div class="lead">問電腦一條是非題</div>
     <div class="tablewrap"><table>
-      <thead><tr><th>運算符</th><th>意思</th><th>例子</th><th>結果</th></tr></thead>
+      <thead><tr><th>運算符</th><th>意思</th><th>例子</th><th>答案</th></tr></thead>
       <tbody>
-        <tr><td><code>==</code></td><td>等於（兩個等號！）</td><td><code>5 == 5</code></td><td><code>True</code></td></tr>
+        <tr><td><code>==</code></td><td>等於（兩個 =）</td><td><code>5 == 5</code></td><td><code>True</code></td></tr>
         <tr><td><code>!=</code></td><td>不等於</td><td><code>5 != 5</code></td><td><code>False</code></td></tr>
-        <tr><td><code>&gt;</code></td><td>大於</td><td><code>7 &gt; 7</code></td><td><code>False</code></td></tr>
-        <tr><td><code>&gt;=</code></td><td>大於或等於</td><td><code>7 &gt;= 7</code></td><td><code>True</code></td></tr>
-        <tr><td><code>&lt;</code>、<code>&lt;=</code></td><td>小於、小於或等於</td><td><code>3 &lt;= 2</code></td><td><code>False</code></td></tr>
+        <tr><td><code>&gt;</code></td><td>大於</td><td><code>5 &gt; 3</code></td><td><code>True</code></td></tr>
+        <tr><td><code>&lt;</code></td><td>小於</td><td><code>5 &lt; 3</code></td><td><code>False</code></td></tr>
+        <tr><td><code>&gt;=</code></td><td>大於或等於</td><td><code>5 &gt;= 5</code></td><td><code>True</code></td></tr>
+        <tr><td><code>&lt;=</code></td><td>小於或等於</td><td><code>5 &lt;= 3</code></td><td><code>False</code></td></tr>
       </tbody>
     </table></div>
+    <p>比較的答案只有兩個：<code>True</code>（真）或 <code>False</code>（假），這就是上一堂見過的布爾值 <code>bool</code>。</p>
     <pre class="ex">age = 15
-print(age >= 18)          <span class="cm"># False</span>
-print(type(age >= 18))    <span class="cm"># &lt;class 'bool'&gt;</span>
-can_vote = age >= 18      <span class="cm"># 比較的結果也可以放進變量</span></pre>
-    <div class="key">最常犯的錯：<code>=</code> 是賦值，<code>==</code> 才是比較。寫 <code>age = 18</code> 是把 18 放進 age，不是問它是否 18。</div>
-    <p>下一堂學 <code>if</code>，就是用這些 True／False 來決定程式走哪條路。</p>
+print(age &gt;= 18)      <span class="cm"># False</span>
+print(age != 15)      <span class="cm"># False</span>
+is_adult = age &gt;= 18  <span class="cm"># 比較的結果也可以放進變量</span>
+print(is_adult)       <span class="cm"># False</span></pre>
+    <div class="key">最常見的錯：<b>一個 <code>=</code> 是放進去，兩個 <code>==</code> 才是比較</b>。<code>age = 18</code> 會把 age 改成 18；<code>age == 18</code> 才是問「age 是不是 18」。</div>
   </div>
   <div id="c4"></div>
-  <div class="summary"><b>小結</b>　比較運算符得出 bool；<code>==</code> 兩個等號是比較，一個等號是賦值。</div>
+  <div class="summary"><b>小結</b>　六個比較運算符，答案是 <code>True</code>／<code>False</code>；<code>==</code> 比較，<code>=</code> 賦值。下一堂用它們來做判斷。</div>
 </section>
 
 <!-- 5 作品 -->
 <section class="card" id="s5" data-title="作品：BMI 計算器" data-short="5 作品">
   <header><div class="chapter">作品</div><h2>BMI 計算器</h2>
-    <div class="goal"><b>直接在下面的 Thonny 寫。</b>三個小計算器：BMI、找續、時間換算。按 ▶ 試行時在 Shell 打數字；「檢查」會用固定的測試數字自動試一次。三層可以只做第一層。</div></header>
+    <div class="goal"><b>直接在下面的 Thonny 寫。</b>先按 ▶ 試行，看 Shell 的結果滿意了才按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
   <div id="tiers"></div>
 </section>
 
@@ -336,7 +345,7 @@ can_vote = age >= 18      <span class="cm"># 比較的結果也可以放進變�
   <div class="step make"><span class="mark">評</span>
     <div class="lead">自評<small>5 分</small></div>
     <p class="small">今天程式出錯時，你是怎樣找到原因的？寫一兩句。</p>
-    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅字最後一行的英文名稱和行號，再看 Assistant……"></textarea>
+    <textarea id="reflect" rows="3" placeholder="例如：我把 // 和 % 搞混了，後來用 17 // 5 試一次就記得……"></textarea>
     <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
   </div>
 </section>
@@ -373,7 +382,7 @@ can_vote = age >= 18      <span class="cm"># 比較的結果也可以放進變�
 <script>
 (function(){
 'use strict';
-const KEY='py3:L3v1', PIN='py2026', SIGN='py3-l3-sign-2026', APP='PY3-L3';
+const KEY='py3:L3v2', PIN='py2026', SIGN='py3-l3-sign-2026', APP='PY3-L3';
 const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -393,7 +402,7 @@ function scores(){
   const quiz=Object.values(S.quiz.a).filter(x=>x&&x.ok).length*5+(S.quiz.reflectScore||0);
   return {c,tiers,quiz,total:c[1]+c[2]+c[3]+c[4]+tiers+quiz};
 }
-const CH_MAX={1:9,2:9,3:9,4:13};
+const CH_MAX={1:9,2:13,3:9,4:9};
 function refreshScore(){$('#scoreNow').textContent=scores().total;renderNav();}
 
 /* ---------- 章節顯示：一次一章 ---------- */
@@ -480,6 +489,7 @@ function assistText(err,code){
   if(/never closed/.test(m))return `第 ${err.ln} 行的括號沒有關上。每個 ( 都要有一個 )。`;
   if(k==='SyntaxError')return `第 ${err.ln} 行不符合 Python 的寫法。檢查引號、括號是否成對，有沒有打錯符號或多了字。`;
   if(k==='NameError'){const nm=/name '([^']+)'/.exec(m);const n=nm?nm[1]:'';if(/^Print$/.test(n))return `Python 分大小寫。你打了 Print，但指令是小寫的 print。`;return `Python 不認識「${n}」。可能是打錯字、大小寫不對，或者文字忘記加引號（例如 print(你好) 應寫成 print("你好")）。`;}
+  if(k==='TypeError'&&/keyword argument/.test(m))return `括號內的一個 = 會被當成「設定」，不是比較。比較要用兩個等號 ==。`;
   if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
   if(k==='ZeroDivisionError')return `不可以除以 0。`;
   return `第 ${err.ln} 行出錯：${m}。`;
@@ -495,10 +505,10 @@ function varsOf(mod){
   }catch(x){}
   return out;
 }
-let THONNY_N=0;
+const THONNYS=[];function refreshFilenames(){THONNYS.forEach(t=>t());}
 function makeThonny(host,cfg){
   // cfg:{id,code,label,placeholder,compact,filename,onRun}
-  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L03_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
+  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L02_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
   const wrap=document.createElement('div');wrap.className='th'+(full?' full':' compact');
   wrap.innerHTML=`${full?`<div class="ttl"><span class="ic"></span><span class="fn">${esc(fn)}</span><span>— Thonny</span><span class="st"></span></div>
   <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Run</span><span>Tools</span><span>Help</span></div>`:''}
@@ -517,6 +527,7 @@ function makeThonny(host,cfg){
     if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveToast();}if(e.key==='F5'){e.preventDefault();run();}});
   function saveToast(){toast.textContent='已儲存 '+fn;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400);const st=$('.ttl .st',wrap);if(st)st.textContent='已儲存';}
   const sv=$('[data-save]',wrap);if(sv)sv.addEventListener('click',saveToast);
+  THONNYS.push(()=>{fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);});
   // 模擬 Thonny：直接重複同一個 shell，加 %Run
   let running=false;
   async function run(){
@@ -591,58 +602,59 @@ function makeExercise(host,cfg,onDone){
 
 /* ---------- 章節 ---------- */
 function step(host,kind,lead,pts){const d=document.createElement('div');d.className='step '+kind;d.innerHTML=`<span class="mark">${kind==='try'?'試':kind==='ex'?'練':'做'}</span><div class="lead">${esc(lead)}${pts?`<small>${esc(pts)}</small>`:''}</div>`;host.appendChild(d);return d;}
-const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a'],c4:['c4_a','c4_b']};
+const PRED_IDS={c1:['c1_a'],c2:['c2_a','c2_b'],c3:['c3_a'],c4:['c4_a']};
 function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
 
 (function(){const h=$('#c1');const done=chapterDone(1);
-  const t=step(h,'try','除法的結果是甚麼類型？','估對 4 分');
-  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'print(10 / 2)\nprint(10 * 2)\nprint(2 ** 3)',options:['5\n20\n6','5.0\n20\n8','5.0\n20.0\n8','5\n20\n8'],answer:1,why:'/ 必定得 float，所以是 5.0；* 兩個整數得整數 20；2 ** 3 是 2 的 3 次方 = 8。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','除得盡也是小數？','估對 4 分');
+  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'print(8 / 4)\nprint(8 + 4)',options:['2\n12','2.0\n12','2.0\n12.0','2\n12.0'],answer:1,why:'/ 的答案一定是小數，所以 2.0；+ 兩個整數還是整數，所以 12。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上兩個運算符，令兩行分別印出 3.5 和 1024。',code:'print(7 ____ 2)\nprint(2 ____ 10)',expect:'3.5\n1024\n',answer:'print(7 / 2)\nprint(2 ** 10)',hints:['7 除 2 是 3.5。','2 的 10 次方是 1024，次方用兩個星號。']},done);
+  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上缺少的部分，令程式印出保留 1 個小數位的平均分 78.3。',code:'total = 235\naverage = total / 3\nprint(round(____, ____))',expect:'78.3\n',answer:'total = 235\naverage = total / 3\nprint(round(average, 1))',
+    hints:['round 的第一個是要四捨五入的變量 average。','第二個數是小數位數：1。']},done);
 })();
 (function(){const h=$('#c2');const done=chapterDone(2);
-  const t=step(h,'try','商和餘數','估對 4 分');
-  makePredict(t,{id:'c2_a',q:'這個程式會印出甚麼？',code:'print(20 // 6)\nprint(20 % 6)',options:['3\n2','3.33\n2','2\n3','3\n0.33'],answer:0,why:'20 除 6 商 3 餘 2：// 給商，% 給餘數。'},S.pred,PRED_PTS,done);
+  const t1=step(h,'try','// 和 % 分別給甚麼？','估對 4 分');
+  makePredict(t1,{id:'c2_a',q:'這個程式會印出甚麼？',code:'print(17 // 5)\nprint(17 % 5)',options:['3.4\n2','3\n2','2\n3','3\n0.4'],answer:1,why:'17 ÷ 5 = 3 餘 2：// 給商 3，% 給餘數 2。'},S.pred,PRED_PTS,done);
+  const t2=step(h,'try','先乘除後加減','估對 4 分');
+  makePredict(t2,{id:'c2_b',q:'這個程式會印出甚麼？',code:'print(10 - 2 * 3)\nprint((10 - 2) * 3)\nprint(2 ** 3)',options:['24\n24\n6','4\n24\n8','4\n24\n6','24\n4\n8'],answer:1,why:'先乘：10 - 6 = 4；括號先：8 × 3 = 24；2 ** 3 = 2 × 2 × 2 = 8。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c2_ex',ch:'c2',q:'125 分鐘是幾小時幾分鐘？填上兩個運算符，令程式印出「2 小時 5 分鐘」。',code:'minutes = 125\nprint(minutes ____ 60, "小時", minutes ____ 60, "分鐘")',expect:'2 小時 5 分鐘\n',answer:'minutes = 125\nprint(minutes // 60, "小時", minutes % 60, "分鐘")',hints:['小時數是整數商，用 //。','剩下的分鐘是餘數，用 %。']},done);
+  makeExercise(e,{id:'c2_ex',ch:'c2',q:'填上兩個運算符，把 37 元換成十元和一元：印出「十元 3 個」和「一元 7 個」。',code:'money = 37\nprint("十元", money ____ 10, "個")\nprint("一元", money ____ 10, "個")',expect:'十元 3 個\n一元 7 個\n',answer:'money = 37\nprint("十元", money // 10, "個")\nprint("一元", money % 10, "個")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='十元 3 個\n一元 7 個\n')return {ok:false,msg:'應印出「十元 3 個」和「一元 7 個」。37 ÷ 10 的商是幾？餘數是幾？'};if(!code.includes('//')||!code.includes('%'))return {ok:false,msg:'輸出對了，但要用 // 和 % 計。'};return {ok:true,msg:'正確。'};},
+    hints:['37 有幾多個十？用整除 //。','剩下的零頭是餘數 %。']},done);
 })();
 (function(){const h=$('#c3');const done=chapterDone(3);
-  const t=step(h,'try','一行一行追蹤 x 的值','估對 4 分');
-  makePredict(t,{id:'c3_a',q:'這個程式會印出甚麼？',code:'x = 8\nx -= 3\nx *= 2\nprint(x)',options:['8','5','10','16'],answer:2,why:'x 先是 8，減 3 變 5，再乘 2 變 10。執行後看 Variables 視窗。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','一步一步改變量','估對 4 分');
+  makePredict(t,{id:'c3_a',q:'這個程式會印出甚麼？',code:'x = 10\nx += 5\nx *= 2\nx -= 1\nprint(x)',options:['29','14','30','19'],answer:0,why:'10 → +5 = 15 → ×2 = 30 → −1 = 29。每一行都用舊值計新值。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上兩個賦值簡寫，令 score 由 10 加 5 再乘 2，印出 30。只可用簡寫（例如 +=）。',code:'score = 10\nscore ____ 5\nscore ____ 2\nprint(score)',expect:'30\n',answer:'score = 10\nscore += 5\nscore *= 2\nprint(score)',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='30\n')return {ok:false,msg:'結果應該是 30：10 加 5 是 15，再乘 2 是 30。'};if(!/\+=/.test(code)||!/\*=/.test(code))return {ok:false,msg:'結果對，但要用簡寫 += 和 *=。'};return {ok:true,msg:'正確。'};},
-    hints:['加 5 的簡寫是 += 5。','乘 2 的簡寫是 *= 2。']},done);
+  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上簡寫的賦值運算符：小食部收銀，先加 12 元，再加 8 元，最後打八折（乘 0.8），印出 16.0。',code:'total = 0\ntotal ____ 12\ntotal ____ 8\ntotal ____ 0.8\nprint(total)',expect:'16.0\n',answer:'total = 0\ntotal += 12\ntotal += 8\ntotal *= 0.8\nprint(total)',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='16.0\n')return {ok:false,msg:'應印出 16.0：(12 + 8) × 0.8。'};if(!/\+=/.test(code)||!/\*=/.test(code))return {ok:false,msg:'輸出對了，但要用簡寫 += 和 *=。'};return {ok:true,msg:'正確。'};},
+    hints:['加上去用 +=。','乘用 *=。']},done);
 })();
 (function(){const h=$('#c4');const done=chapterDone(4);
-  const t1=step(h,'try','大於 和 大於或等於','估對 4 分');
-  makePredict(t1,{id:'c4_a',q:'這個程式會印出甚麼？',code:'print(7 > 7)\nprint(7 >= 7)',options:['True\nTrue','False\nTrue','False\nFalse','7\n7'],answer:1,why:'7 不大於 7，所以 False；7 大於或等於 7，所以 True。'},S.pred,PRED_PTS,done);
-  const t2=step(h,'try','一個等號和兩個等號','估對 4 分');
-  makePredict(t2,{id:'c4_b',q:'這個程式會印出甚麼？',code:'age = 15\nprint(age == 15)\nprint(age != 15)\nprint(type(age == 15))',options:["True\nFalse\n<class 'bool'>","15\n15\n<class 'int'>","True\nTrue\n<class 'bool'>","False\nTrue\n<class 'bool'>"],answer:0,why:'第 1 行 = 是賦值；之後 == 比較得 True，!= 得 False；比較的結果是 bool。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','= 和 == 有甚麼分別？','估對 4 分');
+  makePredict(t,{id:'c4_a',q:'這個程式會印出甚麼？',code:'age = 15\nprint(age == 18)\nprint(age < 18)\nage = 18\nprint(age == 18)',options:['False\nTrue\nTrue','False\nTrue\nFalse','True\nTrue\nTrue','出錯'],answer:0,why:'15 不等於 18 → False；15 小於 18 → True；第 4 行一個 = 把 age 改成 18，所以最後 True。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c4_ex',ch:'c4',q:'填上三個比較運算符，令三行印出 True、False、True。第 3 行要用「等於」。',code:'print(5 ____ 3)\nprint(5 ____ 5)\nprint("a" ____ "a")',expect:'True\nFalse\nTrue\n',answer:'print(5 > 3)\nprint(5 != 5)\nprint("a" == "a")',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯：「等於」要寫兩個等號 ==。'};if(res.out!=='True\nFalse\nTrue\n')return {ok:false,msg:'要印 True、False、True。'};if(!/==/.test(code))return {ok:false,msg:'第 3 行要用 ==。'};return {ok:true,msg:'正確。'};},
-    hints:['5 大於 3 是 True。','5 不等於 5 是 False，也可以用 < 或 >。','"a" 等於 "a"，等於是兩個等號。']},done);
+  makeExercise(e,{id:'c4_ex',ch:'c4',q:'填上三個比較運算符，令三行分別印出 True、False、True。',code:'score = 60\nprint(score ____ 60)   # 等於\nprint(score ____ 60)   # 不等於\nprint(score ____ 50)   # 大於',expect:'True\nFalse\nTrue\n',answer:'score = 60\nprint(score == 60)\nprint(score != 60)\nprint(score > 50)',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。括號內一個 = 不是比較，要用 ==。'};if(res.out!=='True\nFalse\nTrue\n')return {ok:false,msg:'應印出 True、False、True。'};if(!code.includes('==')||!code.includes('!='))return {ok:false,msg:'輸出對了，但第 1 行要用 ==、第 2 行要用 !=。'};return {ok:true,msg:'正確。'};},
+    hints:['等於是兩個等號 ==。','不等於是 !=。','大於是 >。']},done);
 })();
 
 /* ---------- 作品三層 ---------- */
 function outLines(res){return res.out.replace(/\n$/,'').split('\n');}
 const TIERS=[
   {id:'t1',pill:'必做',cls:'',pts:25,title:'BMI 計算器',
-   desc:'問身高（米）和體重（公斤），用 <code>float()</code> 轉換，計算 BMI = 體重 ÷ 身高<sup>2</sup>，用 <code>round()</code> 保留 1 位小數印出，例如「你的 BMI 是 19.3」。檢查會輸入 1.65 和 52.5。',
-   inputs:['1.65','52.5'],
-   hints:['height = float(input("身高（米）？"))。','BMI = weight / height ** 2，或 weight / (height * height)。','print("你的 BMI 是", round(bmi, 1))。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息（記得 float()）。'};if(res.asked<2)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問身高和體重。`};if(!/float\(/.test(code))return {ok:false,msg:'要用 float() 把輸入變成小數。'};if(!/round\(/.test(code))return {ok:false,msg:'要用 round() 保留 1 位小數。'};if(!/\b19\.3\b/.test(res.out))return {ok:false,msg:'輸入 1.65、52.5 時要印出 19.3。檢查公式：體重 ÷ 身高的平方。'};return {ok:true,msg:'BMI 計算器完成。'};}},
+   desc:'問身高（米，例如 1.65）和體重（公斤，例如 55），用 <code>float()</code> 轉成數字，計算 BMI = 體重 ÷ 身高<sup>2</sup>，印出保留 1 個小數位的結果，例如「你的 BMI 是 20.2」。',
+   hints:['height = float(input("身高（米）："))，體重同樣。','bmi = weight / height ** 2','print("你的 BMI 是", round(bmi, 1))'],inputs:['1.65','55'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。輸入要先 float()。'};if(res.asked<2)return {ok:false,msg:'要問身高和體重兩個數。'};if(!/20\.2\b/.test(res.out))return {ok:false,msg:'輸入 1.65 和 55 時應印出 20.2（55 ÷ 1.65² = 20.20…，round 到 1 位）。現在印了：'+res.out.trim().split('\n').pop()};if(!/round\(/.test(code))return {ok:false,msg:'要用 round() 保留 1 個小數位。'};return {ok:true,msg:'BMI 計算器完成。'};}},
   {id:'t2',pill:'進階',cls:'g',pts:10,title:'找續計算機',
-   desc:'問找續金額（整數元），印出需要幾多張 100 元、幾多張 10 元、幾多個 1 元，用 <code>//</code> 和 <code>%</code>。檢查會輸入 368，要見到 3、6、8。',
-   inputs:['368'],
-   hints:['hundreds = amount // 100；剩下 rest = amount % 100。','tens = rest // 10；ones = rest % 10。','三行 print 或一行用逗號。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息（記得 int()）。'};if(res.asked<1)return {ok:false,msg:'程式要問找續金額。'};if(!/\/\//.test(code)||!/%/.test(code))return {ok:false,msg:'要用 // 和 % 計算。'};const body=res.out.replace(/^.*[？?].*$/gm,'');if(!/3[\s\S]*6[\s\S]*8/.test(body))return {ok:false,msg:'輸入 368 時，輸出要依次見到 3、6、8。'};return {ok:true,msg:'找續計算機完成。'};}},
+   desc:'問一個 100 以下的整數金額，用 <code>//</code> 和 <code>%</code> 計出要幾多張 50 元、幾多張 10 元、幾多個 1 元（用最少的張數）。例如 87 元 → 50 元 1 張、10 元 3 張、1 元 7 個。',
+   hints:['fifty = money // 50，然後 money = money % 50 把剩下的放回去。','再對 10 做同樣的事。','最後剩下的就是 1 元的個數。'],inputs:['87'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<1)return {ok:false,msg:'要問金額。'};const nums=(res.out.replace(/87/g,'').match(/\d+/g)||[]).map(Number);let k=0;for(const n of nums){if(n===[1,3,7][k])k++;}const ok=k===3;
+     if(!ok)return {ok:false,msg:'輸入 87 時應依次印出 1（50 元）、3（10 元）、7（1 元）。'};if(!code.includes('//')||!code.includes('%'))return {ok:false,msg:'要用 // 和 % 計。'};return {ok:true,msg:'找續計算機完成。'};}},
   {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'秒數換算',
-   desc:'問一個秒數，印出「X 小時 Y 分 Z 秒」。檢查會輸入 3725，要見到 1、2、5。',
-   inputs:['3725'],
-   hints:['hours = seconds // 3600。','rest = seconds % 3600；minutes = rest // 60；secs = rest % 60。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<1)return {ok:false,msg:'程式要問秒數。'};const body=res.out.replace(/^.*[？?].*$/gm,'');if(!/\b1\b[\s\S]*\b2\b[\s\S]*\b5\b/.test(body))return {ok:false,msg:'輸入 3725 時，輸出要依次見到 1、2、5。'};return {ok:true,msg:'挑戰完成。'};}},
+   desc:'問一個秒數，換算成「__ 小時 __ 分 __ 秒」。例如 3725 秒 → 1 小時 2 分 5 秒。',
+   hints:['1 小時 = 3600 秒：hours = s // 3600，剩下 s % 3600。','分鐘：再用 // 60 和 % 60。'],inputs:['3725'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};const o=res.out.replace(/3725/g,'');if(!/1\D+2\D+5\D*$/m.test(o.trim().split('\n').slice(-3).join(' ')))return {ok:false,msg:'輸入 3725 時應印出 1 小時 2 分 5 秒。'};return {ok:true,msg:'挑戰完成。'};}},
 ];
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
   box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
@@ -662,9 +674,9 @@ TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div')
 
 /* ---------- 小測 ---------- */
 const QUIZ=[
-  {id:'q1',q:'印出甚麼？',code:'print(7 // 2, 7 % 2, 7 / 2)',options:['3 1 3.5','3.5 1 3.5','3 1 3','4 1 3.5'],answer:0,why:'// 是整數商 3，% 是餘數 1，/ 是 3.5。'},
-  {id:'q2',q:'印出甚麼？',code:'n = 5\nn += 1\nn *= 2\nprint(n)',options:['11','12','7','10'],answer:1,why:'5 加 1 是 6，再乘 2 是 12。'},
-  {id:'q3',q:'印出甚麼？',code:'x = 10\nprint(x == 10)\nprint(x = 10)',options:['True\nTrue','True\n10','出錯','True\nFalse'],answer:2,why:'第 3 行 print(x = 10) 只有一個等號，不是比較，Python 會報錯。比較要用 ==。'},
+  {id:'q1',q:'印出甚麼？',code:'print(9 // 2, 9 % 2, 9 / 2)',options:['4 1 4.5','4.5 1 4','4 1 4','4 0 4.5'],answer:0,why:'// 商 4，% 餘 1，/ 一定是小數 4.5。'},
+  {id:'q2',q:'印出甚麼？',code:'x = 4\nx += 3\nx *= 2\nprint(x)',options:['10','14','24','7'],answer:1,why:'4 + 3 = 7，7 × 2 = 14。'},
+  {id:'q3',q:'印出甚麼？',code:'n = 10\nprint(n = 10)',options:['True','10','False','出錯'],answer:3,why:'比較要用兩個 ==。括號內一個 = 會被當成設定參數，print 不認識叫 n 的參數，所以出錯（TypeError）。'},
 ];
 QUIZ.forEach((c,i)=>{const s=step($('#quiz'),'try',`小測 ${i+1}`,'5 分');makePredict(s,c,S.quiz.a,5,()=>renderNav(),true);});
 if(S.quiz.done){$('#reflect').value=S.quiz.reflect;$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';}
@@ -678,7 +690,7 @@ async function hmac(msg){try{const enc=new TextEncoder();const k=await crypto.su
 function canon(){const sc=scores();return [APP,S.stu.cls,S.stu.no,S.stu.name,sc.c[1],sc.c[2],sc.c[3],sc.c[4],sc.tiers,sc.quiz,sc.total,S.finished||'',S.teacherUsed?'T':''].join('|');}
 let reportText='',reportHTML='';
 async function buildReport(){if(!S.stu||!S.finished)return;const sc=scores();const code=await hmac(canon());const grade=sc.total>=85?'優異':sc.total>=70?'良好':sc.total>=50?'合格':'仍需努力';
-  const rows=[['第 1 章 算術',sc.c[1],9],['第 2 章 整除與餘數',sc.c[2],9],['第 3 章 賦值簡寫',sc.c[3],9],['第 4 章 比較與布爾值',sc.c[4],13],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
+  const rows=[['第 1 章 數字',sc.c[1],9],['第 2 章 算術運算符',sc.c[2],13],['第 3 章 賦值運算符',sc.c[3],9],['第 4 章 比較運算符',sc.c[4],9],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
   const tierTxt=TIERS.map(t=>`${t.pill}${S.tiers[t.id]&&S.tiers[t.id].ok?'✓':'✗'}`).join(' ');
   const when=new Date(S.finished).toLocaleString('zh-HK');
   $('#reportBox').innerHTML=`<h3 style="margin-top:0">中三 Python 第 3 堂 數字與運算符 · 成績報告</h3><p>${esc(S.stu.cls)} 班 ${esc(S.stu.no)} 號 ${esc(S.stu.name)} · ${esc(when)}${S.teacherUsed?' · <b>曾用老師模式</b>':''}</p>
@@ -699,14 +711,14 @@ function alertBox(html,actions){const m=document.createElement('div');m.classNam
   $$('button',m).forEach(b=>b.addEventListener('click',()=>{m.remove();const a=(actions||[])[+b.dataset.i];if(a&&a.fn)a.fn();}));}
 if(S.stu){$('#stName').value=S.stu.name;$('#stClass').value=S.stu.cls;$('#stNo').value=S.stu.no;}
 $('#btnStart').addEventListener('click',()=>{const name=$('#stName').value.trim(),cls=$('#stClass').value.trim(),no=$('#stNo').value.trim();
-  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();advance(1);show(1);});
+  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();refreshFilenames();advance(1);show(1);});
 $('#btnReset').addEventListener('click',()=>alertBox('清除這部電腦上的全部進度和分數？',[{t:'取消'},{t:'清除',go:true,fn:()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();}}]));
 $('#btnTeacher').addEventListener('click',()=>{const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h3 style="margin-top:0">老師模式</h3><div class="row"><input type="text" id="pin" placeholder="PIN" style="flex:1"><button class="btn go" id="pinGo">進入</button><button class="btn" id="pinX">關閉</button></div><div id="tpanel"></div></div>`;document.body.appendChild(m);
   $('#pinX',m).addEventListener('click',()=>m.remove());
   $('#pinGo',m).addEventListener('click',()=>{if($('#pin',m).value!==PIN){$('#tpanel',m).innerHTML='<p class="fb bad">PIN 不正確。</p>';return;}
     const p=$('#tpanel',m);
-    const preds=[['c1_a','B 5.0 / 20 / 8'],['c2_a','A 3 / 2'],['c3_a','C 10'],['c4_a','B False / True'],['c4_b','A True / False / bool']];
-    const exs=[['練習 1','7 / 2、2 ** 10'],['練習 2','minutes // 60、minutes % 60'],['練習 3','score += 5、score *= 2'],['練習 4','5 > 3、5 != 5、"a" == "a"']];
+    const preds=[['c1_a','B 2.0 / 12'],['c2_a','B 3 / 2'],['c2_b','B 4 / 24 / 8'],['c3_a','A 29'],['c4_a','A False / True / True']];
+    const exs=[['練習 1','round(average, 1)'],['練習 2','money // 10、money % 10'],['練習 3','+= 12、+= 8、*= 0.8'],['練習 4','==、!=、>']];
     p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${KEYS[c.answer]} ${esc(c.options[c.answer])}</li>`).join('')}</ul>
     <h3>核對驗證碼</h3><p class="small">貼上報告底部的「資料行」。</p><textarea id="vline" rows="2"></textarea><div class="row"><button class="btn go" id="vgo">核對</button><span id="vfb" class="small"></span></div>
     <h3>跳到任何一章（會在報告標示）</h3><div class="row">${SECS.map((s,i)=>`<button class="btn" data-j="${i}">${i}</button>`).join('')}</div>`;
