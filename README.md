@@ -12,7 +12,7 @@
 | 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 完成 |
 | 3 | 數字與運算符 | Numbers、Operators、Booleans | 完成 |
 | 4 | If…Else | If…Else | 完成 |
-| 5 | While 迴圈 | While Loops、Random | 規劃 |
+| 5 | While 迴圈 | While Loops、Random | 完成 |
 | 6 | For 迴圈與 Range | For Loops、Range | 規劃 |
 | 7 | 字串 | Strings | 規劃 |
 | 8 | 列表 | Lists | 規劃 |
@@ -51,6 +51,7 @@ python3 tools/test_lesson1.py
 python3 tools/test_lesson2.py
 python3 tools/test_lesson3.py
 python3 tools/test_lesson4.py
+python3 tools/test_lesson5.py
 ```
 
 需要 Playwright 及 Chromium。測試會走完整個流程（含故意答錯、看答案扣分、重新載入後保留、老師 PIN、手機闊度）。

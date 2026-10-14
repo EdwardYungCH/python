@@ -453,13 +453,13 @@ function pyHint(msg,code){
 function runPython(code,opts){
   if(!PY.ready)return Promise.reject(new Error('NOPY'));
   Sk.configure({output:opts.out,read:(x)=>{if(Sk.builtinFiles&&Sk.builtinFiles.files[x]!==undefined)return Sk.builtinFiles.files[x];throw "File not found: '"+x+"'";},
-    __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:8000,retainGlobals:true});
+    __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:4000,retainGlobals:true});
   return Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true));
 }
 async function runSilent(code,inputs){
   const q=(inputs||[]).slice();let out='',err='',asked=0;Sk.globals={};
-  try{await runPython(code,{out:t=>{out+=t;},input:p=>{asked++;const v=q.length?q.shift():'';out+=(p||'')+v+'\n';return Promise.resolve(v);}});}
-  catch(e){err=e.toString();}
+  try{await runPython(code,{out:t=>{out+=t;if(out.length>50000)throw new Error('OutputLimit');},input:p=>{asked++;if(!q.length)throw new Error('NoMoreInput');const v=q.shift();out+=(p||'')+v+'\n';return Promise.resolve(v);}});}
+  catch(e){err=e.toString();if(/NoMoreInput/.test(err))err='程式問了多過 '+(inputs||[]).length+' 次輸入（測試輸入已用完）';}
   return {out,err,asked};
 }
 function thonnyError(e,code,filename){
@@ -475,7 +475,8 @@ function thonnyError(e,code,filename){
     else if((bad.match(/\(/g)||[]).length!==(bad.match(/\)/g)||[]).length)msg="SyntaxError: '(' was never closed";
     else msg='SyntaxError: invalid syntax';
   }
-  const kind=msg.split(':')[0];
+  if(/^TimeoutError/.test(msg)||/OutputLimit/.test(msg))msg='程式執行超過時間限制（可能是無限迴圈），已自動停止';
+  const kind=msg.split(':')[0]==='程式執行超過時間限制（可能是無限迴圈），已自動停止'?'TimeoutError':msg.split(':')[0];
   let tb;
   if(/SyntaxError|IndentationError/.test(kind))tb=`  File "${filename}", line ${ln}\n    ${bad.trim()}\n${msg}`;
   else tb=`Traceback (most recent call last):\n  File "${filename}", line ${ln}, in <module>\n    ${bad.trim()}\n${msg}`;
@@ -491,6 +492,9 @@ function assistText(err,code){
   if(k==='TypeError'&&/keyword argument/.test(m))return `括號內的一個 = 會被當成「設定」，不是比較。比較要用兩個等號 ==。`;
   if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
   if(k==='ZeroDivisionError')return `不可以除以 0。`;
+  if(k==='TimeoutError')return `程式停不下來（無限迴圈）。第 ${err.ln} 行附近的迴圈條件永遠成立：檢查迴圈裏有沒有改變條件用到的變量，或者有沒有 break。`;
+  if(k==='ValueError'&&/invalid literal for int/.test(m)){const v=/: '([^']*)'/.exec(m);return `int() 只可以把數字文字變成整數，但收到的是「${v?v[1]:''}」。輸入要是整數，或者先檢查輸入。`;}
+  if(k==='ValueError'&&/could not convert string to float/.test(m))return `float() 只可以把數字文字變成小數，但收到的不是數字。`;
   return `第 ${err.ln} 行出錯：${m}。`;
 }
 function varsOf(mod){
@@ -536,8 +540,8 @@ function makeThonny(host,cfg){
     shell.innerHTML='';const add=(cls,t)=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=t;shell.appendChild(s);return s;};
     add('pr','>>> ');add('run','%Run '+fn+'\n');
     let text='',err='';
-    const print=t=>{text+=t;add('',t);};
-    const ask=prompt=>new Promise(res=>{if(prompt)add('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();
+    let cur=null;const print=t=>{text+=t;if(text.length>50000)throw new Error('OutputLimit');if(cur&&cur.parentNode===shell&&shell.lastChild===cur)cur.data+=t;else{cur=document.createTextNode(t);shell.appendChild(cur);}};
+    const ask=prompt=>new Promise(res=>{cur=null;if(prompt)add('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();
       inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
     Sk.globals={};
     try{await runPython(ta.value,{out:print,input:ask});}
