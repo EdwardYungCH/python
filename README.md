@@ -1,23 +1,23 @@
 # 中三 Python 編程
 
-中三 Python 自學課程（10 堂 × 80 分鐘）。每堂是一個獨立的 HTML 檔，Python 執行器（[Skulpt](https://skulpt.org)，MIT 授權）已內嵌，不需要網絡也能執行。
+中三 Python 自學課程（10 堂 × 80 分鐘），獨立課程，章節次序跟 [W3Schools Python Tutorial](https://www.w3schools.com/python/)，只教高中 ICT 會用到的部分。每堂是一個獨立的 HTML 檔，Python 執行器（[Skulpt](https://skulpt.org)，MIT 授權）已內嵌，不需要網絡也能執行。
 
 學生網址（需在 Settings → Pages 開啟 main / root）：`https://edwardyungch.github.io/python/`
 
 ## 課堂進度
 
-| 堂 | 主題 | 狀態 |
-|---|---|---|
-| 1 | 由積木到文字 | 完成 |
-| 2 | 變量與運算 | 規劃 |
-| 3 | 程式會判斷 | 規劃 |
-| 4 | 海龜繪圖與 for 迴圈 | 規劃 |
-| 5 | 累加與計數 | 規劃 |
-| 6 | while 迴圈與數據驗證 | 規劃 |
-| 7 | 列表與標準算法 | 規劃 |
-| 8 | 字串、除錯與測試 | 規劃 |
-| 9 | 迷你專題（一） | 規劃 |
-| 10 | 迷你專題（二）及選科導航 | 規劃 |
+| 堂 | 主題 | W3Schools 章節 | 狀態 |
+|---|---|---|---|
+| 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 第 1 版完成（含 Scratch 對照，待按第 2 版重做） |
+| 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 規劃 |
+| 3 | 數字與運算符 | Numbers、Operators、Booleans | 規劃 |
+| 4 | If…Else | If…Else | 規劃 |
+| 5 | While 迴圈 | While Loops、Random | 規劃 |
+| 6 | For 迴圈與 Range | For Loops、Range | 規劃 |
+| 7 | 字串 | Strings | 規劃 |
+| 8 | 列表 | Lists | 規劃 |
+| 9 | 函數入門與除錯 | Functions；錯誤類型 | 規劃 |
+| 10 | 迷你專題及選科導航 | — | 規劃 |
 
 ## 結構
 
@@ -30,7 +30,8 @@ tools/test_lessonN.py      Playwright 流程測試
 
 ## 每堂的設計
 
-- 登記 → 熱身 → 示範（先估後執行）→ 改錯 → 三層實作（必做／進階／挑戰）→ 出口卡 → 成績報告。
+- 登記及溫習 → 每堂 2 至 3 章（解說 → 試一試：先估後執行 → 練習：填空）→ 作品（必做／進階／挑戰，在 Thonny 做）→ 小測 → 成績報告。
+- 學生頁面只有 Python，不作 Scratch、Arduino 或高中課程代號的對照。
 - 進度自動儲存在瀏覽器（localStorage）；階段順序解鎖。
 - 實作在 Thonny 完成，貼回網頁由 Skulpt 以測試輸入自動檢查。
 - 成績報告帶驗證碼（HMAC-SHA256），老師區（PIN）可核對答案和驗證碼。

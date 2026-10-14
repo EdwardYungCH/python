@@ -38,23 +38,23 @@ footer{margin-top:28px;color:var(--muted);font-size:.85rem}
 <body>
 <div class="wrap">
   <h1>中三 Python 編程</h1>
-  <p class="sub">共 10 堂，每堂 80 分鐘。先估輸出，再執行；每堂都有作品和出口卡。</p>
+  <p class="sub">共 10 堂，每堂 80 分鐘。次序跟 W3Schools Python Tutorial。每章先估輸出再執行，每堂有作品和小測。</p>
   <ol class="list" id="list"></ol>
   <footer>進度和分數只儲存在你使用的瀏覽器。完成後下載成績報告交給老師。</footer>
 </div>
 <script>
 /* href 留空 = 準備中 */
 const LESSONS=[
-  {n:1,t:'由積木到文字',d:'Scratch、Arduino 與 Python 對照；print、input；讀錯誤訊息',href:'lesson1/'},
-  {n:2,t:'變量與運算',d:'數據類型、運算符、類型轉換；BMI 計算器、找續計算機',href:''},
-  {n:3,t:'程式會判斷',d:'if / elif / else、and / or / not；戲院票價計算器',href:''},
-  {n:4,t:'海龜繪圖與 for 迴圈',d:'turtle、range；正方形 → 多邊形 → 自創圖案',href:''},
-  {n:5,t:'累加與計數',d:'累加器、計數器；儲蓄複利、乘數表',href:''},
-  {n:6,t:'while 迴圈與數據驗證',d:'重複輸入直至有效、random；猜數字遊戲',href:''},
-  {n:7,t:'列表與標準算法',d:'列表、最大／最小值、計數；班級成績查詢器',href:''},
-  {n:8,t:'字串、除錯與測試',d:'字串處理、三類錯誤、邊界測試；專題規劃表',href:''},
-  {n:9,t:'迷你專題（一）',d:'按規劃表編寫',href:''},
-  {n:10,t:'迷你專題（二）及選科導航',d:'完成、互評、ICT 高中讀甚麼',href:''}
+  {n:1,t:'開始寫 Python',d:'Thonny、print、縮排、註解、第一個錯誤',href:'lesson1/'},
+  {n:2,t:'變量與輸入',d:'變量、數據類型、類型轉換、input',href:''},
+  {n:3,t:'數字與運算符',d:'算術、賦值、比較運算符、布爾值；BMI、找續',href:''},
+  {n:4,t:'If…Else',d:'if / elif / else、and / or / not；戲院票價',href:''},
+  {n:5,t:'While 迴圈',d:'計數器、累加器、重複輸入、random；猜數字',href:''},
+  {n:6,t:'For 迴圈與 Range',d:'range、累加累乘；乘數表、複利',href:''},
+  {n:7,t:'字串',d:'索引、切片、字串方法、f-string；密碼強度',href:''},
+  {n:8,t:'列表',d:'列表操作；總和、平均、最大最小、計數、搜尋',href:''},
+  {n:9,t:'函數入門與除錯',d:'def、參數、return；三類錯誤、測試數據；專題規劃',href:''},
+  {n:10,t:'迷你專題及選科導航',d:'完成專題、互評、ICT 高中讀甚麼',href:''}
 ];
 const ol=document.getElementById('list');
 LESSONS.forEach(l=>{
