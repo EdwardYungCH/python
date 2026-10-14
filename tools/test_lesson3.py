@@ -1,0 +1,83 @@
+"""第 3 堂「數字與運算符」流程測試。python3 tools/test_lesson3.py"""
+import asyncio, sys, os
+from playwright.async_api import async_playwright
+
+URL = 'file://' + os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'lesson3', 'index.html'))
+errors, res = [], []
+def check(name, ok, extra=''):
+    res.append((name, ok)); print(('PASS ' if ok else 'FAIL ') + name + (' — ' + extra if extra else ''))
+async def current(pg): return await pg.evaluate('document.querySelector("section.card.current").id')
+async def go_next(pg): await pg.click('#btnNext'); await pg.wait_for_timeout(250)
+async def predict(pg, box, pick):
+    await box.locator('.opt').nth(pick).click(); await box.locator('.btn.go').click(); await pg.wait_for_timeout(900)
+async def ex(pg, box, code):
+    await box.locator('textarea').fill(code); await box.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+    return await box.locator('[data-fb]').text_content()
+
+async def main():
+    async with async_playwright() as p:
+        b = await p.chromium.launch()
+        pg = await b.new_page(viewport={'width': 1200, 'height': 900})
+        pg.on('console', lambda m: errors.append(m.text) if m.type == 'error' else None)
+        pg.on('pageerror', lambda e: errors.append(str(e)))
+        await pg.goto(URL); await pg.wait_for_timeout(800)
+        check('Skulpt 載入', '就緒' in await pg.text_content('#pyStatus'))
+        check('標題是第 3 堂', '第 3 堂' in await pg.text_content('.topbar'))
+        await pg.fill('#stName', '測試同學'); await pg.fill('#stClass', '3A'); await pg.fill('#stNo', '12'); await pg.click('#btnStart'); await pg.wait_for_timeout(300)
+        c1 = pg.locator('#c1 .predict'); e1 = pg.locator('#c1 .exbox')
+        await predict(pg, c1.nth(0), 1)
+        check('試一試 1 印出 5.0', '5.0' in await c1.nth(0).locator('.shell').text_content())
+        check('練習 1 錯誤運算符被拒', '不一樣' in await ex(pg, e1, 'print(7 // 2)\nprint(2 * 10)'))
+        check('練習 1 完成', '5 分' in await ex(pg, e1, 'print(7 / 2)\nprint(2 ** 10)'))
+        await go_next(pg)
+        c2 = pg.locator('#c2 .predict'); e2 = pg.locator('#c2 .exbox')
+        await predict(pg, c2.nth(0), 0)
+        check('練習 2 完成', '5 分' in await ex(pg, e2, 'minutes = 125\nprint(minutes // 60, "小時", minutes % 60, "分鐘")'))
+        await go_next(pg)
+        c3 = pg.locator('#c3 .predict'); e3 = pg.locator('#c3 .exbox')
+        await predict(pg, c3.nth(0), 3)
+        check('估錯顯示答案 C', '答案是 C' in await c3.nth(0).locator('.fb').text_content())
+        check('練習 3 不用簡寫被拒', '簡寫' in await ex(pg, e3, 'score = 10\nscore = score + 5\nscore = score * 2\nprint(score)'))
+        check('練習 3 完成', '5 分' in await ex(pg, e3, 'score = 10\nscore += 5\nscore *= 2\nprint(score)'))
+        await go_next(pg)
+        c4 = pg.locator('#c4 .predict'); e4 = pg.locator('#c4 .exbox')
+        await predict(pg, c4.nth(0), 1); await predict(pg, c4.nth(1), 0)
+        fb = await ex(pg, e4, 'print(5 > 3)\nprint(5 != 5)\nprint("a" = "a")')
+        check('練習 4 單等號出錯', '出錯' in fb or '==' in fb, fb)
+        check('練習 4 完成', '5 分' in await ex(pg, e4, 'print(5 > 3)\nprint(5 != 5)\nprint("a" == "a")'))
+        check('第 4 章 13 分', '13 / 13' in await pg.text_content('#navStatus'))
+        await go_next(pg); check('進入作品', await current(pg) == 's5')
+        t = pg.locator('#tiers .tier')
+        fb = await ex(pg, t.nth(0), 'h = float(input("身高？"))\nw = float(input("體重？"))\nprint("你的 BMI 是", round(w / h, 1))')
+        check('BMI 公式錯被拒', '19.3' in fb, fb)
+        fb = await ex(pg, t.nth(0), 'h = float(input("身高？"))\nw = float(input("體重？"))\nbmi = w / h ** 2\nprint("你的 BMI 是", round(bmi, 1))')
+        check('必做完成 25 分', '25 分' in await pg.text_content('#tfb_t1'), fb)
+        fb = await ex(pg, t.nth(1), 'a = int(input("找續？"))\nprint(a // 100, "張 100")\nr = a % 100\nprint(r // 10, "張 10")\nprint(r % 10, "個 1")')
+        check('進階完成 10 分', '10 分' in await pg.text_content('#tfb_t2'), fb)
+        fb = await ex(pg, t.nth(2), 's = int(input("秒？"))\nh = s // 3600\nr = s % 3600\nprint(h, "小時", r // 60, "分", r % 60, "秒")')
+        check('挑戰完成 5 分', '5 分' in await pg.text_content('#tfb_t3'), fb)
+        await go_next(pg)
+        q = pg.locator('#quiz .predict')
+        await predict(pg, q.nth(0), 0); await predict(pg, q.nth(1), 1); await predict(pg, q.nth(2), 2)
+        await pg.fill('#reflect', '我先看 Traceback 最後一行，再看 Assistant。'); await pg.click('#btnExit'); await pg.wait_for_timeout(800)
+        # 9+9+5+13+40+20 = 96（第 3 章試一試故意估錯）
+        check('總分 96', await pg.text_content('#scoreNow') == '96', await pg.text_content('#scoreNow'))
+        check('報告標題是第 3 堂', '第 3 堂 數字與運算符' in await pg.text_content('#reportBox'))
+        await pg.click('#btnTeacher'); await pg.fill('#pin', 'py2026'); await pg.click('#pinGo'); await pg.wait_for_timeout(200)
+        check('老師區答案是第 3 堂的', 'score += 5' in await pg.text_content('#tpanel'))
+        await pg.locator('#pinX').click()
+        await pg.click('#steps button[data-i="2"]'); await pg.wait_for_timeout(300)
+        await pg.screenshot(path='/tmp/py3_l3_desktop.png', full_page=True)
+        m = await b.new_page(viewport={'width': 390, 'height': 844})
+        await m.goto(URL); await m.wait_for_timeout(800)
+        await m.click('#btnTeacher'); await m.fill('#pin', 'py2026'); await m.click('#pinGo'); await m.wait_for_timeout(200); await m.click('#tpanel [data-j="4"]'); await m.wait_for_timeout(300)
+        sw = await m.evaluate('document.documentElement.scrollWidth')
+        check('手機闊度無橫向捲動', sw <= 392, str(sw))
+        await b.close()
+    real = [e for e in errors if 'ERR_TUNNEL_CONNECTION_FAILED' not in e and 'ERR_INTERNET_DISCONNECTED' not in e]
+    check('沒有 console 錯誤（不計 Google Fonts）', not real, '; '.join(real)[:300])
+    fails = [r for r in res if not r[1]]
+    print(f'\n{len(res)-len(fails)} / {len(res)} 通過')
+    sys.exit(1 if fails else 0)
+
+asyncio.run(main())
