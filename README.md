@@ -9,7 +9,7 @@
 | 堂 | 主題 | W3Schools 章節 | 狀態 |
 |---|---|---|---|
 | 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 完成（第 2.2 版，內置 Thonny 模擬器） |
-| 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 規劃 |
+| 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 完成 |
 | 3 | 數字與運算符 | Numbers、Operators、Booleans | 規劃 |
 | 4 | If…Else | If…Else | 規劃 |
 | 5 | While 迴圈 | While Loops、Random | 規劃 |
@@ -45,6 +45,7 @@ tools/skulpt/              Skulpt 建置檔（skulpt.min.js、skulpt-stdlib.js�
 
 ```
 python3 tools/test_lesson1.py
+python3 tools/test_lesson2.py
 ```
 
 需要 Playwright 及 Chromium。測試會走完整個流程（含故意答錯、看答案扣分、重新載入後保留、老師 PIN、手機闊度）。

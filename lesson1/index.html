@@ -480,7 +480,7 @@ function varsOf(mod){
 let THONNY_N=0;
 function makeThonny(host,cfg){
   // cfg:{id,code,label,placeholder,compact,filename,onRun}
-  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L01_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
+  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L02_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
   const wrap=document.createElement('div');wrap.className='th'+(full?' full':' compact');
   wrap.innerHTML=`${full?`<div class="ttl"><span class="ic"></span><span class="fn">${esc(fn)}</span><span>— Thonny</span><span class="st"></span></div>
   <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Run</span><span>Tools</span><span>Help</span></div>`:''}
@@ -520,8 +520,11 @@ function makeThonny(host,cfg){
     running=false;btn.disabled=false;
     if(cfg.onRun)cfg.onRun({out:text,err});
   }
+  function showSilent(res,inputs){fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);shell.innerHTML='';const add=(cls,t)=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=t;shell.appendChild(s);return s;};
+    add('pr','>>> ');add('run','%Run '+fn+'   （檢查用的測試輸入：'+inputs.join('、')+'）\n');add('',res.out);if(res.err){const te=thonnyError({toString:()=>res.err,traceback:[]},ta.value,fn);add('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');}else assist.classList.remove('show');add('pr','>>> ');
+    if(full&&vbody){const vs=varsOf({$d:Sk.globals||{}});if(vs.length){panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${vs.map(v=>`<tr><td>${esc(v.k)}</td><td>${esc(v.txt)}</td></tr>`).join('')}</tbody></table>`;}}}
   btn.addEventListener('click',run);
-  return {ta,out:shell,btn,run,wrap};
+  return {ta,out:shell,btn,run,wrap,showSilent};
 }
 function makeRunner(host,cfg){return makeThonny(host,Object.assign({compact:true},cfg));}
 
@@ -561,9 +564,9 @@ function makeExercise(host,cfg,onDone){
   $('[data-a]',help).addEventListener('click',()=>{if(rec.ok)return;rec.revealed=true;S.ex[cfg.ch]=rec;save();hints.innerHTML+=`<div class="fb neutral">答案：<pre class="ex" style="margin:6px 0 0">${esc(cfg.answer)}</pre></div>`;});
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;rec.code=code;rec.tries++;
     if(code.includes('____')){box.insertAdjacentHTML('beforeend','');fb.innerHTML='<span class="badge off">還有 ____ 未填</span>';S.ex[cfg.ch]=rec;save();return;}
-    const res=await runSilent(code,[]);let ok,msg;
+    const res=await runSilent(code,cfg.inputs||[]);let ok,msg;
     if(cfg.check){const c=cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
-    await r.run();
+    if(cfg.inputs)r.showSilent(res,cfg.inputs);else await r.run();
     if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{fb.innerHTML=`<span class="badge off">${esc(msg)}</span>`;if(rec.tries>=2)pushHint();}
     S.ex[cfg.ch]=rec;save();refreshScore();if(ok&&onDone)onDone();});
 }
@@ -633,7 +636,8 @@ TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div')
   if(rec.ok){fbEl.innerHTML=`<span class="badge">✓ ${rec.score} 分</span>`;r.ta.readOnly=true;}else fbEl.innerHTML='<span class="badge off">未完成</span>';
   $('[data-h]',help).addEventListener('click',()=>{if(hi<t.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(t.hints[hi])}</div>`;hi++;}else $('[data-h]',help).disabled=true;});
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;if(!code.trim()){fb.innerHTML='<span class="badge off">先貼上程式</span>';return;}rec.code=code;
-    const res=await runSilent(code,[]);const c=t.check(code,res);await r.run();
+    const res=await runSilent(code,t.inputs||[]);const c=t.check(code,res);
+    r.showSilent(res,t.inputs||[]);
     if(c.ok){rec.ok=true;rec.score=t.pts;fbEl.innerHTML=`<span class="badge">✓ ${t.pts} 分</span>`;fb.innerHTML=`<span class="badge">${esc(c.msg)}</span>`;r.ta.readOnly=true;}else fb.innerHTML=`<span class="badge off">${esc(c.msg)}</span>`;
     S.tiers[t.id]=rec;save();refreshScore();if(S.tiers.t1&&S.tiers.t1.ok)advance(6);});
 });
