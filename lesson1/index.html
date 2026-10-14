@@ -480,6 +480,7 @@ function assistText(err,code){
   if(k==='TypeError'&&/keyword argument/.test(m))return `括號內的一個 = 會被當成「設定」，不是比較。比較要用兩個等號 ==。`;
   if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
   if(k==='ZeroDivisionError')return `不可以除以 0。`;
+  if(k==='IndexError')return `索引超出範圍：索引由 0 開始，最後一個是 len(s) - 1；s[len(s)] 不存在。`;
   if(k==='TimeoutError')return `程式停不下來（無限迴圈）。第 ${err.ln} 行附近的迴圈條件永遠成立：檢查迴圈裏有沒有改變條件用到的變量，或者有沒有 break。`;
   if(k==='ValueError'&&/invalid literal for int/.test(m)){const v=/: '([^']*)'/.exec(m);return `int() 只可以把數字文字變成整數，但收到的是「${v?v[1]:''}」。輸入要是整數，或者先檢查輸入。`;}
   if(k==='ValueError'&&/could not convert string to float/.test(m))return `float() 只可以把數字文字變成小數，但收到的不是數字。`;
