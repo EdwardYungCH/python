@@ -8,7 +8,7 @@ src_path = os.path.join(ROOT, 'src', f'lesson{n}', f'lesson{n}.src.html')
 out_dir = os.path.join(ROOT, f'lesson{n}')
 lib_dir = os.path.join(ROOT, 'tools', 'skulpt')
 src = open(src_path, encoding='utf8').read()
-sk = open(os.path.join(lib_dir, 'skulpt.min.js'), encoding='utf8').read().replace('</script', '<\\/script')
+sk = open(os.path.join(lib_dir, 'skulpt.min.js'), encoding='utf8').read().replace('</script', '<\\/script').replace('\ufffd', '\\ufffd')
 lib = open(os.path.join(lib_dir, 'skulpt-stdlib.js'), encoding='utf8').read().replace('</script', '<\\/script')
 cdn = re.findall(r'<script src="https://cdn\.jsdelivr\.net/npm/skulpt@[^"]+/dist/(skulpt\.min\.js|skulpt-stdlib\.js)"></script>', src)
 assert cdn == ['skulpt.min.js', 'skulpt-stdlib.js'], cdn
