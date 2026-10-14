@@ -14,13 +14,13 @@ def build(n, title, subtitle, intro, ch_html, ch_js, tiers, quiz, ch_max, rows, 
     i, j = between(src, '/* ---------- 章節 ---------- */', '/* ---------- 作品三層 ---------- */'); src = src[:i] + ch_js + src[j:]
     src = src.replace("const res=await runSilent(code,[]);let ok,msg;\n    if(cfg.check)", "const res=await runSilent(code,cfg.inputs||[]);let ok,msg;\n    if(cfg.check)")
     i, j = between(src, 'const TIERS=[', 'TIERS.forEach('); src = src[:i] + tiers + src[j:]
-    src = src.replace("const res=await runSilent(code,[]);const c=t.check(code,res);await r.run();", "const res=await runSilent(code,t.inputs||[]);const c=t.check(code,res);await r.run();")
+    src = src.replace("const res=await runSilent(code,[]);const c=await t.check(code,res);await r.run();", "const res=await runSilent(code,t.inputs||[]);const c=await t.check(code,res);await r.run();")
     i, j = between(src, 'const QUIZ=[', 'QUIZ.forEach('); src = src[:i] + quiz + src[j:]
     src = src.replace('<title>開始寫 Python</title>', f'<title>{title}</title>')
     src = src.replace('<div class="lesson">中三 Python 編程 · 第 1 堂</div><h1>開始寫 Python</h1>', f'<div class="lesson">中三 Python 編程 · 第 {n} 堂</div><h1>{title}</h1>')
     src = src.replace("const KEY='py3:L1v2', PIN='py2026', SIGN='py3-l1-sign-2026', APP='PY3-L1';", f"const KEY='py3:L{n}v2', PIN='py2026', SIGN='py3-l{n}-sign-2026', APP='PY3-L{n}';")
     src = src.replace("const CH_MAX={1:9,2:9,3:13,4:9};", "const CH_MAX=" + ch_max + ";")
-    src = src.replace("cfg.filename||('L01_'", f"cfg.filename||('L{n:02d}_'")
+    src = re.sub(r"cfg\.filename\|\|\('L0\d_'", f"cfg.filename||('L{n:02d}_'", src)
     src = src.replace("const rows=[['第 1 章 開始',sc.c[1],9],['第 2 章 語法',sc.c[2],9],['第 3 章 輸出',sc.c[3],13],['第 4 章 註解',sc.c[4],9],", "const rows=[" + rows)
     src = src.replace('中三 Python 第 1 堂 開始寫 Python', f'中三 Python 第 {n} 堂 {title}')
     src = src.replace("const preds=[['c1_a','A Hello, World!'],['c2_a','C 出錯，兩行都不印'],['c3_a','C 7 / 3 + 4'],['c3_b','B 分數： 95'],['c4_a','B 2 行']];", "const preds=" + preds + ";")

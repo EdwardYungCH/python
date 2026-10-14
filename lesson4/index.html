@@ -204,7 +204,7 @@ th{background:var(--ground);font-weight:700}
 </style></head><body>
 
 <div class="topbar"><div class="in">
-  <div><div class="lesson">中三 Python 編程 · 第 4 堂</div><h1>If…Else：程式會判斷</h1></div>
+  <div><div class="lesson">中三 Python 編程 · 第 4 堂</div><h1>If…Else</h1></div>
   <div class="score">分數 <b id="scoreNow">0</b><span class="small"> / 100</span></div>
   <div class="steps" id="steps" role="tablist" aria-label="章節"></div>
 </div></div>
@@ -214,7 +214,7 @@ th{background:var(--ground);font-weight:700}
 <!-- 0 登記 -->
 <section class="card" id="s0" data-title="登記" data-short="登記">
   <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
-  <p>這一堂學<b>判斷</b>：用 <code>if</code> 讓程式按情況走不同的路。四章都是「學 → 試 → 練」三步，然後做作品和小測。</p>
+  <p>這一堂有四章：if、elif／else、and／or／not、巢狀 if，每章都是「學 → 試 → 練」三步，然後做戲院票價計算器和小測。所有程式都在網頁內的 Thonny 寫和執行，不用另外開軟件。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
   <div class="row">
     <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
     <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
@@ -223,77 +223,68 @@ th{background:var(--ground);font-weight:700}
   <div class="row"><button class="btn go" id="btnStart">開始第 1 章</button><span class="small" id="pyStatus">正在載入 Python 執行器…</span></div>
 </section>
 
-<!-- 1 if -->
-<section class="card" id="s1" data-title="if：條件成立才做" data-short="1 if">
-  <header><div class="chapter">第 1 章</div><h2>if：條件成立才做</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>寫 <code>if 條件:</code> 加縮排的程式區塊</li><li>分辨哪些行屬於 if，哪些行一定會執行</li></ul></div></header>
+<!-- 1 If -->
+<section class="card" id="s1" data-title="if：如果…就…" data-short="1 if">
+  <header><div class="chapter">第 1 章</div><h2>if：如果條件成立，就做</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>寫 <code>if 條件:</code>，記得冒號和縮排</li><li>知道縮排的行才屬於 if</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">if 後面是一個 True／False 的條件</div>
-    <pre class="ex">score = 72
-if score >= 50:
-    print("合格")      <span class="cm"># 縮排 4 格：屬於 if，條件 True 才執行</span>
-print("完成")          <span class="cm"># 沒有縮排：不屬於 if，一定執行</span></pre>
-    <p>三個部分：<code>if</code>、條件（上一堂的比較運算符）、冒號 <code>:</code>。下一行開始縮排 4 格的，就是「條件成立時要做的事」，可以有很多行。</p>
-    <p>第 2 堂說過縮排是語法：這裏就是它的用途。Thonny 按 Enter 後會自動幫你縮排。</p>
-    <div class="key">兩個最常見的錯：忘記冒號 <code>:</code>；if 底下的行忘記縮排。</div>
+    <div class="lead">程式第一次會「揀路」</div>
+    <p>到目前為止，程式每一行都會執行。<code>if</code> 讓程式<b>只在條件成立時</b>才執行某些行。條件就是上一堂的比較，答案是 <code>True</code> 或 <code>False</code>。</p>
+    <pre class="ex">age = 15
+if age &lt; 18:
+    print("你是未成年人")   <span class="cm"># 縮排 4 格：屬於 if，條件成立才執行</span>
+print("多謝使用")           <span class="cm"># 沒有縮排：不屬於 if，一定執行</span></pre>
+    <ul class="steps-list">
+      <li><code>if</code> 那一行結尾要有<b>冒號 <code>:</code></b>。</li>
+      <li>屬於 if 的行要<b>縮排 4 格</b>（Thonny 會自動幫你縮）。可以有很多行。</li>
+      <li>縮排結束，就是 if 結束。</li>
+    </ul>
+    <div class="key">第 1 堂說過縮排是語法的一部分，就是為了這一刻：縮排告訴 Python 哪些行屬於 <code>if</code>。</div>
   </div>
   <div id="c1"></div>
-  <div class="summary"><b>小結</b>　<code>if 條件:</code> 之後縮排的行，條件 True 才執行；沒縮排的行照常執行。</div>
+  <div class="summary"><b>小結</b>　<code>if 條件:</code> 加冒號；縮排的行只在條件為 <code>True</code> 時執行。</div>
 </section>
 
-<!-- 2 if else -->
-<section class="card" id="s2" data-title="if…else：二選一" data-short="2 else">
-  <header><div class="chapter">第 2 章</div><h2>if…else：二選一</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>else:</code> 處理條件不成立的情況</li><li>知道 if 和 else 只會走其中一邊</li></ul></div></header>
+<!-- 2 Else / Elif -->
+<section class="card" id="s2" data-title="else 與 elif：否則" data-short="2 elif">
+  <header><div class="chapter">第 2 章</div><h2>else 與 elif：否則呢？</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>else</code> 處理「條件不成立」</li><li>用 <code>elif</code> 一次分三條或更多路</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">不成立就走 else</div>
-    <pre class="ex">n = 7
-if n % 2 == 0:
-    print("雙數")
+    <div class="lead">兩條路：if … else</div>
+    <pre class="ex">age = 20
+if age &lt; 18:
+    print("兒童票")
 else:
-    print("單數")</pre>
-    <p><code>else</code> 要和 <code>if</code> 對齊（不縮排），後面也要冒號。兩個區塊只會執行<b>一個</b>。</p>
-    <pre class="ex">age = int(input("你幾歲？"))
-if age >= 18:
-    print("成人票")
+    print("成人票")      <span class="cm"># 條件不成立就走這邊</span></pre>
+    <p><code>else</code> 不用寫條件，它就是「其餘情況」。<code>else</code> 和 <code>if</code> 要對齊，不縮排。</p>
+    <div class="lead" style="margin-top:16px">三條或更多路：elif</div>
+    <pre class="ex">score = 85
+if score &gt;= 80:
+    print("優")
+elif score &gt;= 50:     <span class="cm"># elif = else if：上面不成立，再試這個</span>
+    print("合格")
 else:
-    print("小童票")
-print("多謝惠顧")       <span class="cm"># 兩種情況都會印</span></pre>
+    print("不合格")</pre>
+    <p>Python 由上至下試，<b>第一個成立的就執行，之後的全部跳過</b>。所以 85 只會印「優」，雖然 85 也 ≥ 50。</p>
+    <div class="key">次序很重要：如果先寫 <code>score &gt;= 50</code>，85 分就會被判為「合格」。由最嚴格（最大或最小）的條件開始寫。</div>
   </div>
   <div id="c2"></div>
-  <div class="summary"><b>小結</b>　<code>else:</code> 和 if 對齊；條件 False 就走 else；二選一。</div>
+  <div class="summary"><b>小結</b>　<code>if</code> → <code>elif</code>（可多個）→ <code>else</code>；只走第一個成立的路。</div>
 </section>
 
-<!-- 3 elif -->
-<section class="card" id="s3" data-title="elif：多於兩種情況" data-short="3 elif">
-  <header><div class="chapter">第 3 章</div><h2>elif：多於兩種情況</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>elif</code> 連接多個條件</li><li>知道 Python 由上至下試，遇到第一個 True 就停</li></ul></div></header>
+<!-- 3 Logical operators -->
+<section class="card" id="s3" data-title="and、or、not" data-short="3 and/or">
+  <header><div class="chapter">第 3 章</div><h2>and、or、not：把條件合起來</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>and</code>（都要）、<code>or</code>（其中一個）、<code>not</code>（相反）</li><li>看懂真假值表</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">由上至下試，中了一個就不再看其他</div>
-    <pre class="ex">score = 85
-if score >= 90:
-    print("A")
-elif score >= 80:
-    print("B")
-elif score >= 70:
-    print("C")
-else:
-    print("D")</pre>
-    <p><code>elif</code> 是 else if 的簡寫。85 不夠 90，第 1 個條件 False；85 ≥ 80，第 2 個 True，印 B，<b>之後的 elif 和 else 都不再看</b>。</p>
-    <h3>次序很重要</h3>
-    <p>如果把 <code>score >= 70</code> 放在最前，85 一開始就中了，會印 C。寫多向判斷時，由最嚴格（最大或最小）的條件開始。</p>
-    <div class="key"><code>elif</code> 可以有很多個，<code>else</code> 最多一個，而且在最後。</div>
-  </div>
-  <div id="c3"></div>
-  <div class="summary"><b>小結</b>　<code>if → elif → elif → else</code>，由上至下，第一個 True 的區塊執行，其餘跳過。</div>
-</section>
-
-<!-- 4 and or not -->
-<section class="card" id="s4" data-title="and、or、not：組合條件" data-short="4 and/or">
-  <header><div class="chapter">第 4 章</div><h2>and、or、not：組合條件</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>and</code>、<code>or</code>、<code>not</code> 把幾個條件組合成一個</li><li>看懂真假值表</li></ul></div></header>
-  <div class="step learn"><span class="mark">學</span>
-    <div class="lead">兩個條件同時成立？其中一個成立？相反？</div>
+    <div class="lead">兩個條件一起問</div>
+    <pre class="ex">age = 15
+if age &gt;= 12 and age &lt;= 17:      <span class="cm"># 兩個都要 True</span>
+    print("青少年")
+if age &lt; 12 or age &gt;= 65:        <span class="cm"># 其中一個 True 就可以</span>
+    print("半價")
+if not age &gt;= 18:                <span class="cm"># not 把 True 變 False、False 變 True</span>
+    print("未成年")</pre>
     <div class="tablewrap"><table>
       <thead><tr><th>A</th><th>B</th><th><code>A and B</code></th><th><code>A or B</code></th><th><code>not A</code></th></tr></thead>
       <tbody>
@@ -303,29 +294,39 @@ else:
         <tr><td>False</td><td>False</td><td>False</td><td>False</td><td>True</td></tr>
       </tbody>
     </table></div>
-    <ul class="steps-list">
-      <li><code>and</code>：<b>兩個都</b>要 True 才 True。</li>
-      <li><code>or</code>：<b>其中一個</b> True 就 True。</li>
-      <li><code>not</code>：反轉。</li>
-    </ul>
+    <p>記法：<code>and</code> 只有「兩個都 True」才 True；<code>or</code> 只有「兩個都 False」才 False。</p>
+    <div class="key">常見錯誤：<code>if age == 12 or 13:</code> 不是「12 或 13」。要寫 <code>age == 12 or age == 13</code>，每邊都是完整的比較。</div>
+  </div>
+  <div id="c3"></div>
+  <div class="summary"><b>小結</b>　<code>and</code> 都要、<code>or</code> 其一、<code>not</code> 相反；每邊都寫完整的比較。</div>
+</section>
+
+<!-- 4 Nested if -->
+<section class="card" id="s4" data-title="巢狀 if：判斷裏面再判斷" data-short="4 巢狀">
+  <header><div class="chapter">第 4 章</div><h2>巢狀 if：判斷裏面再判斷</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>在 if 裏面再放一個 if，縮排 8 格</li><li>知道甚麼時候用巢狀、甚麼時候用 and</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">一層一層問</div>
     <pre class="ex">age = 15
-student = True
-if age < 18 and student:
-    print("學生半價")
-if age < 12 or age >= 65:
-    print("小童／長者優惠")
-if not student:
+member = True
+if age &lt; 18:
+    print("兒童票")
+    if member:                 <span class="cm"># 在 if 裏面再問：縮排 4 格</span>
+        print("會員再九折")    <span class="cm"># 屬於裏面的 if：縮排 8 格</span>
+else:
     print("成人票")</pre>
-    <div class="key">範圍要寫完整：「10 至 20 之間」是 <code>n >= 10 and n <= 20</code>，不可以寫 <code>10 <= n <= 20</code> 以外的省略法；Python 其實接受 <code>10 <= n <= 20</code>，但用 <code>and</code> 寫最清楚。</div>
+    <p>裏面的 <code>if</code> 只有在外面的條件成立時才會被問。看縮排就知道誰屬於誰。</p>
+    <p>如果只是「兩個條件都要」，用 <code>and</code> 一行就夠；要在裏面<b>做不同的事</b>（例如先印兒童票，再決定折扣）才用巢狀。</p>
+    <div class="key"><code>if member:</code> 不用寫 <code>== True</code>，因為 <code>member</code> 本身已經是 True 或 False。</div>
   </div>
   <div id="c4"></div>
-  <div class="summary"><b>小結</b>　<code>and</code> 全真才真，<code>or</code> 一真即真，<code>not</code> 反轉。</div>
+  <div class="summary"><b>小結</b>　巢狀 if 每多一層多縮排 4 格；只是「都要」就用 <code>and</code>。</div>
 </section>
 
 <!-- 5 作品 -->
 <section class="card" id="s5" data-title="作品：戲院票價計算器" data-short="5 作品">
   <header><div class="chapter">作品</div><h2>戲院票價計算器</h2>
-    <div class="goal"><b>直接在下面的 Thonny 寫。</b>一個戲院售票程式，逐層加入更多規則。「檢查」會用幾組測試數字自動試幾次，Shell 顯示第一組。三層可以只做第一層。</div></header>
+    <div class="goal"><b>直接在下面的 Thonny 寫。</b>先按 ▶ 試行，看 Shell 的結果滿意了才按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
   <div id="tiers"></div>
 </section>
 
@@ -337,7 +338,7 @@ if not student:
   <div class="step make"><span class="mark">評</span>
     <div class="lead">自評<small>5 分</small></div>
     <p class="small">今天程式出錯時，你是怎樣找到原因的？寫一兩句。</p>
-    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅字最後一行的英文名稱和行號，再看 Assistant……"></textarea>
+    <textarea id="reflect" rows="3" placeholder="例如：我忘記了冒號，Shell 出現 SyntaxError 我才發現……"></textarea>
     <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
   </div>
 </section>
@@ -352,7 +353,7 @@ if not student:
     <span class="small" id="saveFb"></span>
   </div>
   <p class="small">把報告檔案交給老師。報告有驗證碼，改動內容會令驗證碼失效。</p>
-  <p class="small">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_conditions.asp" target="_blank" rel="noopener">If…Else</a>、<a href="https://www.w3schools.com/python/python_operators.asp" target="_blank" rel="noopener">Operators（Logical）</a></p>
+  <p class="small">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_conditions.asp" target="_blank" rel="noopener">If…Else</a></p>
 </section>
 
 <div class="foot">
@@ -374,7 +375,7 @@ if not student:
 <script>
 (function(){
 'use strict';
-const KEY='py3:L4v1', PIN='py2026', SIGN='py3-l4-sign-2026', APP='PY3-L4';
+const KEY='py3:L4v2', PIN='py2026', SIGN='py3-l4-sign-2026', APP='PY3-L4';
 const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -394,7 +395,7 @@ function scores(){
   const quiz=Object.values(S.quiz.a).filter(x=>x&&x.ok).length*5+(S.quiz.reflectScore||0);
   return {c,tiers,quiz,total:c[1]+c[2]+c[3]+c[4]+tiers+quiz};
 }
-const CH_MAX={1:9,2:9,3:9,4:13};
+const CH_MAX={1:9,2:9,3:13,4:9};
 function refreshScore(){$('#scoreNow').textContent=scores().total;renderNav();}
 
 /* ---------- 章節顯示：一次一章 ---------- */
@@ -481,6 +482,7 @@ function assistText(err,code){
   if(/never closed/.test(m))return `第 ${err.ln} 行的括號沒有關上。每個 ( 都要有一個 )。`;
   if(k==='SyntaxError')return `第 ${err.ln} 行不符合 Python 的寫法。檢查引號、括號是否成對，有沒有打錯符號或多了字。`;
   if(k==='NameError'){const nm=/name '([^']+)'/.exec(m);const n=nm?nm[1]:'';if(/^Print$/.test(n))return `Python 分大小寫。你打了 Print，但指令是小寫的 print。`;return `Python 不認識「${n}」。可能是打錯字、大小寫不對，或者文字忘記加引號（例如 print(你好) 應寫成 print("你好")）。`;}
+  if(k==='TypeError'&&/keyword argument/.test(m))return `括號內的一個 = 會被當成「設定」，不是比較。比較要用兩個等號 ==。`;
   if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
   if(k==='ZeroDivisionError')return `不可以除以 0。`;
   return `第 ${err.ln} 行出錯：${m}。`;
@@ -496,7 +498,7 @@ function varsOf(mod){
   }catch(x){}
   return out;
 }
-let THONNY_N=0;
+const THONNYS=[];function refreshFilenames(){THONNYS.forEach(t=>t());}
 function makeThonny(host,cfg){
   // cfg:{id,code,label,placeholder,compact,filename,onRun}
   const full=!cfg.compact;const fnOf=()=>cfg.filename||('L04_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
@@ -518,6 +520,7 @@ function makeThonny(host,cfg){
     if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveToast();}if(e.key==='F5'){e.preventDefault();run();}});
   function saveToast(){toast.textContent='已儲存 '+fn;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400);const st=$('.ttl .st',wrap);if(st)st.textContent='已儲存';}
   const sv=$('[data-save]',wrap);if(sv)sv.addEventListener('click',saveToast);
+  THONNYS.push(()=>{fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);});
   // 模擬 Thonny：直接重複同一個 shell，加 %Run
   let running=false;
   async function run(){
@@ -584,7 +587,7 @@ function makeExercise(host,cfg,onDone){
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;rec.code=code;rec.tries++;
     if(code.includes('____')){box.insertAdjacentHTML('beforeend','');fb.innerHTML='<span class="badge off">還有 ____ 未填</span>';S.ex[cfg.ch]=rec;save();return;}
     const res=await runSilent(code,cfg.inputs||[]);let ok,msg;
-    if(cfg.check){const c=cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
+    if(cfg.check){const c=await cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
     if(cfg.inputs)r.showSilent(res,cfg.inputs);else await r.run();
     if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{fb.innerHTML=`<span class="badge off">${esc(msg)}</span>`;if(rec.tries>=2)pushHint();}
     S.ex[cfg.ch]=rec;save();refreshScore();if(ok&&onDone)onDone();});
@@ -592,57 +595,65 @@ function makeExercise(host,cfg,onDone){
 
 /* ---------- 章節 ---------- */
 function step(host,kind,lead,pts){const d=document.createElement('div');d.className='step '+kind;d.innerHTML=`<span class="mark">${kind==='try'?'試':kind==='ex'?'練':'做'}</span><div class="lead">${esc(lead)}${pts?`<small>${esc(pts)}</small>`:''}</div>`;host.appendChild(d);return d;}
-const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a'],c4:['c4_a','c4_b']};
+const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a','c3_b'],c4:['c4_a']};
 function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
 
 (function(){const h=$('#c1');const done=chapterDone(1);
   const t=step(h,'try','哪些行屬於 if？','估對 4 分');
-  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'x = 5\nif x > 3:\n    print("A")\nprint("B")',options:['A','B','A\nB','甚麼都沒有'],answer:2,why:'5 > 3 成立，印 A；print("B") 沒有縮排，不屬於 if，一定執行。'},S.pred,PRED_PTS,done);
+  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'temp = 31\nif temp > 33:\n    print("酷熱警告")\n    print("多喝水")\nprint("今天氣溫", temp)',options:['酷熱警告\n多喝水\n今天氣溫 31','今天氣溫 31','多喝水\n今天氣溫 31','甚麼都不印'],answer:1,why:'31 > 33 是 False，兩行縮排的都跳過；最後一行沒有縮排，一定印。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上比較運算符，令 72 分印出「合格」（50 分或以上合格），然後印「完成」。',code:'score = 72\nif score ____ 50:\n    print("合格")\nprint("完成")',expect:'合格\n完成\n',answer:'score = 72\nif score >= 50:\n    print("合格")\nprint("完成")',hints:['50 分或以上，即大於或等於。','>= 兩個符號中間沒有空格。']},done);
+  makeExercise(e,{id:'c1_ex',ch:'c1',q:'補上冒號和縮排，令分數 ≥ 50 時印出「合格」，然後印出「完」。（分數 60 時兩行都印）',code:'score = 60\nif score >= 50\nprint("合格")\nprint("完")',expect:'合格\n完\n',answer:'score = 60\nif score >= 50:\n    print("合格")\nprint("完")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。if 那行結尾要有冒號，下一行要縮排。'};if(res.out!=='合格\n完\n')return {ok:false,msg:'應印出「合格」和「完」兩行。'};if(!/^\s+print\("合格"\)/m.test(code))return {ok:false,msg:'輸出對了，但 print("合格") 要縮排才屬於 if。'};if(/^\s+print\("完"\)/m.test(code))return {ok:false,msg:'print("完") 不屬於 if，不要縮排。'};return {ok:true,msg:'正確。'};},
+    hints:['if score >= 50 後面加冒號 :。','print("合格") 前面加 4 個空格。']},done);
 })();
 (function(){const h=$('#c2');const done=chapterDone(2);
-  const t=step(h,'try','單數還是雙數？','估對 4 分');
-  makePredict(t,{id:'c2_a',q:'這個程式會印出甚麼？',code:'n = 7\nif n % 2 == 0:\n    print("雙數")\nelse:\n    print("單數")\nprint("完")',options:['雙數\n完','單數\n完','雙數\n單數\n完','單數'],answer:1,why:'7 % 2 是 1，不等於 0，走 else 印 單數；print("完") 在外面一定執行。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','次序錯了會怎樣？','估對 4 分');
+  makePredict(t,{id:'c2_a',q:'這個程式會印出甚麼？',code:'score = 85\nif score >= 50:\n    print("合格")\nelif score >= 80:\n    print("優")\nelse:\n    print("不合格")',options:['優','合格','合格\n優','不合格'],answer:1,why:'85 ≥ 50 已經成立，印「合格」後就跳過其餘的 elif 和 else，所以永遠不會印「優」。條件要由最嚴格的開始寫。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c2_ex',ch:'c2',q:'填上缺少的一行，令 15 歲印出「未成年」。注意對齊和冒號。',code:'age = 15\nif age >= 18:\n    print("成人")\n____\n    print("未成年")',expect:'未成年\n',answer:'age = 15\nif age >= 18:\n    print("成人")\nelse:\n    print("未成年")',hints:['條件不成立時走的那一行是 else。','else 要和 if 對齊，後面有冒號。']},done);
+  makeExercise(e,{id:'c2_ex',ch:'c2',q:'填上缺少的關鍵字，令程式按氣溫分三路：≥ 28 印「熱」、≥ 18 印「舒適」、其餘印「冷」。（氣溫 22 時印 舒適）',code:'temp = 22\n____ temp >= 28:\n    print("熱")\n____ temp >= 18:\n    print("舒適")\n____:\n    print("冷")',expect:'舒適\n',answer:'temp = 22\nif temp >= 28:\n    print("熱")\nelif temp >= 18:\n    print("舒適")\nelse:\n    print("冷")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='舒適\n')return {ok:false,msg:'氣溫 22 時應只印「舒適」。'};if(!/^elif /m.test(code)||!/^else:/m.test(code))return {ok:false,msg:'輸出對了，但要用 if、elif、else 三個關鍵字。'};return {ok:true,msg:'正確。'};},
+    hints:['第一路用 if。','中間的路用 elif（有條件）。','最後一路用 else（沒有條件，只有冒號）。']},done);
 })();
 (function(){const h=$('#c3');const done=chapterDone(3);
-  const t=step(h,'try','第一個 True 就停','估對 4 分');
-  makePredict(t,{id:'c3_a',q:'這個程式會印出甚麼？',code:'score = 85\nif score >= 70:\n    print("C")\nelif score >= 80:\n    print("B")\nelif score >= 90:\n    print("A")\nelse:\n    print("D")',options:['A','B','C','A\nB\nC'],answer:2,why:'85 ≥ 70 第一個條件就成立，印 C 然後停；雖然 85 也 ≥ 80，但 elif 不會再看。次序錯了，所以結果不合理。'},S.pred,PRED_PTS,done);
+  const t1=step(h,'try','and 和 or','估對 4 分');
+  makePredict(t1,{id:'c3_a',q:'這個程式會印出甚麼？',code:'a = 5\nb = 10\nprint(a > 3 and b > 20)\nprint(a > 3 or b > 20)\nprint(not a > 3)',options:['True\nTrue\nFalse','False\nTrue\nFalse','False\nFalse\nTrue','True\nFalse\nFalse'],answer:1,why:'a > 3 是 True、b > 20 是 False：and 要兩個都 True → False；or 一個 True 就夠 → True；not True → False。'},S.pred,PRED_PTS,done);
+  const t2=step(h,'try','常見陷阱','估對 4 分');
+  makePredict(t2,{id:'c3_b',q:'這個程式會印出甚麼？',code:'day = "星期三"\nif day == "星期六" or day == "星期日":\n    print("假期")\nelse:\n    print("返學")',options:['假期','返學','假期\n返學','出錯'],answer:1,why:'兩邊都是完整的比較，星期三兩邊都 False，or 之後是 False，走 else。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上一個關鍵字，令 31 度印出「炎熱」（33 度或以上酷熱，28 度或以上炎熱，其餘舒適）。',code:'t = 31\nif t >= 33:\n    print("酷熱")\n____ t >= 28:\n    print("炎熱")\nelse:\n    print("舒適")',expect:'炎熱\n',answer:'t = 31\nif t >= 33:\n    print("酷熱")\nelif t >= 28:\n    print("炎熱")\nelse:\n    print("舒適")',hints:['中間的條件用 elif。','elif 和 if 對齊。']},done);
+  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上 and 或 or：年齡 12 至 17 歲（包括兩端）印「青少年票」，否則印「普通票」。（15 歲時印 青少年票）',code:'age = 15\nif age >= 12 ____ age <= 17:\n    print("青少年票")\nelse:\n    print("普通票")',expect:'青少年票\n',answer:'age = 15\nif age >= 12 and age <= 17:\n    print("青少年票")\nelse:\n    print("普通票")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='青少年票\n')return {ok:false,msg:'15 歲時應印「青少年票」。'};if(!/ and /.test(code))return {ok:false,msg:'輸出對了，但「12 至 17」兩個條件都要成立，用 and；用 or 的話 5 歲也會變青少年。'};return {ok:true,msg:'正確。'};},
+    hints:['≥ 12 和 ≤ 17 兩個條件都要成立。','都要成立是 and。']},done);
 })();
 (function(){const h=$('#c4');const done=chapterDone(4);
-  const t1=step(h,'try','真假值表','估對 4 分');
-  makePredict(t1,{id:'c4_a',q:'這個程式會印出甚麼？',code:'print(True and False)\nprint(True or False)\nprint(not True)',options:['False\nTrue\nFalse','True\nTrue\nFalse','False\nFalse\nTrue','True\nFalse\nTrue'],answer:0,why:'and 要兩個都 True；or 一個 True 就夠；not 反轉。'},S.pred,PRED_PTS,done);
-  const t2=step(h,'try','or 只需其中一個','估對 4 分');
-  makePredict(t2,{id:'c4_b',q:'這個程式會印出甚麼？',code:'age = 20\nstudent = True\nif age < 18 or student:\n    print("優惠")\nelse:\n    print("原價")',options:['優惠','原價','優惠\n原價','出錯'],answer:0,why:'age < 18 是 False，但 student 是 True；or 只需一個 True，所以印 優惠。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','裏面的 if 會被問嗎？','估對 4 分');
+  makePredict(t,{id:'c4_a',q:'這個程式會印出甚麼？',code:'age = 20\nmember = True\nif age < 18:\n    print("兒童票")\n    if member:\n        print("會員九折")\nelse:\n    print("成人票")',options:['兒童票\n會員九折','成人票\n會員九折','成人票','會員九折'],answer:2,why:'20 < 18 是 False，整個 if 區塊（包括裏面的 if）都跳過，只走 else。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c4_ex',ch:'c4',q:'填上兩個邏輯運算符：18 歲以下而且有學生證才半價；沒有學生證就提醒申請。15 歲有證應印「半價」一行。',code:'age = 15\nhas_card = True\nif age < 18 ____ has_card:\n    print("半價")\nif ____ has_card:\n    print("請先申請學生證")',expect:'半價\n',answer:'age = 15\nhas_card = True\nif age < 18 and has_card:\n    print("半價")\nif not has_card:\n    print("請先申請學生證")',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='半價\n')return {ok:false,msg:'15 歲有學生證應該只印 半價。'};if(!/\band\b/.test(code)||!/\bnot\b/.test(code))return {ok:false,msg:'要用 and 和 not。'};return {ok:true,msg:'正確。'};},
-    hints:['「而且」是 and。','「沒有」是 not has_card。']},done);
+  makeExercise(e,{id:'c4_ex',ch:'c4',q:'補上正確的縮排：下雨時印「帶傘」；下雨而且風大時再印「小心」；不下雨印「好天」。（下雨＋風大時印兩行）',code:'raining = True\nwindy = True\nif raining:\nprint("帶傘")\nif windy:\nprint("小心")\nelse:\nprint("好天")',expect:'帶傘\n小心\n',answer:'raining = True\nwindy = True\nif raining:\n    print("帶傘")\n    if windy:\n        print("小心")\nelse:\n    print("好天")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。if 下面的行要縮排。'};if(res.out!=='帶傘\n小心\n')return {ok:false,msg:'應印出「帶傘」和「小心」。注意裏面的 if 要縮排 4 格，它的 print 縮排 8 格。'};if(!/^    if windy:/m.test(code)||!/^        print\("小心"\)/m.test(code))return {ok:false,msg:'輸出對了，但 if windy: 要縮排 4 格，print("小心") 要縮排 8 格。'};return {ok:true,msg:'正確。'};},
+    hints:['print("帶傘") 和 if windy: 都屬於外面的 if，縮排 4 格。','print("小心") 屬於裏面的 if，縮排 8 格。','else 和最外面的 if 對齊，它的 print 縮排 4 格。']},done);
 })();
 
 /* ---------- 作品三層 ---------- */
 function outLines(res){return res.out.replace(/\n$/,'').split('\n');}
-async function runCases(code,cases,fn){for(const c of cases){const r=await runSilent(code,c.inputs);if(r.err)return {ok:false,msg:'程式出錯（輸入 '+c.inputs.join('、')+' 時），看看 Shell 的錯誤訊息。'};const m=fn(r,c);if(m)return {ok:false,msg:'輸入 '+c.inputs.join('、')+' 時：'+m};}return null;}
 const TIERS=[
-  {id:'t1',pill:'必做',cls:'',pts:25,title:'按年齡定票價',
-   desc:'問年齡：12 歲以下或 65 歲或以上半價 50 元，其餘 100 元。印出例如「票價：50 元」。檢查會分別輸入 10、30、70。',
-   inputs:['30'],
-   hints:['age = int(input("年齡？"))。','半價條件：age < 12 or age >= 65。','if … else 二選一，最後 print 票價。'],
-   check:async(code,res)=>{const bad=await runCases(code,[{inputs:['10'],want:'50'},{inputs:['30'],want:'100'},{inputs:['70'],want:'50'}],(r,c)=>{const body=r.out.replace(/^.*[？?].*$/gm,'');return new RegExp('\\b'+c.want+'\\b').test(body)?'':'應該印出 '+c.want+' 元。';});if(bad)return bad;if(!/\bif\b/.test(code))return {ok:false,msg:'要用 if 判斷。'};return {ok:true,msg:'票價計算器完成。'};}},
-  {id:'t2',pill:'進階',cls:'g',pts:10,title:'加入星期二優惠',
-   desc:'再問星期幾（1 至 7）。星期二（2）所有人 60 元；其他日子照必做的規則。檢查會輸入 30、2（→ 60）和 30、5（→ 100）和 10、2（→ 60）。',
-   inputs:['30','2'],
-   hints:['day = int(input("星期幾？"))。','先判斷 day == 2，再 elif 半價條件，最後 else。','用 elif 寫，次序：星期二 → 半價 → 全價。'],
-   check:async(code,res)=>{const bad=await runCases(code,[{inputs:['30','2'],want:'60'},{inputs:['30','5'],want:'100'},{inputs:['10','2'],want:'60'},{inputs:['70','3'],want:'50'}],(r,c)=>{if(r.asked<2)return '要問兩條問題。';const body=r.out.replace(/^.*[？?].*$/gm,'');return new RegExp('\\b'+c.want+'\\b').test(body)?'':'應該印出 '+c.want+' 元。';});if(bad)return bad;if(!/\belif\b/.test(code))return {ok:false,msg:'用 elif 把三種情況串起來。'};return {ok:true,msg:'進階完成。'};}},
-  {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'BMI 分類',
-   desc:'另寫一段：問 BMI 值（小數），印出分類：18.5 以下「過輕」、25 以下「正常」、30 以下「過重」、否則「肥胖」。檢查會輸入 17.2、22.0、27.5、31.0。',
-   inputs:['22.0'],
-   hints:['bmi = float(input("BMI？"))。','由最小開始：if bmi < 18.5 → elif bmi < 25 → elif bmi < 30 → else。'],
-   check:async(code,res)=>{const bad=await runCases(code,[{inputs:['17.2'],want:'過輕'},{inputs:['22.0'],want:'正常'},{inputs:['27.5'],want:'過重'},{inputs:['31.0'],want:'肥胖'}],(r,c)=>{const body=r.out.replace(/^.*[？?].*$/gm,'');return body.includes(c.want)?'':'應該印出 '+c.want+'。';});if(bad)return bad;return {ok:true,msg:'挑戰完成。'};}},
+  {id:'t1',pill:'必做',cls:'',pts:25,title:'戲院票價計算器',
+   desc:'問年齡，然後印出票價：12 歲以下「兒童票 40 元」、65 歲或以上「長者票 40 元」、其餘「成人票 80 元」。用 <code>if</code>、<code>elif</code>、<code>else</code>。',
+   hints:['age = int(input("你幾歲？"))','if age < 12: … elif age >= 65: … else: …','每一路一個 print。'],inputs:['10'],
+   check:async(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};const cases=[['10','兒童'],['30','成人'],['70','長者'],['65','長者'],['12','成人']];
+     for(const [inp,want] of cases){const r=await runSilent(code,[inp]);if(r.err)return {ok:false,msg:`輸入 ${inp} 時出錯：${r.err.split('\n').pop()}`};if(!r.out.includes(want))return {ok:false,msg:`輸入 ${inp} 歲時應印「${want}票」，現在印了：${r.out.trim().split('\n').pop()}`};}
+     if(!/elif/.test(code))return {ok:false,msg:'要用 elif 分三路。'};return {ok:true,msg:'五組測試（10、30、70、65、12 歲）全部正確。'};}},
+  {id:'t2',pill:'進階',cls:'g',pts:10,title:'BMI 分類',
+   desc:'問 BMI（小數），印出分類：18.5 以下「過輕」、18.5 至 22.9「正常」、23 至 24.9「過重」、25 或以上「肥胖」（香港衞生署的亞洲成人標準）。',
+   hints:['bmi = float(input("BMI："))','由最小的開始：if bmi < 18.5: … elif bmi < 23: … elif bmi < 25: … else: …'],inputs:['20'],
+   check:async(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};const cases=[['17','過輕'],['20','正常'],['22.9','正常'],['23','過重'],['24','過重'],['27','肥胖']];
+     for(const [inp,want] of cases){const r=await runSilent(code,[inp]);if(r.err)return {ok:false,msg:`輸入 ${inp} 時出錯。`};if(!r.out.includes(want))return {ok:false,msg:`BMI ${inp} 應是「${want}」，現在印了：${r.out.trim().split('\n').pop()}`};}
+     return {ok:true,msg:'六組測試全部正確。'};}},
+  {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'閏年判斷',
+   desc:'問年份，判斷是否閏年：能被 4 整除而不能被 100 整除，或者能被 400 整除，就是閏年。印出「閏年」或「不是閏年」。',
+   hints:['能被 4 整除：year % 4 == 0。','條件：(year % 4 == 0 and year % 100 != 0) or year % 400 == 0'],inputs:['2024'],
+   check:async(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};const cases=[['2024',true],['2023',false],['1900',false],['2000',true]];
+     for(const [inp,leap] of cases){const r=await runSilent(code,[inp]);if(r.err)return {ok:false,msg:`輸入 ${inp} 時出錯。`};const last=r.out.trim().split('\n').pop();const says=/不是/.test(last)?false:/閏年/.test(last);if(says!==leap)return {ok:false,msg:`${inp} 年${leap?'是':'不是'}閏年，現在印了：${last}`};}
+     return {ok:true,msg:'2024、2023、1900、2000 全部判斷正確。'};}},
 ];
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
   box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
@@ -662,9 +673,9 @@ TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div')
 
 /* ---------- 小測 ---------- */
 const QUIZ=[
-  {id:'q1',q:'印出甚麼？',code:'score = 95\nif score >= 50:\n    print("合格")\nelif score >= 90:\n    print("優異")',options:['合格','優異','合格\n優異','甚麼都沒有'],answer:0,why:'95 ≥ 50 先成立，印 合格 後停；elif 不再看。要先寫 >= 90 才合理。'},
-  {id:'q2',q:'印出甚麼？',code:'a = 3\nb = 5\nprint(a > b or b > a)\nprint(not a == 3)',options:['True\nFalse','False\nTrue','True\nTrue','False\nFalse'],answer:0,why:'3 > 5 False，5 > 3 True，or 得 True；a == 3 是 True，not 之後 False。'},
-  {id:'q3',q:'哪一個程式會出錯？',code:'A: if x > 1:\n       print("a")\nB: if x > 1\n       print("a")\nC: if x == 1:\n       print("a")\nD: if x > 1:\n       print("a")\n   else:\n       print("b")',options:['A','B','C','D'],answer:1,why:'B 的 if 行尾忘記了冒號。'},
+  {id:'q1',q:'印出甚麼？',code:'x = 7\nif x > 5:\n    print("大")\nprint("完")',options:['大','大\n完','完','甚麼都不印'],answer:1,why:'7 > 5 成立印「大」；「完」沒有縮排，一定印。'},
+  {id:'q2',q:'印出甚麼？',code:'n = 50\nif n > 100:\n    print("A")\nelif n > 40:\n    print("B")\nelif n > 20:\n    print("C")\nelse:\n    print("D")',options:['B','B\nC','C','D'],answer:0,why:'由上試落：n > 100 不成立，n > 40 成立印 B，之後全部跳過。'},
+  {id:'q3',q:'印出甚麼？',code:'a = 3\nprint(a > 1 and a > 5)\nprint(a > 1 or a > 5)',options:['True\nTrue','False\nTrue','True\nFalse','False\nFalse'],answer:1,why:'a > 5 是 False：and 要兩個都 True → False；or 有一個 True → True。'},
 ];
 QUIZ.forEach((c,i)=>{const s=step($('#quiz'),'try',`小測 ${i+1}`,'5 分');makePredict(s,c,S.quiz.a,5,()=>renderNav(),true);});
 if(S.quiz.done){$('#reflect').value=S.quiz.reflect;$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';}
@@ -678,7 +689,7 @@ async function hmac(msg){try{const enc=new TextEncoder();const k=await crypto.su
 function canon(){const sc=scores();return [APP,S.stu.cls,S.stu.no,S.stu.name,sc.c[1],sc.c[2],sc.c[3],sc.c[4],sc.tiers,sc.quiz,sc.total,S.finished||'',S.teacherUsed?'T':''].join('|');}
 let reportText='',reportHTML='';
 async function buildReport(){if(!S.stu||!S.finished)return;const sc=scores();const code=await hmac(canon());const grade=sc.total>=85?'優異':sc.total>=70?'良好':sc.total>=50?'合格':'仍需努力';
-  const rows=[['第 1 章 if',sc.c[1],9],['第 2 章 if…else',sc.c[2],9],['第 3 章 elif',sc.c[3],9],['第 4 章 and／or／not',sc.c[4],13],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
+  const rows=[['第 1 章 if',sc.c[1],9],['第 2 章 else 與 elif',sc.c[2],9],['第 3 章 and、or、not',sc.c[3],13],['第 4 章 巢狀 if',sc.c[4],9],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
   const tierTxt=TIERS.map(t=>`${t.pill}${S.tiers[t.id]&&S.tiers[t.id].ok?'✓':'✗'}`).join(' ');
   const when=new Date(S.finished).toLocaleString('zh-HK');
   $('#reportBox').innerHTML=`<h3 style="margin-top:0">中三 Python 第 4 堂 If…Else · 成績報告</h3><p>${esc(S.stu.cls)} 班 ${esc(S.stu.no)} 號 ${esc(S.stu.name)} · ${esc(when)}${S.teacherUsed?' · <b>曾用老師模式</b>':''}</p>
@@ -699,14 +710,14 @@ function alertBox(html,actions){const m=document.createElement('div');m.classNam
   $$('button',m).forEach(b=>b.addEventListener('click',()=>{m.remove();const a=(actions||[])[+b.dataset.i];if(a&&a.fn)a.fn();}));}
 if(S.stu){$('#stName').value=S.stu.name;$('#stClass').value=S.stu.cls;$('#stNo').value=S.stu.no;}
 $('#btnStart').addEventListener('click',()=>{const name=$('#stName').value.trim(),cls=$('#stClass').value.trim(),no=$('#stNo').value.trim();
-  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();advance(1);show(1);});
+  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();refreshFilenames();advance(1);show(1);});
 $('#btnReset').addEventListener('click',()=>alertBox('清除這部電腦上的全部進度和分數？',[{t:'取消'},{t:'清除',go:true,fn:()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();}}]));
 $('#btnTeacher').addEventListener('click',()=>{const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h3 style="margin-top:0">老師模式</h3><div class="row"><input type="text" id="pin" placeholder="PIN" style="flex:1"><button class="btn go" id="pinGo">進入</button><button class="btn" id="pinX">關閉</button></div><div id="tpanel"></div></div>`;document.body.appendChild(m);
   $('#pinX',m).addEventListener('click',()=>m.remove());
   $('#pinGo',m).addEventListener('click',()=>{if($('#pin',m).value!==PIN){$('#tpanel',m).innerHTML='<p class="fb bad">PIN 不正確。</p>';return;}
     const p=$('#tpanel',m);
-    const preds=[['c1_a','C A / B'],['c2_a','B 單數 / 完'],['c3_a','C C（次序錯）'],['c4_a','A False / True / False'],['c4_b','A 優惠']];
-    const exs=[['練習 1','score >= 50'],['練習 2','else:'],['練習 3','elif'],['練習 4','and、not']];
+    const preds=[['c1_a','B 今天氣溫 31'],['c2_a','B 合格'],['c3_a','B False / True / False'],['c3_b','B 返學'],['c4_a','C 成人票']];
+    const exs=[['練習 1','if score >= 50: 加冒號，print("合格") 縮排'],['練習 2','if、elif、else'],['練習 3','and'],['練習 4','if windy: 縮排 4 格，print("小心") 縮排 8 格']];
     p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${KEYS[c.answer]} ${esc(c.options[c.answer])}</li>`).join('')}</ul>
     <h3>核對驗證碼</h3><p class="small">貼上報告底部的「資料行」。</p><textarea id="vline" rows="2"></textarea><div class="row"><button class="btn go" id="vgo">核對</button><span id="vfb" class="small"></span></div>
     <h3>跳到任何一章（會在報告標示）</h3><div class="row">${SECS.map((s,i)=>`<button class="btn" data-j="${i}">${i}</button>`).join('')}</div>`;

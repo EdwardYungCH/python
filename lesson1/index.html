@@ -481,7 +481,7 @@ function varsOf(mod){
 const THONNYS=[];function refreshFilenames(){THONNYS.forEach(t=>t());}
 function makeThonny(host,cfg){
   // cfg:{id,code,label,placeholder,compact,filename,onRun}
-  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L02_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
+  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L01_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
   const wrap=document.createElement('div');wrap.className='th'+(full?' full':' compact');
   wrap.innerHTML=`${full?`<div class="ttl"><span class="ic"></span><span class="fn">${esc(fn)}</span><span>— Thonny</span><span class="st"></span></div>
   <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Run</span><span>Tools</span><span>Help</span></div>`:''}
@@ -567,7 +567,7 @@ function makeExercise(host,cfg,onDone){
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;rec.code=code;rec.tries++;
     if(code.includes('____')){box.insertAdjacentHTML('beforeend','');fb.innerHTML='<span class="badge off">還有 ____ 未填</span>';S.ex[cfg.ch]=rec;save();return;}
     const res=await runSilent(code,cfg.inputs||[]);let ok,msg;
-    if(cfg.check){const c=cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
+    if(cfg.check){const c=await cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
     if(cfg.inputs)r.showSilent(res,cfg.inputs);else await r.run();
     if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{fb.innerHTML=`<span class="badge off">${esc(msg)}</span>`;if(rec.tries>=2)pushHint();}
     S.ex[cfg.ch]=rec;save();refreshScore();if(ok&&onDone)onDone();});
@@ -638,7 +638,7 @@ TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div')
   if(rec.ok){fbEl.innerHTML=`<span class="badge">✓ ${rec.score} 分</span>`;r.ta.readOnly=true;}else fbEl.innerHTML='<span class="badge off">未完成</span>';
   $('[data-h]',help).addEventListener('click',()=>{if(hi<t.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(t.hints[hi])}</div>`;hi++;}else $('[data-h]',help).disabled=true;});
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;if(!code.trim()){fb.innerHTML='<span class="badge off">先貼上程式</span>';return;}rec.code=code;
-    const res=await runSilent(code,t.inputs||[]);const c=t.check(code,res);
+    const res=await runSilent(code,t.inputs||[]);const c=await t.check(code,res);
     r.showSilent(res,t.inputs||[]);
     if(c.ok){rec.ok=true;rec.score=t.pts;fbEl.innerHTML=`<span class="badge">✓ ${t.pts} 分</span>`;fb.innerHTML=`<span class="badge">${esc(c.msg)}</span>`;r.ta.readOnly=true;}else fb.innerHTML=`<span class="badge off">${esc(c.msg)}</span>`;
     S.tiers[t.id]=rec;save();refreshScore();if(S.tiers.t1&&S.tiers.t1.ok)advance(6);});
