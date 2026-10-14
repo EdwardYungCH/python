@@ -1,0 +1,801 @@
+<title>迷你專題及選科導航</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+/* 版面：教科書式。頂部固定進度列；主區一次只顯示一章；章內以左側直線串起「學 → 試 → 練」；底部固定「上一章／下一章」。 */
+:root{
+  --paper:#ffffff; --ground:#f3f5f8; --ink:#1c2733; --ink-2:#4a5664; --ink-3:#7b8794; --rule:#d9dfe6;
+  --blue:#2f6fde; --blue-ink:#1f4fa8; --blue-tint:#e8f0fd; --blue-fg:#ffffff;
+  --yellow:#ffd43b; --yellow-tint:#fff6cc; --yellow-ink:#6b5300;
+  --green:#1f8f5a; --green-tint:#e3f4ea; --red:#c43d3d; --red-tint:#fbe7e7;
+  --code-bg:#22272e; --code-fg:#e6edf3; --code-dim:#8b949e; --code-prompt:#79c0ff;
+  --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-head:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,monospace;
+  --topbar:64px; --botbar:68px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#1b2028; --ground:#12161c; --ink:#e9edf2; --ink-2:#b4bcc7; --ink-3:#8793a1; --rule:#2d3540;
+  --blue:#6b9cff; --blue-ink:#9dbcff; --blue-tint:#1d2a44; --blue-fg:#0d1526;
+  --yellow:#ffd43b; --yellow-tint:#3a3214; --yellow-ink:#ffe68a;
+  --green:#4fcf8d; --green-tint:#17352a; --red:#ff8a8a; --red-tint:#45252a;
+  --code-bg:#0d1117; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#1b2028; --ground:#12161c; --ink:#e9edf2; --ink-2:#b4bcc7; --ink-3:#8793a1; --rule:#2d3540;
+  --blue:#6b9cff; --blue-ink:#9dbcff; --blue-tint:#1d2a44; --blue-fg:#0d1526;
+  --yellow:#ffd43b; --yellow-tint:#3a3214; --yellow-ink:#ffe68a;
+  --green:#4fcf8d; --green-tint:#17352a; --red:#ff8a8a; --red-tint:#45252a;
+  --code-bg:#0d1117; color-scheme:dark}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.75;margin:0}
+h1,h2,h3{font-family:var(--font-head);font-weight:700;line-height:1.3;margin:0;text-wrap:balance}
+h1{font-size:1.35rem}
+h2{font-size:1.65rem;font-weight:900}
+h3{font-size:1.1rem;margin:0 0 6px}
+p{margin:8px 0}
+a{color:var(--blue-ink)}
+code{font-family:var(--font-mono);background:color-mix(in srgb,var(--ink) 8%,transparent);padding:1px 6px;border-radius:4px;font-size:.92em}
+pre{margin:0;font-family:var(--font-mono)}
+pre.ex{background:var(--code-bg);color:var(--code-fg);padding:12px 16px;border-radius:8px;font-size:.95rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin:10px 0;overflow-x:auto}
+pre.ex .cm{color:var(--code-dim)}
+/* 頂部 */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.topbar .in{max-width:900px;margin:0 auto;padding:8px 16px 6px;display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:center}
+.topbar .in>div:first-child{grid-column:1;grid-row:1;min-width:0}
+.topbar .lesson{font-size:.8rem;color:var(--ink-3)}
+.topbar .score{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:.9rem;grid-column:2;grid-row:1;align-self:center;text-align:right;white-space:nowrap}
+.topbar .score b{font-size:1.5rem;color:var(--ink);font-family:var(--font-head)}
+.steps{display:flex;gap:4px;margin-top:4px;grid-column:1/-1;grid-row:2}
+.steps button{flex:1;height:30px;border:0;background:transparent;cursor:pointer;padding:0;position:relative;font:inherit;color:var(--ink-3);font-size:.72rem;display:flex;flex-direction:column;gap:3px;align-items:stretch}
+.steps button span.bar{display:block;height:5px;border-radius:3px;background:var(--rule)}
+.steps button.done span.bar{background:var(--green)}
+.steps button.now span.bar{background:var(--blue)}
+.steps button.now{color:var(--blue-ink);font-weight:700}
+.steps button:disabled{cursor:not-allowed}
+.steps button span.lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.steps button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;border-radius:4px}
+/* 主區 */
+main{max-width:900px;margin:0 auto;padding-block:22px calc(var(--botbar) + 30px);padding-inline:16px}
+section.card{display:none;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:26px 28px 22px}
+section.card.current{display:block}
+@media (max-width:600px){section.card{padding:20px 14px}h1{font-size:1.1rem}h2{font-size:1.4rem}.topbar .lesson{font-size:.72rem}.steps button{height:24px}.steps button span.lbl{display:none}.steps button.now span.lbl{display:block}.step{padding-left:42px}.step .mark{width:30px;height:30px;font-size:.95rem}.step::before{left:14px;top:34px}}
+.card header{margin-bottom:14px}
+.card .chapter{font-size:.85rem;color:var(--blue-ink);font-weight:700;letter-spacing:.02em}
+.card .goal{margin:12px 0 0;padding:12px 16px;background:var(--ground);border-radius:8px;font-size:.95rem}
+.card .goal b{display:block;margin-bottom:2px}
+.card .goal ul{margin:0;padding-left:1.3em}
+/* 學 → 試 → 練 三步 */
+.step{position:relative;padding-left:52px;margin-top:26px}
+.step::before{content:"";position:absolute;left:17px;top:38px;bottom:-26px;width:2px;background:var(--rule)}
+.step:last-child::before{display:none}
+.step .mark{position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:900;font-size:1.05rem;color:#fff;background:var(--ink-2)}
+.step.learn .mark{background:var(--ink-2)}
+.step.try .mark{background:var(--yellow);color:var(--yellow-ink)}
+.step.ex .mark{background:var(--blue);color:var(--blue-fg)}
+.step.make .mark{background:var(--green)}
+.step .lead{font-weight:700;margin:4px 0 8px;font-size:1.05rem}
+.step .lead small{font-weight:400;color:var(--ink-3);margin-left:8px;font-size:.85rem}
+.key{border-left:4px solid var(--yellow);background:var(--yellow-tint);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.tip{border:1px solid var(--rule);background:var(--ground);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+.steps-list{padding-left:1.4em;margin:8px 0}
+.steps-list li{margin:6px 0}
+figure{margin:14px 0}
+figure svg{width:100%;height:auto;display:block;max-width:560px}
+figcaption{font-size:.85rem;color:var(--ink-3);margin-top:4px}
+/* 控制 */
+.btn{font:inherit;font-weight:700;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:8px;padding:9px 16px;min-height:44px;cursor:pointer}
+.btn.go{background:var(--blue);color:var(--blue-fg);border-color:var(--blue)}
+.btn.run{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.quiet{border-color:transparent;color:var(--ink-2);background:transparent;font-weight:500;text-decoration:underline;text-underline-offset:3px;min-height:36px;padding:4px 8px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:44px}
+textarea{width:100%}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--ink-2);flex:1 1 140px;min-width:0}
+.small{font-size:.88rem;color:var(--ink-3)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;background:var(--green-tint);color:var(--green);font-weight:700;font-size:.85rem}
+.badge.off{background:var(--ground);color:var(--ink-3)}
+.fb{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.95rem}
+.fb.ok{background:var(--green-tint);color:var(--green)}
+.fb.bad{background:var(--red-tint);color:var(--red)}
+.fb.neutral{background:var(--ground);color:var(--ink-2)}
+/* Thonny 模擬器（光面，像真 Thonny） */
+.th{border:1px solid #b9c2cc;border-radius:8px;overflow:hidden;margin:10px 0;min-width:0;background:#fff;color:#1c2733;font-size:.95rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.th .ttl{display:flex;align-items:center;gap:8px;background:#e9edf2;padding:6px 10px;font-size:.8rem;color:#4a5664;border-bottom:1px solid #cfd6de}
+.th .ttl .ic{width:14px;height:14px;border-radius:3px;background:linear-gradient(135deg,#3572a5 50%,#ffd43b 50%)}
+.th .ttl .fn{font-weight:700;color:#1c2733}
+.th .ttl .st{margin-left:auto;color:#7b8794}
+.th .menu{display:flex;gap:14px;padding:4px 10px;font-size:.8rem;color:#4a5664;background:#f6f8fa;border-bottom:1px solid #e1e6ec}
+.th .tools{display:flex;gap:6px;align-items:center;padding:6px 10px;background:#f6f8fa;border-bottom:1px solid #cfd6de}
+.th .tools button{font:inherit;border:1px solid transparent;background:transparent;border-radius:5px;min-height:34px;min-width:34px;padding:4px 8px;cursor:pointer;color:#4a5664;font-size:.85rem;display:inline-flex;align-items:center;gap:6px}
+.th .tools button:hover{background:#e9edf2;border-color:#cfd6de}
+.th .tools button:disabled{opacity:.4;cursor:default}
+.th .tools button.run{background:#2ea043;color:#fff;border-color:#2ea043;font-weight:700;padding:4px 14px}
+.th .tools button.run:hover{background:#278f3b}
+.th .tools button.run:focus-visible{outline:3px solid var(--yellow)}
+.th .tools .sp{flex:1}
+.th .tools .lbl{font-size:.78rem;color:#7b8794;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.th .tab{display:inline-block;padding:4px 14px;font-size:.8rem;background:#fff;border:1px solid #cfd6de;border-bottom:0;border-radius:6px 6px 0 0;margin:6px 0 0 10px;color:#1c2733}
+.th .ed{display:flex;background:#fff;border-top:1px solid #cfd6de}
+.th .gut{flex:none;width:40px;padding:10px 6px 10px 0;text-align:right;color:#9aa5b1;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;background:#f6f8fa;border-right:1px solid #e1e6ec;user-select:none;overflow:hidden;white-space:pre}
+.th textarea.code{display:block;flex:1;min-width:0;background:#fff;color:#1c2733;border:0;border-radius:0;padding:10px 12px;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;resize:vertical;min-height:84px;tab-size:4;white-space:pre;overflow:auto}
+.th textarea.code::placeholder{color:#9aa5b1}
+.th .panes{display:grid;grid-template-columns:1fr;border-top:1px solid #cfd6de}
+.th.full .panes.hasvars{grid-template-columns:1fr 220px}
+@media (max-width:700px){.th.full .panes.hasvars{grid-template-columns:1fr}}
+.th .pane{min-width:0}
+.th .pane .ph{font-size:.75rem;color:#4a5664;background:#f6f8fa;padding:3px 10px;border-bottom:1px solid #e1e6ec;display:flex;gap:8px;align-items:center}
+.th .pane .ph .x{margin-left:auto;color:#9aa5b1}
+.th .shell{padding:8px 12px;font-family:var(--font-mono);font-size:.93rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;min-height:60px;max-height:320px;overflow:auto;background:#fff}
+.th .shell .run{color:#8250df}
+.th .shell .err{color:#c62828}
+.th .shell .pr{color:#1c2733}
+.th .shell .inp{color:#1a56c4}
+.th .shell .pin{display:inline-flex;gap:6px;align-items:center}
+.th .shell .pin input{min-width:120px;background:#fff8d6;color:#1a56c4;border:0;border-bottom:1px solid #1a56c4;font-family:var(--font-mono);font-size:.93rem;padding:0 4px;min-height:28px}
+.th .vars{border-left:1px solid #e1e6ec}
+@media (max-width:700px){.th .vars{border-left:0;border-top:1px solid #e1e6ec}}
+.th .vars table{font-size:.85rem;font-family:var(--font-mono)}
+.th .vars td,.th .vars th{border:0;border-bottom:1px solid #eef1f4;padding:3px 10px;text-align:left}
+.th .vars .none{padding:8px 10px;font-size:.8rem;color:#7b8794;font-family:var(--font-body)}
+.th .assist{border-top:1px solid #f0c36d;background:#fff8e6;padding:8px 12px;font-size:.9rem;line-height:1.55;color:#5c4a00;display:none}
+.th .assist.show{display:block}
+.th .assist b{color:#3b3000}
+.th .assist .at{font-size:.75rem;color:#8a7a2e;display:block;margin-bottom:2px}
+.th .toast{position:absolute;right:10px;top:40px;background:#1c2733;color:#fff;font-size:.8rem;padding:4px 10px;border-radius:6px;opacity:0;transition:opacity .2s}
+.th .toast.show{opacity:1}
+.th{position:relative}
+.th .dbgview{display:none;flex:1;min-width:0;margin:0;padding:10px 0;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;background:#fff;color:#1c2733;white-space:pre;overflow:auto}
+.th .dbgview .ln{display:block;padding:0 12px}
+.th .dbgview .ln.cur{background:#fff3b0;box-shadow:inset 4px 0 0 #e0a800}
+.th.debugging textarea.code,.th.debugging .gut{display:none}.th.debugging .dbgview{display:block}
+.th [hidden],[hidden]{display:none!important}
+.th .tools button.step{background:#2f6fde;color:#fff;border-color:#2f6fde;font-weight:700}
+.th .dbgstat{font-size:.78rem;color:#8a5a00;background:#fff8e6;padding:3px 10px;border-top:1px solid #f0c36d}
+.th .vars td.chg{background:#fff3b0}
+.th .tpane{border-top:1px solid #cfd6de;background:#fff}
+.th .tpane .tdiv{display:block;padding:8px;min-height:120px;background:#fafbfc;overflow-x:auto}
+.th .tpane canvas{margin-left:auto!important;margin-right:auto!important}
+.th .tpane canvas:last-child{border:1px solid #e1e6ec;background:#fff}
+/* 深色模式仍保持 Thonny 淺色，像真程式視窗 */
+/* 試一試：桌面左右兩欄 */
+.predict{margin:6px 0 0}
+.predict .q{font-weight:500;margin:0 0 8px}
+.predict .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media (max-width:700px){.predict .grid{grid-template-columns:1fr}}
+.predict .grid>*{min-width:0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--rule);border-radius:8px;padding:8px 12px;cursor:pointer;background:var(--paper);font:inherit;text-align:left;min-height:48px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+.opt .k{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--rule);font-size:.75rem;display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin-top:3px}
+.opt pre{white-space:pre-wrap;font-size:.92rem;line-height:1.5}
+.opt.sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+.opt.sel .k{background:var(--blue);color:var(--blue-fg);border-color:var(--blue)}
+.opt.right{border-color:var(--green);background:var(--green-tint)}
+.opt.right .k{background:var(--green);color:#fff;border-color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-tint)}
+.opt:disabled{cursor:default}
+/* 練習／作品 */
+.exbox{margin-top:6px}
+.exbox .want{margin:6px 0}
+.exbox .want .lab{font-size:.85rem;color:var(--ink-3)}
+details.help{margin:8px 0 0;border:1px dashed var(--rule);border-radius:8px;padding:0 12px}
+details.help summary{cursor:pointer;color:var(--ink-2);font-size:.92rem;padding:8px 0;list-style:none;display:flex;gap:8px;align-items:center}
+details.help summary::before{content:"?";width:20px;height:20px;border-radius:50%;background:var(--ground);border:1px solid var(--rule);font-size:.8rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+details.help[open] summary{border-bottom:1px dashed var(--rule)}
+details.help .hb{padding:8px 0 10px}
+details.help .hb .fb{margin-top:6px}
+details.help .row{margin:8px 0 0}
+.tier{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin:12px 0;background:var(--paper)}
+.tier .th{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.pill{font-size:.78rem;padding:3px 12px;border-radius:999px;background:var(--blue);color:var(--blue-fg);font-weight:700}
+.pill.g{background:var(--green);color:#fff}.pill.y{background:var(--yellow);color:var(--yellow-ink)}
+.tier .th .pts{color:var(--ink-3);font-size:.88rem}
+.tier .th .st{margin-left:auto}
+.summary{margin-top:28px;padding:14px 16px;border-radius:8px;background:var(--blue-tint);color:var(--ink)}
+.summary b{font-family:var(--font-head)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+.tablewrap{overflow-x:auto;margin:10px 0}
+th,td{border:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--ground);font-weight:700}
+.report{border:1px solid var(--rule);border-radius:10px;padding:14px;background:var(--ground)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .box{background:var(--paper);color:var(--ink);border-radius:12px;padding:20px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+/* 底部導航 */
+.botbar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--paper);border-top:1px solid var(--rule);padding-bottom:env(safe-area-inset-bottom,0px)}
+.botbar .in{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center;min-height:var(--botbar)}
+.botbar .status{flex:1;min-width:0;font-size:.88rem;color:var(--ink-2);line-height:1.4}
+.botbar .status b{color:var(--ink)}
+.botbar .btn{white-space:nowrap}
+.foot{text-align:center;font-size:.8rem;color:var(--ink-3);margin-top:26px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center}
+@media (prefers-reduced-motion:no-preference){section.card.current{animation:in .25s ease-out}}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
+</style>
+
+<div class="topbar"><div class="in">
+  <div><div class="lesson">中三 Python 編程 · 第 10 堂</div><h1>迷你專題及選科導航</h1></div>
+  <div class="score">分數 <b id="scoreNow">0</b><span class="small"> / 100</span></div>
+  <div class="steps" id="steps" role="tablist" aria-label="章節"></div>
+</div></div>
+
+<main id="main">
+
+<!-- 0 登記 -->
+<section class="card" id="s0" data-title="登記" data-short="登記">
+  <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
+  <p>這一堂先定測試數據，再看 ICT 高中讀甚麼、開一次真 Thonny、做自我檢視，然後用 55 分鐘完成專題，最後小測和互評。所有程式都在網頁內的 Thonny 寫和執行，不用另外開軟件。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
+  <div class="row">
+    <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
+    <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
+    <label class="f">學號<input type="text" id="stNo" inputmode="numeric" autocomplete="off"></label>
+  </div>
+  <div class="row"><button class="btn go" id="btnStart">開始第 1 章</button><span class="small" id="pyStatus">正在載入 Python 執行器…</span></div>
+</section>
+
+<!-- 1 規劃 -->
+<section class="card" id="s1" data-title="專題規劃與測試數據" data-short="1 規劃">
+  <header><div class="chapter">第 1 章</div><h2>專題規劃與測試數據</h2>
+    <div class="goal"><b>這一堂你會：</b><ul><li>按上一堂的規劃表完成一個自己的程式</li><li>先定好測試數據，做完用它檢查</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">先定測試，後寫程式</div>
+    <p>上一堂你寫的專題規劃表：</p>
+    <pre class="ex" id="planBox">（找不到上一堂的規劃表。如果你在另一部電腦做第 9 堂，請把規劃表重新寫在下面的測試數據旁。）</pre>
+    <p>專題要求：<b>有 input、有 if、有迴圈</b>，最少 12 行；可選題目：問答遊戲、小食部收銀機、文字冒險、海龜藝術，或自訂。進階要用到<b>列表或函數</b>。</p>
+    <div class="key">程式做好後，網頁會用你下面寫的測試數據自動執行一次；所以輸入要和程式問的次序一樣，每行一個。預期輸出寫一個一定會出現的字或數。</div>
+  </div>
+  <div class="step make"><span class="mark">做</span>
+    <div class="lead">寫兩組測試數據<small>5 分</small></div>
+    <div class="row">
+      <label class="f">第 1 組：正常情況的輸入（每行一個）<textarea id="t1in" rows="4" placeholder="例如：&#10;10&#10;20&#10;100"></textarea></label>
+      <label class="f">第 1 組：預期輸出會出現的字或數<input type="text" id="t1out" placeholder="例如：找續 70"></label>
+    </div>
+    <div class="row">
+      <label class="f">第 2 組：邊界或錯誤情況的輸入（每行一個）<textarea id="t2in" rows="4" placeholder="例如：&#10;10&#10;20&#10;5"></textarea></label>
+      <label class="f">第 2 組：預期輸出會出現的字或數<input type="text" id="t2out" placeholder="例如：不夠錢"></label>
+    </div>
+    <div class="row"><button class="btn go" id="btnPlan">儲存測試數據</button><span class="small" id="planFb"></span></div>
+  </div>
+  <div id="c1"></div>
+  <div class="summary"><b>小結</b>　測試數據先定好：一組正常、一組邊界或錯誤，各寫明預期輸出。</div>
+</section>
+
+<!-- 2 ICT -->
+<section class="card" id="s2" data-title="ICT 高中讀甚麼" data-short="2 ICT">
+  <header><div class="chapter">第 2 章</div><h2>ICT 高中讀甚麼？</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>知道高中「資訊及通訊科技」科不只是編程</li><li>知道必修、選修和校本評核的比重</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">編程佔三分之一，其餘是理論和應用</div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>部分</th><th>內容</th><th>時數</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="5"><b>必修</b><br>144 小時</td><td>資訊處理：資訊系統、數據表示（二進制、字符、圖像）、試算表、數據庫</td><td>37</td></tr>
+        <tr><td>電腦系統基礎：硬件、記憶體、操作系統</td><td>20</td></tr>
+        <tr><td>互聯網及其應用：網絡、IP、網頁、網上保安</td><td>31</td></tr>
+        <tr><td><b>計算思維與程式編寫</b>：你這十堂學的東西，再加流程圖、偽代碼、追蹤表</td><td><b>48</b></td></tr>
+        <tr><td>資訊及通訊科技對社會的影響：科技創新、健康與道德、知識產權</td><td>8</td></tr>
+        <tr><td><b>選修</b><br>76 小時</td><td>三選二：數據庫（SQL）／網絡應用程式開發（HTML、CSS、JavaScript、PHP）／算法與程式編寫（Python 進階：排序、搜尋、檔案）</td><td>76</td></tr>
+        <tr><td><b>校本評核</b><br>30 小時</td><td>中五至中六做一個真實的小型系統：設計、實施、測試、評估</td><td>30</td></tr>
+      </tbody>
+    </table></div>
+    <p>公開考試：卷一考必修（55%）、卷二考選修（25%）、校本評核（20%）。程式語言是 <b>Python</b>，和你這十堂一樣。</p>
+    <p>出路：大學的計算機科學、資訊工程、數據科學、人工智能、資訊系統、數碼媒體等；也是很多理科、商科課程的加分科目。</p>
+    <div class="key">適合讀 ICT 的人：喜歡動手解難、不怕程式出錯慢慢找；也要不介意讀理論（網絡、硬件、數據表示）。</div>
+  </div>
+  <div id="c2"></div>
+  <div class="summary"><b>小結</b>　必修 144 小時（編程 48）、選修三選二 76 小時、校本評核 30 小時；卷一 55%、卷二 25%、校本評核 20%。</div>
+</section>
+
+<!-- 3 真 Thonny -->
+<section class="card" id="s3" data-title="真 Thonny 體驗" data-short="3 Thonny">
+  <header><div class="chapter">第 3 章</div><h2>開一次真正的 Thonny</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>在電腦室開啟真正的 Thonny，貼上你的程式執行</li><li>知道真 Thonny 和網頁模擬器的分別</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">中四用的就是它</div>
+    <ol class="steps-list">
+      <li>在電腦室的電腦開啟 <b>Thonny</b>（開始選單搜尋 Thonny）。</li>
+      <li>把你在這個網頁寫好的專題程式全選複製，貼到 Thonny 上面的編輯器。</li>
+      <li>按綠色 ▶（或 F5）。第一次會叫你儲存：檔名用 <code>L10_你的名字.py</code>，存到老師指定的資料夾。</li>
+      <li>在 Shell 輸入你的測試數據，看結果是否一樣。</li>
+      <li>試試 Thonny 的 <b>View → Variables</b>，和 <b>Debug</b>（蟲仔圖示）→ <b>Step over</b>，和這裏的逐步執行是同一件事。</li>
+    </ol>
+    <p>真 Thonny 的分別：程式存成 <code>.py</code> 檔案在電腦裏；錯誤訊息是英文（沒有 Assistant 的中文）；可以安裝其他模組；沒有執行時間限制，無限迴圈要按紅色「停止」。</p>
+  </div>
+  <div class="step make"><span class="mark">做</span>
+    <div class="lead">完成後剔選<small>8 分</small></div>
+    <div id="thonnyChecks"></div>
+    <label class="f">真 Thonny 和這裏的模擬器，你發現有甚麼不同？（最少 20 字）<textarea id="thonnyDiff" rows="3"></textarea></label>
+    <div class="row"><button class="btn go" id="btnThonny">提交</button><span class="small" id="thonnyFb"></span></div>
+    <p class="small">如果今天不能用電腦室，老師可以用 PIN 免除這一章。</p>
+  </div>
+  <div id="c3"></div>
+  <div class="summary"><b>小結</b>　真 Thonny 存 .py 檔、英文錯誤訊息、要自己按停止；其餘和這裏一樣。</div>
+</section>
+
+<!-- 4 自我檢視 -->
+<section class="card" id="s4" data-title="我適合讀 ICT 嗎？" data-short="4 檢視">
+  <header><div class="chapter">第 4 章</div><h2>我適合讀 ICT 嗎？</h2>
+    <div class="goal"><b>這一章：</b><ul><li>回看這十堂的經歷，誠實評一評自己</li><li>結果只供你和老師參考，不設門檻</li></ul></div></header>
+  <div class="step make"><span class="mark">做</span>
+    <div class="lead">六條問題，每條 1 至 4 分<small>15 分（完成即得）</small></div>
+    <div id="selfCheck"></div>
+    <div class="row"><button class="btn go" id="btnSelf">看結果</button><span class="small" id="selfFb"></span></div>
+    <div id="selfResult"></div>
+    <div class="key">堅持和興趣比打字快慢重要。分數不高但享受解難的同學，同樣值得考慮 ICT。</div>
+  </div>
+  <div id="c4"></div>
+  <div class="summary"><b>小結</b>　選科看三樣：喜不喜歡解難、介不介意讀理論、有沒有自己動手的衝動。</div>
+</section>
+
+<!-- 5 作品 -->
+<section class="card" id="s5" data-title="作品：迷你專題" data-short="5 作品">
+  <header><div class="chapter">作品</div><h2>迷你專題</h2>
+    <div class="goal"><b>約 55 分鐘。</b>在下面的 Thonny 寫你的專題，寫幾行就按 ▶ 試一次；卡住可用 🐞 逐步執行。做好按「檢查」，網頁會用你第 1 章寫的測試數據執行。進階和挑戰把同一個程式貼過去再檢查。</div></header>
+  <div id="tiers"></div>
+</section>
+
+<!-- 6 小測 -->
+<section class="card" id="s6" data-title="小測" data-short="6 小測">
+  <header><div class="chapter">小測</div><h2>靠估，不可以執行</h2>
+    <div class="goal">三題，每題只可作答一次；最後寫一句自評。</div></header>
+  <div id="quiz"></div>
+  <div class="step make"><span class="mark">評</span>
+    <div class="lead">互評紀錄<small>5 分</small></div>
+    <p class="small">和一位同學交換試玩對方的專題。寫下：同學的名字、你給對方的一個建議、對方給你的一個建議（最少 30 字）。</p>
+    <textarea id="reflect" rows="3" placeholder="例如：同學 陳大文 試我的程式時輸入了負數，程式出錯，我加了 if 檢查……"></textarea>
+    <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
+  </div>
+</section>
+
+<!-- 7 報告 -->
+<section class="card" id="s7" data-title="成績報告" data-short="7 報告">
+  <header><div class="chapter">完成</div><h2>成績報告</h2></header>
+  <div class="report" id="reportBox"></div>
+  <div class="row">
+    <button class="btn go" id="btnSave">儲存報告檔案</button>
+    <button class="btn" id="btnCopy">複製報告文字</button>
+    <span class="small" id="saveFb"></span>
+  </div>
+  <p class="small">把報告檔案交給老師。報告有驗證碼，改動內容會令驗證碼失效。</p>
+  <p class="small">課後重溫（英文）：<a href="https://www.edb.gov.hk/tc/curriculum-development/kla/technology-edu/curriculum-doc/index.html" target="_blank" rel="noopener">教育局：資訊及通訊科技課程及評估指引</a>、<a href="https://www.w3schools.com/python/" target="_blank" rel="noopener">W3Schools Python Tutorial（課後自學）</a></p>
+</section>
+
+<div class="foot">
+  <span>中三 Python 編程 · 第 10 堂 · 版本 1.0</span>
+  <button class="btn quiet" id="btnTeacher">老師</button>
+  <button class="btn quiet" id="btnReset">清除進度</button>
+</div>
+</main>
+
+<div class="botbar"><div class="in">
+  <button class="btn" id="btnPrev">上一章</button>
+  <div class="status" id="navStatus"></div>
+  <button class="btn go" id="btnNext">下一章</button>
+</div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
+<script>
+(function(){
+'use strict';
+const KEY='py3:L10v2', PIN='py2026', SIGN='py3-l10-sign-2026', APP='PY3-L10';
+const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- 狀態 ---------- */
+function fresh(){return {v:2,stu:null,stage:0,view:0,pred:{},ex:{},tiers:{},quiz:{a:{},reflect:'',reflectScore:0,done:false},finished:null,teacherUsed:false};}
+let S=fresh();
+function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.v===2)S=Object.assign(fresh(),o);}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+load();
+
+/* ---------- 分數：試一試 5×4=20、練習 4×5=20、作品 40、小測 20 ---------- */
+const PRED_PTS=4, EX_PTS=5;
+function chapterScore(ch){let s=0;Object.entries(S.pred).forEach(([k,v])=>{if(k.startsWith(ch+'_')&&v.ok)s+=PRED_PTS;});const e=S.ex[ch];if(e&&e.ok)s+=e.score;return s;}
+function scores(){
+  const c={1:chapterScore('c1'),2:chapterScore('c2'),3:chapterScore('c3'),4:chapterScore('c4')};
+  const tiers=Object.values(S.tiers).reduce((a,b)=>a+(b.score||0),0);
+  const quiz=Object.values(S.quiz.a).filter(x=>x&&x.ok).length*5+(S.quiz.reflectScore||0);
+  return {c,tiers,quiz,total:c[1]+c[2]+c[3]+c[4]+tiers+quiz};
+}
+const CH_MAX={1:5,2:12,3:8,4:15};
+function refreshScore(){$('#scoreNow').textContent=scores().total;renderNav();}
+
+/* ---------- 章節顯示：一次一章 ---------- */
+const SECS=['s0','s1','s2','s3','s4','s5','s6','s7'];
+function chapterComplete(i){
+  if(i===0)return !!S.stu;
+  if(i>=1&&i<=4){const ch='c'+i;const preds=Object.keys(PRED_IDS[ch]||{});return PRED_IDS[ch].every(id=>S.pred[id])&&S.ex[ch]&&S.ex[ch].ok;}
+  if(i===5)return !!(S.tiers.t1&&S.tiers.t1.ok);
+  if(i===6)return S.quiz.done;
+  return false;
+}
+function remaining(i){
+  if(i>=1&&i<=4){const ch='c'+i;const p=PRED_IDS[ch].filter(id=>!S.pred[id]).length;const e=S.ex[ch]&&S.ex[ch].ok?0:1;const parts=[];if(p)parts.push(`試一試 ${p} 題`);if(e)parts.push('練習');return parts.join('、');}
+  if(i===5)return S.tiers.t1&&S.tiers.t1.ok?'':'必做層';
+  if(i===6)return S.quiz.done?'':'提交小測';
+  return '';
+}
+function show(i){S.view=i;save();SECS.forEach((id,k)=>$('#'+id).classList.toggle('current',k===i));window.scrollTo({top:0,behavior:'instant'});renderNav();
+  const h=$('#'+SECS[i]+' h2');if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true});}}
+function renderNav(){
+  const st=$('#steps');st.innerHTML=SECS.map((id,i)=>{const done=i<S.stage;const now=i===S.view;const can=i<=S.stage;return `<button role="tab" aria-selected="${now}" data-i="${i}" class="${done?'done':''} ${now?'now':''}" ${can?'':'disabled'} title="${esc($('#'+id).dataset.title)}"><span class="bar"></span><span class="lbl">${esc($('#'+id).dataset.short)}</span></button>`;}).join('');
+  $$('button',st).forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+  const i=S.view;const prev=$('#btnPrev'),next=$('#btnNext'),status=$('#navStatus');
+  prev.disabled=i===0;
+  const canNext=i<7&&(i<S.stage||chapterComplete(i));
+  next.disabled=!canNext;next.textContent=i>=7?'已完成':i===6?'看成績報告':'下一章';
+  const sc=scores();
+  if(i===0)status.innerHTML=S.stu?`<b>${esc(S.stu.name)}</b>，已登記`:'填好三格再按「開始第 1 章」';
+  else if(i<=4){const r=remaining(i);status.innerHTML=r?`這章還有：<b>${esc(r)}</b>`:`第 ${i} 章完成，<b>${sc.c[i]} / ${CH_MAX[i]} 分</b>`;}
+  else if(i===5){const r=remaining(5);status.innerHTML=r?`完成<b>必做</b>才可去小測；進階和挑戰隨時可補做`:`作品 <b>${sc.tiers} / 40 分</b>`;}
+  else if(i===6)status.innerHTML=S.quiz.done?`小測 <b>${sc.quiz} / 20 分</b>`:'三題和自評都要完成才可提交';
+  else status.innerHTML=`總分 <b>${sc.total} / 100</b>`;
+  [1,2,3,4].forEach(k=>{const el=$('#sum'+k);});
+}
+$('#btnPrev').addEventListener('click',()=>{if(S.view>0)show(S.view-1);});
+$('#btnNext').addEventListener('click',()=>{if($('#btnNext').disabled)return;advance(S.view+1);show(S.view+1);});
+function advance(to){if(S.stage<to){S.stage=to;save();}renderNav();}
+
+/* ---------- Python 執行器（Skulpt） ---------- */
+const PY={ready:typeof Sk!=='undefined'};
+function pyHint(msg,code){
+  const m=/line (\d+)/.exec(msg);const ln=m?+m[1]:0;const lines=(code||'').split('\n');const bad=ln&&lines[ln-1]||'';
+  if(/IndentationError|unexpected indent/i.test(msg)||(/SyntaxError/.test(msg)&&/^\s+\S/.test(bad)&&!/^\s+\S/.test(lines[ln-2]||'x')))return '縮排錯誤：第 '+ln+' 行開頭的空格不對。普通的 print 前面不應有空格。';
+  if(/SyntaxError/.test(msg))return '語法錯誤：檢查引號 " " 和括號 ( ) 是否成對、有沒有打錯符號、行首有沒有多餘的空格。';
+  if(/NameError/.test(msg))return 'Python 不認識這個名字：檢查大小寫（print 不是 Print）和拼寫；文字有沒有忘記加引號。';
+  if(/TypeError/.test(msg))return '類型錯誤：數字和文字不可以直接用 + 相連，可以改用逗號。';
+  return '';
+}
+let TG_N=0;
+function turtleTarget(id){
+  // 每次執行前設定海龜畫布目標；沒有指定就畫到隱藏的 div
+  let hid=document.getElementById('tg_hidden');if(!hid){hid=document.createElement('div');hid.id='tg_hidden';hid.style.cssText='position:absolute;left:-9999px;top:0;width:320px;height:240px;overflow:hidden';document.body.appendChild(hid);}
+  const el=id?document.getElementById(id):hid;if(el)el.innerHTML='';
+  Sk.TurtleGraphics={target:id||'tg_hidden',width:320,height:240};
+}
+function runPython(code,opts){
+  if(!PY.ready)return Promise.reject(new Error('NOPY'));
+  turtleTarget(opts.turtle||null);
+  Sk.configure({output:opts.out,read:(x)=>{if(Sk.builtinFiles&&Sk.builtinFiles.files[x]!==undefined)return Sk.builtinFiles.files[x];throw "File not found: '"+x+"'";},
+    __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:4000,retainGlobals:true,debugging:false});
+  return Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true));
+}
+function turtleInk(id){try{const el=document.getElementById(id||'tg_hidden');const cs=el?el.querySelectorAll('canvas'):[];let ink=0;cs.forEach(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<d.length;i+=4)if(d[i]>0)ink++;});return ink;}catch(e){return 0;}}
+async function runSilent(code,inputs){
+  const q=(inputs||[]).slice();let out='',err='',asked=0;Sk.globals={};
+  try{await runPython(code,{out:t=>{out+=t;if(out.length>50000)throw new Error('OutputLimit');},input:p=>{asked++;if(!q.length)throw new Error('NoMoreInput');const v=q.shift();out+=(p||'')+v+'\n';return Promise.resolve(v);}});}
+  catch(e){err=e.toString();if(/NoMoreInput/.test(err))err='程式問了多過 '+(inputs||[]).length+' 次輸入（測試輸入已用完）';}
+  await new Promise(r=>setTimeout(r,150));
+  return {out,err,asked,ink:turtleInk()};
+}
+function thonnyError(e,code,filename){
+  // 把 Skulpt 的錯誤改成 Thonny 的樣子
+  let msg=e.toString().replace(/ on line \d+\.?$/,'');let ln=0;
+  try{if(e.traceback&&e.traceback.length)ln=e.traceback[0].lineno;}catch(x){}
+  if(!ln){const m=/line (\d+)/.exec(e.toString());if(m)ln=+m[1];}
+  const lines=code.split('\n');const bad=ln?lines[ln-1]||'':'';
+  if(/^SyntaxError: bad input/.test(msg)&&/^\s+\S/.test(bad)&&!/^\s+\S/.test(lines[ln-2]||'x'))msg='IndentationError: unexpected indent';
+  else if(/^SyntaxError: bad token|^SyntaxError: bad input|^SyntaxError: EOF/.test(msg)){
+    const q=(bad.match(/"/g)||[]).length,sq=(bad.match(/'/g)||[]).length;
+    if(q%2||sq%2)msg='SyntaxError: unterminated string literal';
+    else if((bad.match(/\(/g)||[]).length!==(bad.match(/\)/g)||[]).length)msg="SyntaxError: '(' was never closed";
+    else msg='SyntaxError: invalid syntax';
+  }
+  if(/^TimeoutError/.test(msg)||/OutputLimit/.test(msg))msg='程式執行超過時間限制（可能是無限迴圈），已自動停止';
+  const kind=msg.split(':')[0]==='程式執行超過時間限制（可能是無限迴圈），已自動停止'?'TimeoutError':msg.split(':')[0];
+  let tb;
+  if(/SyntaxError|IndentationError/.test(kind))tb=`  File "${filename}", line ${ln}\n    ${bad.trim()}\n${msg}`;
+  else tb=`Traceback (most recent call last):\n  File "${filename}", line ${ln}, in <module>\n    ${bad.trim()}\n${msg}`;
+  return {tb,msg,kind,ln};
+}
+function assistText(err,code){
+  const k=err.kind,m=err.msg;
+  if(k==='IndentationError')return `第 ${err.ln} 行開頭多了空格。普通的一行程式要頂格寫，不可以有行首空格。`;
+  if(/unterminated string/.test(m))return `第 ${err.ln} 行的引號不成對。文字要用一對引號包住，開了 " 就要用 " 關上。`;
+  if(/never closed/.test(m))return `第 ${err.ln} 行的括號沒有關上。每個 ( 都要有一個 )。`;
+  if(k==='SyntaxError')return `第 ${err.ln} 行不符合 Python 的寫法。檢查引號、括號是否成對，有沒有打錯符號或多了字。`;
+  if(k==='NameError'){const nm=/name '([^']+)'/.exec(m);const n=nm?nm[1]:'';if(/^Print$/.test(n))return `Python 分大小寫。你打了 Print，但指令是小寫的 print。`;return `Python 不認識「${n}」。可能是打錯字、大小寫不對，或者文字忘記加引號（例如 print(你好) 應寫成 print("你好")）。`;}
+  if(k==='TypeError'&&/keyword argument/.test(m))return `括號內的一個 = 會被當成「設定」，不是比較。比較要用兩個等號 ==。`;
+  if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
+  if(k==='ZeroDivisionError')return `不可以除以 0。`;
+  if(k==='IndexError')return `索引超出範圍：索引由 0 開始，最後一個是 len(s) - 1；s[len(s)] 不存在。`;
+  if(k==='TimeoutError')return `程式停不下來（無限迴圈）。第 ${err.ln} 行附近的迴圈條件永遠成立：檢查迴圈裏有沒有改變條件用到的變量，或者有沒有 break。`;
+  if(k==='ValueError'&&/invalid literal for int/.test(m)){const v=/: '([^']*)'/.exec(m);return `int() 只可以把數字文字變成整數，但收到的是「${v?v[1]:''}」。輸入要是整數，或者先檢查輸入。`;}
+  if(k==='ValueError'&&/could not convert string to float/.test(m))return `float() 只可以把數字文字變成小數，但收到的不是數字。`;
+  return `第 ${err.ln} 行出錯：${m}。`;
+}
+function varsOf(mod){
+  const out=[];try{const d=mod&&mod.$d;if(!d)return out;
+    const entries=d.entries?Object.values(d.entries).map(e=>[e.lhs.v,e.rhs]):Object.keys(d).map(k=>[k,d[k]]);
+    for(let [k,v] of entries){if(typeof k!=='string'||k.startsWith('__'))continue;k=k.replace(/_\$rw\$$/,'');if(!v||v instanceof Sk.builtin.func||v instanceof Sk.builtin.module)continue;
+      let val;try{val=Sk.ffi.remapToJs(v);}catch(x){val=String(v);}
+      let txt;if(typeof val==='string')txt=JSON.stringify(val);else if(Array.isArray(val))txt='['+val.map(x=>typeof x==='string'?JSON.stringify(x):String(x)).join(', ')+']';else txt=String(val);
+      let ty='';try{ty=Sk.abstr.typeName(v);}catch(x){}
+      out.push({k,txt,ty});}
+  }catch(x){}
+  return out;
+}
+const THONNYS=[];function refreshFilenames(){THONNYS.forEach(t=>t());}
+function makeThonny(host,cfg){
+  // cfg:{id,code,label,placeholder,compact,filename,onRun}
+  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L10_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
+  const wrap=document.createElement('div');wrap.className='th'+(full?' full':' compact');
+  wrap.innerHTML=`${full?`<div class="ttl"><span class="ic"></span><span class="fn">${esc(fn)}</span><span>— Thonny</span><span class="st"></span></div>
+  <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Run</span><span>Tools</span><span>Help</span></div>`:''}
+  <div class="tools"><button type="button" class="run">▶ 執行</button>${full?`<button type="button" data-save title="儲存">💾 儲存</button>`:''}${cfg.debug?`<button type="button" data-dbg title="逐步執行">🐞 逐步執行</button><button type="button" class="step" data-step hidden>下一步 ▶</button><button type="button" data-stop hidden>■ 停止</button>`:''}<span class="sp"></span><span class="lbl">${esc(cfg.label||'')}</span></div>
+  ${full?`<span class="tab">${esc(fn)}</span>`:''}
+  <div class="ed"><div class="gut">1</div><textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼" placeholder="${esc(cfg.placeholder||'')}"></textarea><pre class="dbgview" aria-live="polite"></pre></div>
+  ${cfg.debug?`<div class="dbgstat" hidden></div>`:''}
+  ${cfg.turtle?`<div class="tpane"><div class="ph">海龜畫布<span class="x">×</span></div><div class="tdiv" id="tg_${cfg.id}"></div></div>`:''}
+  <div class="panes"><div class="pane"><div class="ph">Shell<span class="x">×</span></div><div class="shell" aria-live="polite"><span class="pr">&gt;&gt;&gt; </span></div><div class="assist"><span class="at">Assistant</span><span class="atxt"></span></div></div>
+  ${full?`<div class="pane vars"><div class="ph">Variables<span class="x">×</span></div><div class="vbody"><div class="none">執行後會顯示程式中的變量</div></div></div>`:''}</div>
+  <div class="toast"></div>`;
+  host.appendChild(wrap);
+  const ta=$('textarea',wrap), gut=$('.gut',wrap), shell=$('.shell',wrap), btn=$('.btn.run,button.run',wrap), assist=$('.assist',wrap), panes=$('.panes',wrap), vbody=$('.vbody',wrap), toast=$('.toast',wrap);
+  ta.value=cfg.code||'';
+  function gutter(){const n=Math.max(1,ta.value.split('\n').length);gut.textContent=Array.from({length:n},(_,i)=>i+1).join('\n');}
+  gutter();ta.addEventListener('input',gutter);ta.addEventListener('scroll',()=>{gut.scrollTop=ta.scrollTop;});
+  ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;gutter();}
+    if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveToast();}if(e.key==='F5'){e.preventDefault();run();}});
+  function saveToast(){toast.textContent='已儲存 '+fn;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400);const st=$('.ttl .st',wrap);if(st)st.textContent='已儲存';}
+  const sv=$('[data-save]',wrap);if(sv)sv.addEventListener('click',saveToast);
+  THONNYS.push(()=>{fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);});
+  // 模擬 Thonny：直接重複同一個 shell，加 %Run
+  let running=false;
+  async function run(){
+    if(running)return;
+    if(!PY.ready){shell.innerHTML='<span class="err">Python 執行器未能載入，請重新整理頁面。</span>';return;}
+    running=true;btn.disabled=true;assist.classList.remove('show');fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);
+    shell.innerHTML='';const add=(cls,t)=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=t;shell.appendChild(s);return s;};
+    add('pr','>>> ');add('run','%Run '+fn+'\n');
+    let text='',err='';
+    let cur=null;const print=t=>{text+=t;if(text.length>50000)throw new Error('OutputLimit');if(cur&&cur.parentNode===shell&&shell.lastChild===cur)cur.data+=t;else{cur=document.createTextNode(t);shell.appendChild(cur);}};
+    const ask=prompt=>new Promise(res=>{cur=null;if(prompt)add('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
+    Sk.globals={};
+    try{await runPython(ta.value,{out:print,input:ask,turtle:cfg.turtle?('tg_'+cfg.id):null});}
+    catch(e){const te=thonnyError(e,ta.value,fn);err=te.msg;add('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');}
+    add('pr','>>> ');
+    if(full&&vbody){const vs=varsOf({$d:Sk.globals||{}});if(vs.length){panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${vs.map(v=>`<tr><td>${esc(v.k)}</td><td>${esc(v.txt)}</td></tr>`).join('')}</tbody></table>`;}else{panes.classList.remove('hasvars');vbody.innerHTML='<div class="none">這個程式沒有變量</div>';}}
+    shell.scrollTop=shell.scrollHeight;
+    running=false;btn.disabled=false;
+    if(cfg.onRun)cfg.onRun({out:text,err});
+  }
+  function showSilent(res,inputs){fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);shell.innerHTML='';const add=(cls,t)=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=t;shell.appendChild(s);return s;};
+    add('pr','>>> ');add('run','%Run '+fn+'   （檢查用的測試輸入：'+inputs.join('、')+'）\n');add('',res.out);if(res.err){const te=thonnyError({toString:()=>res.err,traceback:[]},ta.value,fn);add('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');}else assist.classList.remove('show');add('pr','>>> ');
+    if(full&&vbody){const vs=varsOf({$d:Sk.globals||{}});if(vs.length){panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${vs.map(v=>`<tr><td>${esc(v.k)}</td><td>${esc(v.txt)}</td></tr>`).join('')}</tbody></table>`;}}}
+  btn.addEventListener('click',run);
+  /* ---- 逐步執行（像 Thonny 的 Debug）---- */
+  if(cfg.debug){
+    const bDbg=$('[data-dbg]',wrap),bStep=$('[data-step]',wrap),bStop=$('[data-stop]',wrap),view=$('.dbgview',wrap),stat=$('.dbgstat',wrap);
+    let susp=null,prevVars={},stepN=0;
+    const fmtV=val=>typeof val==='string'?JSON.stringify(val):Array.isArray(val)?'['+val.map(x=>typeof x==='string'?JSON.stringify(x):String(x)).join(', ')+']':String(val);
+    function snapshot(){let sp=susp,deep=null;while(sp){if(sp.$lineno)deep=sp;sp=sp.child;}const vars={};const take=d=>{if(!d)return;for(const k in d){if(k.startsWith('__'))continue;const v=d[k];if(v===undefined||v===null||v instanceof Sk.builtin.func||v instanceof Sk.builtin.module)continue;let t;try{t=fmtV(Sk.ffi.remapToJs(v));}catch(e){t=String(v);}vars[k.replace(/_\$rw\$$/,'')]=t;}};take(Sk.globals||{});if(deep&&deep.$loc&&deep.$loc!==Sk.globals)take(deep.$loc);return {line:deep?deep.$lineno:0,vars};}
+    function renderView(line){const lines=ta.value.split('\n');view.innerHTML=lines.map((l,i)=>`<span class="ln${i+1===line?' cur':''}">${String(i+1).padStart(2,' ')}  ${esc(l)}</span>`).join('');}
+    function renderVars(vars){if(!vbody)return;const ks=Object.keys(vars);if(!ks.length){panes.classList.remove('hasvars');vbody.innerHTML='<div class="none">還未有變量</div>';return;}panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${ks.map(k=>`<tr><td>${esc(k)}</td><td class="${prevVars[k]!==vars[k]?'chg':''}">${esc(vars[k])}</td></tr>`).join('')}</tbody></table>`;prevVars=Object.assign({},vars);}
+    function setMode(on){wrap.classList.toggle('debugging',on);bStep.hidden=!on;bStop.hidden=!on;bDbg.hidden=on;btn.disabled=on;stat.hidden=!on;ta.readOnly=on;}
+    function finish(msg){setMode(false);Sk.debugging=false;susp=null;stat.hidden=false;stat.textContent=msg;}
+    let curD=null;const addS=(cls,t)=>{const sp=document.createElement('span');if(cls)sp.className=cls;sp.textContent=t;shell.appendChild(sp);return sp;};
+    const printD=t=>{if(curD&&shell.lastChild===curD)curD.data+=t;else{curD=document.createTextNode(t);shell.appendChild(curD);}};
+    const askD=prompt=>new Promise(res=>{curD=null;if(prompt)addS('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:v+'\n'}));res(v);}});});
+    async function settle(){
+      while(susp instanceof Sk.misceval.Suspension){
+        const ty=susp.data&&susp.data.type;
+        if(ty==='Sk.debug')return true;
+        if(ty==='Sk.promise'){try{susp.data.result=await susp.data.promise;}catch(e){susp.data.error=e;}susp=susp.resume();continue;}
+        susp=susp.resume();
+      }
+      return false;
+    }
+    async function startDebug(){
+      if(!PY.ready)return;fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);assist.classList.remove('show');
+      shell.innerHTML='';addS('pr','>>> ');addS('run','%Debug '+fn+'\n');prevVars={};stepN=0;
+      Sk.configure({output:printD,read:(x)=>{if(Sk.builtinFiles&&Sk.builtinFiles.files[x]!==undefined)return Sk.builtinFiles.files[x];throw "File not found: '"+x+"'";},__future__:Sk.python3,inputfun:askD,inputfunTakesPrompt:true,execLimit:null,retainGlobals:true,debugging:true});
+      Sk.globals={};turtleTarget(cfg.turtle?('tg_'+cfg.id):null);setMode(true);
+      try{susp=Sk.importMainWithBody('<stdin>',false,ta.value,true);const more=await settle();if(!more){renderView(0);addS('pr','>>> ');finish('程式已執行完畢。');return;}}
+      catch(e){const te=thonnyError(e,ta.value,fn);addS('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');addS('pr','>>> ');finish('程式出錯，見 Shell。');return;}
+      const sn=snapshot();renderView(sn.line);renderVars(sn.vars);stat.textContent=`準備執行第 ${sn.line} 行。按「下一步」執行它。`;
+    }
+    async function stepOnce(){
+      if(!susp)return;bStep.disabled=true;
+      try{susp=susp.resume();const more=await settle();stepN++;
+        if(!more){renderView(0);const sn=snapshot();renderVars(sn.vars);addS('pr','>>> ');finish(`程式已執行完畢，共 ${stepN} 步。`);bStep.disabled=false;return;}
+        const sn=snapshot();renderView(sn.line);renderVars(sn.vars);stat.textContent=`第 ${stepN} 步完成。準備執行第 ${sn.line} 行。`;}
+      catch(e){const te=thonnyError(e,ta.value,fn);addS('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');renderView(te.ln);addS('pr','>>> ');finish('第 '+te.ln+' 行出錯，見 Shell 和 Assistant。');}
+      bStep.disabled=false;
+    }
+    bDbg.addEventListener('click',startDebug);bStep.addEventListener('click',stepOnce);bStop.addEventListener('click',()=>{finish('已停止。');});
+  }
+  return {ta,out:shell,btn,run,wrap,showSilent};
+}
+function makeRunner(host,cfg){return makeThonny(host,Object.assign({compact:true},cfg));}
+
+/* ---------- 試一試（先估後執行） ---------- */
+const KEYS='ABCD';
+function makePredict(host,cfg,store,per,onDone,noRun){
+  const box=document.createElement('div');box.className='predict';
+  box.innerHTML=`<p class="q">${esc(cfg.q)}</p><div class="grid"><div class="left"><pre class="ex">${esc(cfg.code)}</pre></div>
+  <div class="right"><div class="opts">${cfg.options.map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span class="k">${KEYS[i]}</span><pre>${esc(o)}</pre></button>`).join('')}</div>
+  <div class="row"><button class="btn go" type="button">${noRun?'確定答案':'執行看答案'}</button></div><div class="fbhost"></div></div></div>`;
+  host.appendChild(box);
+  const opts=$$('.opt',box),go=$('.btn.go',box),fbh=$('.fbhost',box);let sel=null;
+  let runner=null;
+  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可按 ▶',turtle:cfg.turtle,debug:cfg.debug});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
+  function reveal(rec){opts.forEach((o,i)=>{o.disabled=true;if(i===cfg.answer)o.classList.add('right');else if(i===rec.sel)o.classList.add('wrong');});go.disabled=true;
+    fbh.innerHTML=`<div class="fb ${rec.ok?'ok':'bad'}">${rec.ok?'估對了，+'+per+' 分。':'估錯了。答案是 '+KEYS[cfg.answer]+'。'} ${esc(cfg.why||'')}</div>`;if(runner)runner.btn.disabled=false;}
+  if(store[cfg.id]){reveal(store[cfg.id]);}
+  opts.forEach(o=>o.addEventListener('click',()=>{if(store[cfg.id])return;sel=+o.dataset.i;opts.forEach(x=>x.classList.toggle('sel',x===o));}));
+  go.addEventListener('click',async()=>{if(sel===null){fbh.innerHTML='<div class="fb neutral">先選一個答案。</div>';return;}
+    const rec={sel,ok:sel===cfg.answer};store[cfg.id]=rec;save();reveal(rec);refreshScore();if(runner){await runner.run();}if(onDone)onDone();});
+}
+
+/* ---------- 練習（填空，以執行結果核對） ---------- */
+function makeExercise(host,cfg,onDone){
+  const box=document.createElement('div');box.className='exbox';
+  box.innerHTML=`<p class="q">${esc(cfg.q)}</p>${cfg.expect!==undefined?`<div class="want"><span class="lab">應該輸出</span><pre class="ex" style="margin-top:4px">${esc(cfg.expect.replace(/\n$/,''))}</pre></div>`:''}`;
+  host.appendChild(box);
+  const rec=S.ex[cfg.ch]||{ok:false,score:0,tries:0,revealed:false,code:null};
+  const r=makeThonny(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容，然後按 ▶',turtle:cfg.turtle,debug:cfg.debug});
+  const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
+  const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button><button class="btn quiet" type="button" data-a>直接看答案（只得 1 分）</button></div></div>`;box.appendChild(help);
+  const fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
+  function pushHint(){if(hi<cfg.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(cfg.hints[hi])}</div>`;hi++;help.open=true;}else{$('[data-h]',help).disabled=true;}}
+  function done(){fb.innerHTML=`<span class="badge">✓ 完成，${rec.score} 分</span>`;r.ta.readOnly=true;$('[data-check]',row).disabled=true;$('[data-a]',help).disabled=true;}
+  if(rec.ok)done();
+  $('[data-h]',help).addEventListener('click',pushHint);
+  $('[data-a]',help).addEventListener('click',()=>{if(rec.ok)return;rec.revealed=true;S.ex[cfg.ch]=rec;save();hints.innerHTML+=`<div class="fb neutral">答案：<pre class="ex" style="margin:6px 0 0">${esc(cfg.answer)}</pre></div>`;});
+  $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;rec.code=code;rec.tries++;
+    if(code.includes('____')){box.insertAdjacentHTML('beforeend','');fb.innerHTML='<span class="badge off">還有 ____ 未填</span>';S.ex[cfg.ch]=rec;save();return;}
+    const res=await runSilent(code,cfg.inputs||[]);let ok,msg;
+    if(cfg.check){const c=await cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
+    if(cfg.inputs)r.showSilent(res,cfg.inputs);else await r.run();
+    if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{fb.innerHTML=`<span class="badge off">${esc(msg)}</span>`;if(rec.tries>=2)pushHint();}
+    S.ex[cfg.ch]=rec;save();refreshScore();if(ok&&onDone)onDone();});
+}
+
+/* ---------- 章節 ---------- */
+function step(host,kind,lead,pts){const d=document.createElement('div');d.className='step '+kind;d.innerHTML=`<span class="mark">${kind==='try'?'試':kind==='ex'?'練':'做'}</span><div class="lead">${esc(lead)}${pts?`<small>${esc(pts)}</small>`:''}</div>`;host.appendChild(d);return d;}
+const PRED_IDS={c1:[],c2:['c2_a','c2_b','c2_c'],c3:[],c4:[]};
+function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
+function setEx(ch,score,extra){S.ex[ch]=Object.assign({ok:true,score},extra||{});save();refreshScore();}
+
+/* 第 1 章：讀取上一堂的規劃表；儲存兩組測試數據 */
+(function(){
+  try{const r=localStorage.getItem('py3:L9v2');if(r){const o=JSON.parse(r);if(o&&o.quiz&&o.quiz.reflect)$('#planBox').textContent=o.quiz.reflect;}}catch(e){}
+  const rec=S.ex.c1;if(rec&&rec.ok){$('#t1in').value=rec.t1in;$('#t1out').value=rec.t1out;$('#t2in').value=rec.t2in;$('#t2out').value=rec.t2out;$('#planFb').innerHTML='<span class="badge">✓ 已儲存，5 分</span>';}
+  $('#btnPlan').addEventListener('click',()=>{const t1in=$('#t1in').value.trim(),t1out=$('#t1out').value.trim(),t2in=$('#t2in').value.trim(),t2out=$('#t2out').value.trim();
+    if(!t1in||!t1out||!t2in||!t2out){$('#planFb').textContent='四格都要填。';return;}
+    if(t1in===t2in){$('#planFb').textContent='兩組輸入要不同：第 2 組應是邊界或錯誤情況。';return;}
+    setEx('c1',5,{t1in,t1out,t2in,t2out});$('#planFb').innerHTML='<span class="badge">✓ 已儲存，5 分</span>';renderNav();if(chapterComplete(1))advance(2);});
+})();
+
+/* 第 2 章：三題 */
+(function(){const h=$('#c2');const done=()=>{if(PRED_IDS.c2.every(id=>S.pred[id]))setEx('c2',0);refreshScore();if(chapterComplete(2))advance(3);};
+  const t1=step(h,'try','編程佔必修幾多？','估對 4 分');
+  makePredict(t1,{id:'c2_a',q:'高中 ICT 必修 144 小時中，「計算思維與程式編寫」佔幾多？',code:'資訊處理 37\n電腦系統基礎 20\n互聯網及其應用 31\n計算思維與程式編寫 48\n社會影響 8',options:['約一半','約三分之一','約四分之一','全部'],answer:1,why:'48 ÷ 144 = 三分之一。其餘三分之二是理論和應用，所以讀 ICT 不只是寫程式。'},S.pred,PRED_PTS,done,true);
+  const t2=step(h,'try','選修','估對 4 分');
+  makePredict(t2,{id:'c2_b',q:'選修部分有三個選項，學生要讀幾多個？',code:'A 數據庫\nB 網絡應用程式開發\nC 算法與程式編寫',options:['1 個','2 個','3 個','不用讀'],answer:1,why:'三選二，由學校決定開哪兩個組合。'},S.pred,PRED_PTS,done,true);
+  const t3=step(h,'try','評核','估對 4 分');
+  makePredict(t3,{id:'c2_c',q:'校本評核（中五至中六做的小型系統）佔總分幾多？',code:'卷一（必修）55%\n卷二（選修）25%\n校本評核 ?',options:['10%','20%','30%','45%'],answer:1,why:'卷一 55% + 卷二 25% + 校本評核 20% = 100%。'},S.pred,PRED_PTS,done,true);
+})();
+
+/* 第 3 章：真 Thonny 清單 */
+(function(){
+  const items=['我在電腦室開啟了 Thonny','我把專題程式貼到 Thonny 並儲存為 L10_姓名.py','我在真 Thonny 執行並輸入了測試數據','我試過 View → Variables 或 Debug'];
+  const rec=S.ex.c3||{};const host=$('#thonnyChecks');
+  host.innerHTML=items.map((t,i)=>`<label style="display:flex;gap:8px;align-items:center;margin:4px 0"><input type="checkbox" data-i="${i}" ${rec.checks&&rec.checks[i]?'checked':''} ${rec.ok?'disabled':''} style="width:20px;height:20px"> ${esc(t)}</label>`).join('');
+  if(rec.ok){$('#thonnyDiff').value=rec.diff||'';$('#thonnyDiff').readOnly=true;$('#btnThonny').disabled=true;$('#thonnyFb').innerHTML=`<span class="badge">✓ 完成，${rec.score} 分</span>`;}
+  $('#btnThonny').addEventListener('click',()=>{const checks=$$('#thonnyChecks input').map(c=>c.checked);const diff=$('#thonnyDiff').value.trim();
+    if(checks.filter(Boolean).length<3){$('#thonnyFb').textContent='最少要完成頭三項。';return;}if(diff.length<20){$('#thonnyFb').textContent='分別最少寫 20 字。';return;}
+    setEx('c3',8,{checks,diff});$$('#thonnyChecks input').forEach(c=>c.disabled=true);$('#thonnyDiff').readOnly=true;$('#btnThonny').disabled=true;$('#thonnyFb').innerHTML='<span class="badge">✓ 完成，8 分</span>';renderNav();if(chapterComplete(3))advance(4);});
+})();
+
+/* 第 4 章：自我檢視 */
+const SELFQ=[['解難態度','程式出錯時，我願意自己試幾次找原因'],['拆解問題','我享受想辦法把大問題拆成小步驟'],['邏輯準確','「先估後執行」的題目，我大多估得對'],['完成作品','我的迷你專題能運作，並通過自己的測試數據'],['理論學習','我不介意理解和記憶理論，例如網絡、硬件、數據表示'],['主動性','我曾在課堂以外自己試寫或修改程式']];
+(function(){
+  const rec=S.ex.c4||{};const host=$('#selfCheck');
+  host.innerHTML=`<div class="tablewrap"><table><thead><tr><th>範疇</th><th>題目</th><th>1 不同意</th><th>2</th><th>3</th><th>4 很同意</th></tr></thead><tbody>${SELFQ.map((q,i)=>`<tr><td>${q[0]}</td><td>${q[1]}</td>${[1,2,3,4].map(v=>`<td style="text-align:center"><input type="radio" name="sq${i}" value="${v}" ${rec.ans&&rec.ans[i]===v?'checked':''} ${rec.ok?'disabled':''} style="width:20px;height:20px"></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  function result(ans){const total=ans.reduce((a,b)=>a+b,0);const low=SELFQ.filter((q,i)=>ans[i]<=2).map(q=>q[0]);let msg;if(total>=19)msg='你在解難和動手方面的評分很高，ICT 應該很適合你。';else if(total>=13)msg='你有不少適合的特質，可以認真考慮 ICT；留意一下評分較低的範疇是否你介意的。';else msg='你對編程的興趣暫時未算強烈。選科時多想想：你喜歡的是哪一部分？興趣比分數重要。';
+    return `<div class="fb neutral"><b>總分 ${total} / 24。</b>${msg}${low.length?`<br>評分較低：${low.join('、')}。`:''}</div>`;}
+  if(rec.ok){$('#selfResult').innerHTML=result(rec.ans);$('#btnSelf').disabled=true;$('#selfFb').innerHTML='<span class="badge">✓ 完成，15 分</span>';}
+  $('#btnSelf').addEventListener('click',()=>{const ans=SELFQ.map((q,i)=>{const r=$(`input[name="sq${i}"]:checked`);return r?+r.value:0;});if(ans.some(v=>!v)){$('#selfFb').textContent='六條都要選。';return;}
+    setEx('c4',15,{ans});$('#selfResult').innerHTML=result(ans);$$('#selfCheck input').forEach(c=>c.disabled=true);$('#btnSelf').disabled=true;$('#selfFb').innerHTML='<span class="badge">✓ 完成，15 分</span>';renderNav();if(chapterComplete(4))advance(5);});
+})();
+
+/* ---------- 作品三層 ---------- */
+function outLines(res){return res.out.replace(/\n$/,'').split('\n');}
+function hasLoop(c){return /\bfor\s+\w+\s+in\b|\bwhile\b/.test(c);}
+function lineCount(c){return c.split('\n').filter(l=>l.trim()&&!l.trim().startsWith('#')).length;}
+function tset(k){const r=S.ex.c1||{};return (r[k]||'').split('\n').map(s=>s.trim()).filter(Boolean);}
+const TIERS=[
+  {id:'t1',pill:'必做',cls:'',pts:25,title:'專題可以運作',debug:true,turtle:true,
+   desc:'按規劃表寫你的專題。要求：有 <code>input</code>、有 <code>if</code>、有迴圈，最少 12 行。按「檢查」時會用第 1 章的<b>第 1 組測試數據</b>自動執行，不可以出錯，而且輸出要見到你寫的預期字句。',
+   hints:['先把規劃表的「輸入」變成幾行 input()。','再寫「處理」：if 判斷和迴圈。','最後 print 輸出；每寫幾行就按 ▶ 試一次。'],
+   check:async(code,res)=>{if(!/input\(/.test(code))return {ok:false,msg:'專題要有 input()。'};if(!/\bif\b/.test(code))return {ok:false,msg:'專題要有 if。'};if(!hasLoop(code))return {ok:false,msg:'專題要有 for 或 while 迴圈。'};if(lineCount(code)<12)return {ok:false,msg:`程式只有 ${lineCount(code)} 行（不計註解），最少 12 行。`};
+     const r=await runSilent(code,tset('t1in'));if(r.err)return {ok:false,msg:'用第 1 組測試數據執行時出錯：'+r.err.split('\n').pop()};const want=(S.ex.c1||{}).t1out||'';if(want&&!r.out.includes(want))return {ok:false,msg:`輸出沒有見到你預期的「${want}」。檢查程式，或回第 1 章改測試數據。`};return {ok:true,msg:'第 1 組測試通過，專題可以運作。'};}},
+  {id:'t2',pill:'進階',cls:'g',pts:10,title:'用到列表或函數，邊界測試也通過',debug:true,turtle:true,
+   desc:'程式要用到<b>列表</b>或<b>自己定義的函數</b>，並且用第 1 章的<b>第 2 組測試數據</b>（邊界或錯誤情況）執行也不出錯、輸出見到預期字句。把程式貼到這裏再檢查。',
+   hints:['把重複的部分抽成 def 函數，或把多個值放進列表。','邊界情況常見是 0、負數、剛好等於某個數；用 if 處理它。'],
+   check:async(code,res)=>{if(!/\bdef\s+\w+\(|\[\s*[^\]]*\]|\.append\(/.test(code))return {ok:false,msg:'要用到列表（[ ]）或函數（def）。'};const r=await runSilent(code,tset('t2in'));if(r.err)return {ok:false,msg:'用第 2 組測試數據執行時出錯：'+r.err.split('\n').pop()};const want=(S.ex.c1||{}).t2out||'';if(want&&!r.out.includes(want))return {ok:false,msg:`輸出沒有見到你預期的「${want}」。`};return {ok:true,msg:'邊界測試通過。'};}},
+  {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'有註解、有程式風格',debug:true,turtle:true,
+   desc:'最頂一行註解寫題目和你的名字；最少再加 3 行註解說明各部分做甚麼；變量名要有意思（不可以全部叫 a、b、x）。把最終版貼到這裏檢查。',
+   hints:['# 題目：小食部收銀機　作者：陳大文','每個主要部分前加一行 # 說明。'],
+   check:(code,res)=>{const lines=code.split('\n');if(!/^\s*#/.test(lines[0]||''))return {ok:false,msg:'最頂一行要是註解。'};const cm=lines.filter(l=>/^\s*#/.test(l)).length;if(cm<4)return {ok:false,msg:`只有 ${cm} 行註解，最少 4 行（頂行加 3 行）。`};const names=[...new Set((code.match(/^\s*([a-zA-Z_]\w*)\s*=/gm)||[]).map(m=>m.trim().split(/\s*=/)[0]))];const good=names.filter(n=>n.length>=3);if(names.length&&good.length<Math.ceil(names.length/2))return {ok:false,msg:'變量名要有意思，最少一半要 3 個字母以上（例如 price、total）。'};return {ok:true,msg:'挑戰完成。'};}},
+];
+TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
+  box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
+  const rec=S.tiers[t.id]||{ok:false,score:0,code:null};
+  const r=makeThonny(box,{id:t.id,code:rec.code||'',label:'在這裏寫，按 ▶ 試行，滿意後按「檢查」',placeholder:'# 在這裏寫你的程式',turtle:t.turtle,debug:t.debug});
+  const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
+  const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button></div></div>`;box.appendChild(help);
+  const fbEl=$('#tfb_'+t.id),fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
+  if(rec.ok){fbEl.innerHTML=`<span class="badge">✓ ${rec.score} 分</span>`;r.ta.readOnly=true;}else fbEl.innerHTML='<span class="badge off">未完成</span>';
+  $('[data-h]',help).addEventListener('click',()=>{if(hi<t.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(t.hints[hi])}</div>`;hi++;}else $('[data-h]',help).disabled=true;});
+  $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;if(!code.trim()){fb.innerHTML='<span class="badge off">先貼上程式</span>';return;}rec.code=code;
+    const res=await runSilent(code,t.inputs||[]);const c=await t.check(code,res);
+    r.showSilent(res,t.inputs||[]);
+    if(c.ok){rec.ok=true;rec.score=t.pts;fbEl.innerHTML=`<span class="badge">✓ ${t.pts} 分</span>`;fb.innerHTML=`<span class="badge">${esc(c.msg)}</span>`;r.ta.readOnly=true;}else fb.innerHTML=`<span class="badge off">${esc(c.msg)}</span>`;
+    S.tiers[t.id]=rec;save();refreshScore();if(S.tiers.t1&&S.tiers.t1.ok)advance(6);});
+});
+
+/* ---------- 小測 ---------- */
+const QUIZ=[
+  {id:'q1',q:'高中 ICT 公開考試卷一考甚麼？',code:'卷一 55%\n卷二 25%\n校本評核 20%',options:['必修部分','選修部分','校本評核','只考編程'],answer:0,why:'卷一考必修五個單元，卷二考兩個選修。'},
+  {id:'q2',q:'高中 ICT 的程式語言是甚麼？',code:'這十堂學的語言',options:['Python','Scratch','Java','C++'],answer:0,why:'公開考試用 Python（或 C++），和這十堂一樣。'},
+  {id:'q3',q:'以下哪一樣這十堂沒有教，是中四才學的？',code:'變量、if、迴圈、列表、函數',options:['列表','流程圖和偽代碼','while 迴圈','字串切片'],answer:1,why:'流程圖、偽代碼、追蹤表是中四「算法設計」的內容；這十堂先學會寫程式，到時會較易上手。'},
+];
+QUIZ.forEach((c,i)=>{const s=step($('#quiz'),'try',`小測 ${i+1}`,'5 分');makePredict(s,c,S.quiz.a,5,()=>renderNav(),true);});
+if(S.quiz.done){$('#reflect').value=S.quiz.reflect;$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';}
+$('#btnExit').addEventListener('click',()=>{if(S.quiz.done)return;const missing=QUIZ.filter(c=>!S.quiz.a[c.id]).length;if(missing){$('#exitFb').textContent=`還有 ${missing} 題未作答。`;return;}
+  const t=$('#reflect').value.trim();if(t.length<30){$('#exitFb').textContent='互評紀錄要寫同學名字和兩個建議（最少 30 字）。';return;}
+  S.quiz.reflect=t;S.quiz.reflectScore=5;S.quiz.done=true;S.finished=new Date().toISOString();save();$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';refreshScore();buildReport();advance(7);show(7);});
+
+/* ---------- 報告 ---------- */
+async function hmac(msg){try{const enc=new TextEncoder();const k=await crypto.subtle.importKey('raw',enc.encode(SIGN),{name:'HMAC',hash:'SHA-256'},false,['sign']);const sig=await crypto.subtle.sign('HMAC',k,enc.encode(msg));return Array.from(new Uint8Array(sig)).slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join('');}
+  catch(e){let h=0;for(const c of msg+SIGN){h=(h*31+c.charCodeAt(0))>>>0;}return 'x'+h.toString(16);}}
+function canon(){const sc=scores();return [APP,S.stu.cls,S.stu.no,S.stu.name,sc.c[1],sc.c[2],sc.c[3],sc.c[4],sc.tiers,sc.quiz,sc.total,S.finished||'',S.teacherUsed?'T':''].join('|');}
+let reportText='',reportHTML='';
+async function buildReport(){if(!S.stu||!S.finished)return;const sc=scores();const code=await hmac(canon());const grade=sc.total>=85?'優異':sc.total>=70?'良好':sc.total>=50?'合格':'仍需努力';
+  const rows=[['第 1 章 規劃與測試數據',sc.c[1],5],['第 2 章 ICT 高中讀甚麼',sc.c[2],12],['第 3 章 真 Thonny 體驗',sc.c[3],8],['第 4 章 自我檢視',sc.c[4],15],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
+  const tierTxt=TIERS.map(t=>`${t.pill}${S.tiers[t.id]&&S.tiers[t.id].ok?'✓':'✗'}`).join(' ');
+  const when=new Date(S.finished).toLocaleString('zh-HK');
+  $('#reportBox').innerHTML=`<h3 style="margin-top:0">中三 Python 第 10 堂 迷你專題及選科導航 · 成績報告</h3><p>${esc(S.stu.cls)} 班 ${esc(S.stu.no)} 號 ${esc(S.stu.name)} · ${esc(when)}${S.teacherUsed?' · <b>曾用老師模式</b>':''}</p>
+  <div class="tablewrap"><table><thead><tr><th>部分</th><th>得分</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} / ${r[2]}</td></tr>`).join('')}<tr><th>總分</th><th>${sc.total} / 100（${grade}）</th></tr></tbody></table></div>
+  <p class="small">作品：${tierTxt}　小測：${QUIZ.map(c=>S.quiz.a[c.id]&&S.quiz.a[c.id].ok?'✓':'✗').join('')}</p>
+  <p class="small">互評紀錄：${esc(S.quiz.reflect)}</p><p class="small">自我檢視：${S.ex.c4&&S.ex.c4.ans?S.ex.c4.ans.map((v,i)=>SELFQ[i][0]+v).join("、")+"（總分 "+S.ex.c4.ans.reduce((a,b)=>a+b,0)+" / 24）":"未做"}</p><p class="small">測試數據：第 1 組 ${esc((S.ex.c1||{}).t1in||"").replace(/\n/g," / ")} → ${esc((S.ex.c1||{}).t1out||"")}；第 2 組 ${esc((S.ex.c1||{}).t2in||"").replace(/\n/g," / ")} → ${esc((S.ex.c1||{}).t2out||"")}</p><p style="font-family:var(--font-mono)">驗證碼 ${code}</p>`;
+  reportText=`中三 Python 第 10 堂 迷你專題及選科導航 成績報告\n${S.stu.cls} 班 ${S.stu.no} 號 ${S.stu.name}\n${when}\n`+rows.map(r=>`${r[0]}：${r[1]} / ${r[2]}`).join('\n')+`\n總分：${sc.total} / 100（${grade}）\n作品：${tierTxt}\n互評紀錄：${S.quiz.reflect}\n驗證碼：${code}`;
+  const codes=TIERS.filter(t=>S.tiers[t.id]&&S.tiers[t.id].code).map(t=>`<h3>${t.pill}：${esc(t.title)}</h3><pre>${esc(S.tiers[t.id].code)}</pre>`).join('');
+  reportHTML=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>${APP} ${esc(S.stu.cls)} ${esc(S.stu.no)} ${esc(S.stu.name)}</title><style>body{font-family:"Noto Sans TC",sans-serif;max-width:720px;margin:30px auto;padding:0 16px;line-height:1.6}table{border-collapse:collapse}td,th{border:1px solid #999;padding:6px 10px}pre{background:#f0f0f0;padding:10px;white-space:pre-wrap}</style></head><body>${$('#reportBox').innerHTML}<hr>${codes}<p style="color:#666;font-size:.85em">${APP} · 資料行：${esc(canon())}</p></body></html>`;
+}
+$('#btnSave').addEventListener('click',async()=>{await buildReport();const fn=`${APP}_${S.stu.cls}_${S.stu.no}_${S.stu.name}.html`;const fb=$('#saveFb');fb.textContent='';
+  try{const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;if(dl){await dl.save({filename:fn,data:reportHTML});fb.textContent='已儲存。';return;}}catch(e){if(e&&e.code==='declined'){fb.textContent='已取消。';return;}}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([reportHTML],{type:'text/html'}));a.download=fn;document.body.appendChild(a);a.click();a.remove();fb.textContent='已開始下載；如沒有反應，請按「複製報告文字」交給老師。';}catch(e){fb.textContent='這裏不能儲存檔案，請按「複製報告文字」。';}});
+$('#btnCopy').addEventListener('click',async()=>{await buildReport();try{await navigator.clipboard.writeText(reportText);$('#saveFb').textContent='已複製。';}catch(e){alertBox(reportText);}});
+
+/* ---------- 老師及其他 ---------- */
+function alertBox(html,actions){const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><div style="white-space:pre-wrap">${esc(html)}</div><div class="row" style="justify-content:flex-end">${(actions||[{t:'關閉'}]).map((a,i)=>`<button class="btn ${a.go?'go':''}" data-i="${i}">${esc(a.t)}</button>`).join('')}</div></div>`;document.body.appendChild(m);
+  $$('button',m).forEach(b=>b.addEventListener('click',()=>{m.remove();const a=(actions||[])[+b.dataset.i];if(a&&a.fn)a.fn();}));}
+if(S.stu){$('#stName').value=S.stu.name;$('#stClass').value=S.stu.cls;$('#stNo').value=S.stu.no;}
+$('#btnStart').addEventListener('click',()=>{const name=$('#stName').value.trim(),cls=$('#stClass').value.trim(),no=$('#stNo').value.trim();
+  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();refreshFilenames();advance(1);show(1);});
+$('#btnReset').addEventListener('click',()=>alertBox('清除這部電腦上的全部進度和分數？',[{t:'取消'},{t:'清除',go:true,fn:()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();}}]));
+$('#btnTeacher').addEventListener('click',()=>{const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h3 style="margin-top:0">老師模式</h3><div class="row"><input type="text" id="pin" placeholder="PIN" style="flex:1"><button class="btn go" id="pinGo">進入</button><button class="btn" id="pinX">關閉</button></div><div id="tpanel"></div></div>`;document.body.appendChild(m);
+  $('#pinX',m).addEventListener('click',()=>m.remove());
+  $('#pinGo',m).addEventListener('click',()=>{if($('#pin',m).value!==PIN){$('#tpanel',m).innerHTML='<p class="fb bad">PIN 不正確。</p>';return;}
+    const p=$('#tpanel',m);
+    const preds=[['c2_a','B 約三分之一'],['c2_b','B 2 個'],['c2_c','B 20%']];
+    const exs=[['第 1 章','兩組測試數據（第 2 組要不同）'],['第 3 章','頭三項剔選＋分別 20 字'],['第 4 章','六條都選']];
+    p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${KEYS[c.answer]} ${esc(c.options[c.answer])}</li>`).join('')}</ul>
+    <h3>核對驗證碼</h3><p class="small">貼上報告底部的「資料行」。</p><textarea id="vline" rows="2"></textarea><div class="row"><button class="btn go" id="vgo">核對</button><span id="vfb" class="small"></span></div>
+    <h3>免除第 3 章（不能用電腦室時）</h3><div class="row"><button class="btn" id="waive3">免除真 Thonny 體驗（給 8 分）</button></div><h3>跳到任何一章（會在報告標示）</h3><div class="row">${SECS.map((s,i)=>`<button class="btn" data-j="${i}">${i}</button>`).join('')}</div>`;
+    $('#vgo',p).addEventListener('click',async()=>{const line=$('#vline',p).value.trim();const code=await hmac(line);$('#vfb',p).textContent=line.startsWith(APP+'|')?`此資料行的正確驗證碼：${code}。與報告上的驗證碼一致即未被改動。`:'資料行格式不對。';});
+    $('#waive3',p).addEventListener('click',()=>{S.teacherUsed=true;S.ex.c3={ok:true,score:8,checks:[],diff:'（老師免除）'};save();refreshScore();if(S.stage<4)S.stage=4;S.view=3;save();location.reload();});
+    $$('[data-j]',p).forEach(b=>b.addEventListener('click',()=>{S.teacherUsed=true;if(!S.stu)S.stu={name:'老師',cls:'—',no:'—'};S.stage=Math.max(S.stage,+b.dataset.j);save();show(+b.dataset.j);m.remove();}));});});
+
+/* ---------- 啟動 ---------- */
+if(S.finished)buildReport();
+show(Math.min(S.view||0,S.stage));refreshScore();
+$('#pyStatus').textContent=PY.ready?'Python 執行器已就緒。':'Python 執行器未能載入：解說仍可閱讀，執行請用 Thonny。';
+})();
+</script>

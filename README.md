@@ -17,7 +17,7 @@
 | 7 | 字串 | Strings、Slicing、Methods、f-string | 完成 |
 | 8 | 列表 | Lists | 完成 |
 | 9 | 函數入門與除錯 | Functions、Return；錯誤類型；逐步執行 | 完成（模擬器加逐步執行） |
-| 10 | 迷你專題及選科導航 | — | 規劃 |
+| 10 | 迷你專題及選科導航 | —（專題用這十堂全部內容；真 Thonny 體驗；ICT 高中讀甚麼） | 完成 |
 
 ## 結構
 
@@ -56,6 +56,7 @@ python3 tools/test_lesson6.py
 python3 tools/test_lesson7.py
 python3 tools/test_lesson8.py
 python3 tools/test_lesson9.py
+python3 tools/test_lesson10.py
 ```
 
 需要 Playwright 及 Chromium。測試會走完整個流程（含故意答錯、看答案扣分、重新載入後保留、老師 PIN、手機闊度）。
