@@ -1,251 +1,338 @@
 <title>開始寫 Python</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700;900&family=JetBrains+Mono:wght@400;700&display=swap">
 <style>
-/* 版面：單欄，每章一張卡，順序解鎖；W3Schools 式「解說 → 試一試 → 練習」 */
+/* 版面：教科書式。頂部固定進度列；主區一次只顯示一章；章內以左側直線串起「學 → 試 → 練」；底部固定「上一章／下一章」。 */
 :root{
-  --bg:#f6f4ee; --card:#ffffff; --fg:#1f2430; --muted:#5f6675; --line:#dcd6c8;
-  --accent:#2f6fde; --accent-fg:#ffffff; --py-yellow:#f2c230;
-  --ok:#1f8f5a; --ok-bg:#e4f5ec; --bad:#c43d3d; --bad-bg:#fbe7e7; --warn-bg:#fff5d6;
-  --code-bg:#1d2230; --code-fg:#e9edf5; --code-prompt:#9ad1ff;
+  --paper:#ffffff; --ground:#f3f5f8; --ink:#1c2733; --ink-2:#4a5664; --ink-3:#7b8794; --rule:#d9dfe6;
+  --blue:#2f6fde; --blue-ink:#1f4fa8; --blue-tint:#e8f0fd; --blue-fg:#ffffff;
+  --yellow:#ffd43b; --yellow-tint:#fff6cc; --yellow-ink:#6b5300;
+  --green:#1f8f5a; --green-tint:#e3f4ea; --red:#c43d3d; --red-tint:#fbe7e7;
+  --code-bg:#22272e; --code-fg:#e6edf3; --code-dim:#8b949e; --code-prompt:#79c0ff;
   --font-body:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif;
+  --font-head:"Noto Serif TC","Songti TC","PMingLiU",serif;
   --font-mono:"JetBrains Mono","Cascadia Mono",Consolas,monospace;
+  --topbar:64px; --botbar:68px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#15181f; --card:#1e2330; --fg:#eef0f4; --muted:#a3aab8; --line:#343b4b;
-  --accent:#6b9cff; --accent-fg:#0d1526; --ok:#5fd39a; --ok-bg:#1c3a2c; --bad:#ff8080; --bad-bg:#44232a; --warn-bg:#3d3418;
-  --code-bg:#0f1218; --code-fg:#e9edf5; color-scheme:dark}}
+  --paper:#1b2028; --ground:#12161c; --ink:#e9edf2; --ink-2:#b4bcc7; --ink-3:#8793a1; --rule:#2d3540;
+  --blue:#6b9cff; --blue-ink:#9dbcff; --blue-tint:#1d2a44; --blue-fg:#0d1526;
+  --yellow:#ffd43b; --yellow-tint:#3a3214; --yellow-ink:#ffe68a;
+  --green:#4fcf8d; --green-tint:#17352a; --red:#ff8a8a; --red-tint:#45252a;
+  --code-bg:#0d1117; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#15181f; --card:#1e2330; --fg:#eef0f4; --muted:#a3aab8; --line:#343b4b;
-  --accent:#6b9cff; --accent-fg:#0d1526; --ok:#5fd39a; --ok-bg:#1c3a2c; --bad:#ff8080; --bad-bg:#44232a; --warn-bg:#3d3418;
-  --code-bg:#0f1218; --code-fg:#e9edf5; color-scheme:dark}
+  --paper:#1b2028; --ground:#12161c; --ink:#e9edf2; --ink-2:#b4bcc7; --ink-3:#8793a1; --rule:#2d3540;
+  --blue:#6b9cff; --blue-ink:#9dbcff; --blue-tint:#1d2a44; --blue-fg:#0d1526;
+  --yellow:#ffd43b; --yellow-tint:#3a3214; --yellow-ink:#ffe68a;
+  --green:#4fcf8d; --green-tint:#17352a; --red:#ff8a8a; --red-tint:#45252a;
+  --code-bg:#0d1117; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--font-body);font-size:17px;line-height:1.7;margin:0}
-.wrap{max-width:860px;margin:0 auto;padding-block:20px 60px;padding-inline:16px}
-h1{font-size:1.9rem;line-height:1.3;margin:0;text-wrap:balance;font-weight:900}
-h2{font-size:1.3rem;margin:0;font-weight:700;text-wrap:balance}
-h3{font-size:1.05rem;margin:18px 0 8px;font-weight:700}
+html,body{height:100%}
+body{background:var(--ground);color:var(--ink);font-family:var(--font-body);font-size:17px;line-height:1.75;margin:0}
+h1,h2,h3{font-family:var(--font-head);font-weight:700;line-height:1.3;margin:0;text-wrap:balance}
+h1{font-size:1.35rem}
+h2{font-size:1.65rem;font-weight:900}
+h3{font-size:1.1rem;margin:0 0 6px}
 p{margin:8px 0}
-.eyebrow{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:700}
-header.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;margin-bottom:12px}
-.score{font-variant-numeric:tabular-nums;font-size:.95rem;color:var(--muted)}
-.score b{font-size:1.6rem;color:var(--fg)}
-nav.toc{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 20px}
-nav.toc a{font-size:.85rem;padding:4px 10px;border:1px solid var(--line);border-radius:999px;text-decoration:none;color:var(--muted);background:var(--card)}
-nav.toc a.done{border-color:var(--ok);color:var(--ok)}
-nav.toc a.now{border-color:var(--accent);color:var(--accent);font-weight:700}
-section.card{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--accent);border-radius:10px;padding:18px 20px;margin:0 0 18px}
-section.card.locked{opacity:.55}
-section.card.locked .body{display:none}
-section.card.done{border-left-color:var(--ok)}
-.card header{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
-.card .num{font-family:var(--font-mono);color:var(--muted);font-size:.9rem}
-.card .marks{margin-left:auto;font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
-.lockmsg{font-size:.9rem;color:var(--muted);margin-top:6px}
-.tip{border:1px solid var(--line);background:var(--warn-bg);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.95rem}
-.key{border-left:4px solid var(--py-yellow);background:var(--warn-bg);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
-.steps{padding-left:1.4em;margin:8px 0}
-.steps li{margin:4px 0}
-code,pre,textarea.code,.mono{font-family:var(--font-mono)}
-code{background:color-mix(in srgb,var(--fg) 8%,transparent);padding:1px 6px;border-radius:4px;font-size:.92em}
-pre{margin:0}
-pre.ex{background:var(--code-bg);color:var(--code-fg);padding:10px 14px;border-radius:8px;font-size:.95rem;white-space:pre-wrap;word-break:break-word;margin:8px 0;overflow-x:auto}
-.btn{font:inherit;font-weight:700;border:1px solid var(--line);background:var(--card);color:var(--fg);border-radius:8px;padding:9px 16px;min-height:44px;cursor:pointer}
-.btn.go{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
-.btn.run{background:var(--ok);color:#fff;border-color:var(--ok)}
+a{color:var(--blue-ink)}
+code{font-family:var(--font-mono);background:color-mix(in srgb,var(--ink) 8%,transparent);padding:1px 6px;border-radius:4px;font-size:.92em}
+pre{margin:0;font-family:var(--font-mono)}
+pre.ex{background:var(--code-bg);color:var(--code-fg);padding:12px 16px;border-radius:8px;font-size:.95rem;line-height:1.6;white-space:pre-wrap;word-break:break-word;margin:10px 0;overflow-x:auto}
+pre.ex .cm{color:var(--code-dim)}
+/* 頂部 */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--paper);border-bottom:1px solid var(--rule)}
+.topbar .in{max-width:900px;margin:0 auto;padding:8px 16px 6px;display:grid;grid-template-columns:1fr auto;gap:2px 16px;align-items:center}
+.topbar .in>div:first-child{grid-column:1;grid-row:1;min-width:0}
+.topbar .lesson{font-size:.8rem;color:var(--ink-3)}
+.topbar .score{font-variant-numeric:tabular-nums;color:var(--ink-2);font-size:.9rem;grid-column:2;grid-row:1;align-self:center;text-align:right;white-space:nowrap}
+.topbar .score b{font-size:1.5rem;color:var(--ink);font-family:var(--font-head)}
+.steps{display:flex;gap:4px;margin-top:4px;grid-column:1/-1;grid-row:2}
+.steps button{flex:1;height:30px;border:0;background:transparent;cursor:pointer;padding:0;position:relative;font:inherit;color:var(--ink-3);font-size:.72rem;display:flex;flex-direction:column;gap:3px;align-items:stretch}
+.steps button span.bar{display:block;height:5px;border-radius:3px;background:var(--rule)}
+.steps button.done span.bar{background:var(--green)}
+.steps button.now span.bar{background:var(--blue)}
+.steps button.now{color:var(--blue-ink);font-weight:700}
+.steps button:disabled{cursor:not-allowed}
+.steps button span.lbl{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.steps button:focus-visible{outline:3px solid var(--yellow);outline-offset:2px;border-radius:4px}
+/* 主區 */
+main{max-width:900px;margin:0 auto;padding-block:22px calc(var(--botbar) + 30px);padding-inline:16px}
+section.card{display:none;background:var(--paper);border:1px solid var(--rule);border-radius:12px;padding:26px 28px 22px}
+section.card.current{display:block}
+@media (max-width:600px){section.card{padding:20px 14px}h1{font-size:1.1rem}h2{font-size:1.4rem}.topbar .lesson{font-size:.72rem}.steps button{height:24px}.steps button span.lbl{display:none}.steps button.now span.lbl{display:block}.step{padding-left:42px}.step .mark{width:30px;height:30px;font-size:.95rem}.step::before{left:14px;top:34px}}
+.card header{margin-bottom:14px}
+.card .chapter{font-size:.85rem;color:var(--blue-ink);font-weight:700;letter-spacing:.02em}
+.card .goal{margin:12px 0 0;padding:12px 16px;background:var(--ground);border-radius:8px;font-size:.95rem}
+.card .goal b{display:block;margin-bottom:2px}
+.card .goal ul{margin:0;padding-left:1.3em}
+/* 學 → 試 → 練 三步 */
+.step{position:relative;padding-left:52px;margin-top:26px}
+.step::before{content:"";position:absolute;left:17px;top:38px;bottom:-26px;width:2px;background:var(--rule)}
+.step:last-child::before{display:none}
+.step .mark{position:absolute;left:0;top:0;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-weight:900;font-size:1.05rem;color:#fff;background:var(--ink-2)}
+.step.learn .mark{background:var(--ink-2)}
+.step.try .mark{background:var(--yellow);color:var(--yellow-ink)}
+.step.ex .mark{background:var(--blue);color:var(--blue-fg)}
+.step.make .mark{background:var(--green)}
+.step .lead{font-weight:700;margin:4px 0 8px;font-size:1.05rem}
+.step .lead small{font-weight:400;color:var(--ink-3);margin-left:8px;font-size:.85rem}
+.key{border-left:4px solid var(--yellow);background:var(--yellow-tint);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+.tip{border:1px solid var(--rule);background:var(--ground);border-radius:8px;padding:10px 14px;margin:12px 0;font-size:.95rem}
+.steps-list{padding-left:1.4em;margin:8px 0}
+.steps-list li{margin:6px 0}
+figure{margin:14px 0}
+figure svg{width:100%;height:auto;display:block;max-width:560px}
+figcaption{font-size:.85rem;color:var(--ink-3);margin-top:4px}
+/* 控制 */
+.btn{font:inherit;font-weight:700;border:1px solid var(--rule);background:var(--paper);color:var(--ink);border-radius:8px;padding:9px 16px;min-height:44px;cursor:pointer}
+.btn.go{background:var(--blue);color:var(--blue-fg);border-color:var(--blue)}
+.btn.run{background:var(--green);color:#fff;border-color:var(--green)}
+.btn.quiet{border-color:transparent;color:var(--ink-2);background:transparent;font-weight:500;text-decoration:underline;text-underline-offset:3px;min-height:36px;padding:4px 8px}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--py-yellow);outline-offset:2px}
+.btn:focus-visible,input:focus-visible,textarea:focus-visible,summary:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
 .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
-input[type=text],textarea{font:inherit;color:var(--fg);background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-height:44px}
+input[type=text],textarea{font:inherit;color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:8px;padding:8px 10px;min-height:44px}
 textarea{width:100%}
-label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--muted);flex:1 1 140px;min-width:0}
-.sub{display:flex;gap:8px;align-items:center;margin:18px 0 6px;font-weight:700}
-.sub .tag{font-size:.75rem;letter-spacing:.08em;padding:2px 10px;border-radius:999px;background:color-mix(in srgb,var(--fg) 8%,transparent);color:var(--muted)}
-.sub .tag.try{background:var(--ok-bg);color:var(--ok)}
-.sub .tag.ex{background:var(--warn-bg);color:#7a5a00}
-:root[data-theme="dark"] .sub .tag.ex{color:var(--py-yellow)}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .sub .tag.ex{color:var(--py-yellow)}}
-/* 程式執行器 */
-.runner{border:1px solid var(--line);border-radius:10px;overflow:hidden;margin:12px 0;min-width:0}
-.runner .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;padding:8px 10px;background:color-mix(in srgb,var(--fg) 5%,transparent);border-bottom:1px solid var(--line);font-size:.85rem;color:var(--muted)}
-.runner .bar .btn{min-height:36px;padding:5px 12px}
-textarea.code{display:block;width:100%;background:var(--code-bg);color:var(--code-fg);border:0;border-radius:0;padding:12px 14px;font-size:.95rem;line-height:1.6;resize:vertical;min-height:90px;tab-size:4;white-space:pre;overflow-x:auto}
-.out{background:var(--code-bg);color:var(--code-fg);border-top:1px dashed color-mix(in srgb,var(--code-fg) 30%,transparent);padding:10px 14px;font-family:var(--font-mono);font-size:.95rem;white-space:pre-wrap;word-break:break-word;min-height:44px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--ink-2);flex:1 1 140px;min-width:0}
+.small{font-size:.88rem;color:var(--ink-3)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;background:var(--green-tint);color:var(--green);font-weight:700;font-size:.85rem}
+.badge.off{background:var(--ground);color:var(--ink-3)}
+.fb{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:.95rem}
+.fb.ok{background:var(--green-tint);color:var(--green)}
+.fb.bad{background:var(--red-tint);color:var(--red)}
+.fb.neutral{background:var(--ground);color:var(--ink-2)}
+/* 執行器 */
+.runner{border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:10px 0;min-width:0;background:var(--code-bg)}
+.runner .bar{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:.8rem;color:var(--code-dim);border-bottom:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent)}
+.runner .bar>span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.runner .bar .dots{display:flex;gap:5px}.runner .bar .dots i{width:10px;height:10px;border-radius:50%;background:color-mix(in srgb,var(--code-fg) 25%,transparent)}
+.runner .bar .btn{margin-left:auto;min-height:34px;padding:4px 14px;font-size:.9rem}
+textarea.code{display:block;width:100%;background:var(--code-bg);color:var(--code-fg);border:0;border-radius:0;padding:12px 16px;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;resize:vertical;min-height:84px;tab-size:4;white-space:pre;overflow-x:auto}
+.out{display:none;background:#161b22;color:var(--code-fg);border-top:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent);padding:10px 16px;font-family:var(--font-mono);font-size:.95rem;white-space:pre-wrap;word-break:break-word;min-height:44px}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .out{background:#070a0f}}
+:root[data-theme="dark"] .out{background:#070a0f}
+.out.show{display:block}
+.out .lab{display:block;font-family:var(--font-body);font-size:.75rem;color:var(--code-dim);margin-bottom:4px}
 .out .err{color:#ff9d9d}
-.out .hint{color:var(--py-yellow);font-family:var(--font-body);font-size:.9rem;display:block;margin-top:6px}
+.out .hint{color:var(--yellow);font-family:var(--font-body);font-size:.9rem;display:block;margin-top:8px;line-height:1.5}
 .out .pin{display:flex;gap:6px;align-items:center;margin-top:4px}
 .out .pin input{flex:1 1 80px;min-width:0;background:transparent;color:var(--code-prompt);border:0;border-bottom:1px solid var(--code-prompt);font-family:var(--font-mono);font-size:.95rem;padding:2px 4px;min-height:32px}
 .out .pin span,.out .inp{color:var(--code-prompt)}
-.outlabel{font-size:.8rem;color:var(--muted);padding:4px 14px 0;background:var(--code-bg)}
-/* 預測題 */
-.predict{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
-.predict .q{font-weight:700}
-.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0}
-.opt{border:1px solid var(--line);border-radius:8px;padding:8px 12px;cursor:pointer;background:var(--card);font:inherit;text-align:left;min-height:44px;color:var(--fg)}
-.opt.sel{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent) inset}
-.opt.right{border-color:var(--ok);background:var(--ok-bg)}
-.opt.wrong{border-color:var(--bad);background:var(--bad-bg)}
-.opt pre{white-space:pre-wrap}
-.fb{margin-top:8px;padding:8px 12px;border-radius:8px;font-size:.95rem}
-.fb.ok{background:var(--ok-bg);color:var(--ok)}
-.fb.bad{background:var(--bad-bg);color:var(--bad)}
-.fb.neutral{background:color-mix(in srgb,var(--fg) 6%,transparent)}
-.tier{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:12px 0}
-.tier h3{margin-top:0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.pill{font-size:.75rem;letter-spacing:.08em;padding:2px 10px;border-radius:999px;background:var(--accent);color:var(--accent-fg)}
-.pill.g{background:var(--ok);color:#fff}.pill.y{background:var(--py-yellow);color:#2b2200}
-.hints button{margin-right:8px}
-.small{font-size:.88rem;color:var(--muted)}
-.badge{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--ok-bg);color:var(--ok);font-weight:700;font-size:.85rem}
+/* 試一試：桌面左右兩欄 */
+.predict{margin:6px 0 0}
+.predict .q{font-weight:500;margin:0 0 8px}
+.predict .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+@media (max-width:700px){.predict .grid{grid-template-columns:1fr}}
+.predict .grid>*{min-width:0}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:420px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--rule);border-radius:8px;padding:8px 12px;cursor:pointer;background:var(--paper);font:inherit;text-align:left;min-height:48px;color:var(--ink);display:flex;gap:10px;align-items:flex-start}
+.opt .k{flex:none;width:22px;height:22px;border-radius:50%;border:1px solid var(--rule);font-size:.75rem;display:flex;align-items:center;justify-content:center;color:var(--ink-3);margin-top:3px}
+.opt pre{white-space:pre-wrap;font-size:.92rem;line-height:1.5}
+.opt.sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue) inset}
+.opt.sel .k{background:var(--blue);color:var(--blue-fg);border-color:var(--blue)}
+.opt.right{border-color:var(--green);background:var(--green-tint)}
+.opt.right .k{background:var(--green);color:#fff;border-color:var(--green)}
+.opt.wrong{border-color:var(--red);background:var(--red-tint)}
+.opt:disabled{cursor:default}
+/* 練習／作品 */
+.exbox{margin-top:6px}
+.exbox .want{margin:6px 0}
+.exbox .want .lab{font-size:.85rem;color:var(--ink-3)}
+details.help{margin:8px 0 0;border:1px dashed var(--rule);border-radius:8px;padding:0 12px}
+details.help summary{cursor:pointer;color:var(--ink-2);font-size:.92rem;padding:8px 0;list-style:none;display:flex;gap:8px;align-items:center}
+details.help summary::before{content:"?";width:20px;height:20px;border-radius:50%;background:var(--ground);border:1px solid var(--rule);font-size:.8rem;display:inline-flex;align-items:center;justify-content:center;font-weight:700}
+details.help[open] summary{border-bottom:1px dashed var(--rule)}
+details.help .hb{padding:8px 0 10px}
+details.help .hb .fb{margin-top:6px}
+details.help .row{margin:8px 0 0}
+.tier{border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin:12px 0;background:var(--paper)}
+.tier .th{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:6px}
+.pill{font-size:.78rem;padding:3px 12px;border-radius:999px;background:var(--blue);color:var(--blue-fg);font-weight:700}
+.pill.g{background:var(--green);color:#fff}.pill.y{background:var(--yellow);color:var(--yellow-ink)}
+.tier .th .pts{color:var(--ink-3);font-size:.88rem}
+.tier .th .st{margin-left:auto}
+.summary{margin-top:28px;padding:14px 16px;border-radius:8px;background:var(--blue-tint);color:var(--ink)}
+.summary b{font-family:var(--font-head)}
 table{border-collapse:collapse;width:100%;font-size:.95rem}
 .tablewrap{overflow-x:auto;margin:10px 0}
-th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
-th{background:color-mix(in srgb,var(--fg) 6%,transparent);font-weight:700}
-.report{border:1px solid var(--line);border-radius:10px;padding:14px;background:color-mix(in srgb,var(--fg) 4%,transparent)}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10}
-.modal .box{background:var(--card);color:var(--fg);border-radius:12px;padding:20px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
-footer{margin-top:30px;font-size:.85rem;color:var(--muted);display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.links{font-size:.9rem;color:var(--muted);margin-top:10px}
-.links a{color:var(--accent)}
+th,td{border:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:var(--ground);font-weight:700}
+.report{border:1px solid var(--rule);border-radius:10px;padding:14px;background:var(--ground)}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;padding:16px;z-index:20}
+.modal .box{background:var(--paper);color:var(--ink);border-radius:12px;padding:20px;max-width:560px;width:100%;max-height:90vh;overflow:auto}
+/* 底部導航 */
+.botbar{position:fixed;left:0;right:0;bottom:0;z-index:5;background:var(--paper);border-top:1px solid var(--rule);padding-bottom:env(safe-area-inset-bottom,0px)}
+.botbar .in{max-width:900px;margin:0 auto;padding:10px 16px;display:flex;gap:10px;align-items:center;min-height:var(--botbar)}
+.botbar .status{flex:1;min-width:0;font-size:.88rem;color:var(--ink-2);line-height:1.4}
+.botbar .status b{color:var(--ink)}
+.botbar .btn{white-space:nowrap}
+.foot{text-align:center;font-size:.8rem;color:var(--ink-3);margin-top:26px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap;align-items:center}
+@media (prefers-reduced-motion:no-preference){section.card.current{animation:in .25s ease-out}}
+@keyframes in{from{opacity:.4;transform:translateY(6px)}to{opacity:1;transform:none}}
 </style>
 
-<div class="wrap">
-<header class="top">
-  <div>
-    <div class="eyebrow">中三 Python 編程 · 第 1 堂</div>
-    <h1>開始寫 Python</h1>
-    <p class="small">四章：開始、語法、輸出、註解。每章先讀，再「試一試」，最後做「練習」。</p>
-  </div>
-  <div class="score">分數 <b id="scoreNow">0</b> / 100</div>
-</header>
-<nav class="toc" id="toc"></nav>
+<div class="topbar"><div class="in">
+  <div><div class="lesson">中三 Python 編程 · 第 1 堂</div><h1>開始寫 Python</h1></div>
+  <div class="score">分數 <b id="scoreNow">0</b><span class="small"> / 100</span></div>
+  <div class="steps" id="steps" role="tablist" aria-label="章節"></div>
+</div></div>
+
+<main id="main">
 
 <!-- 0 登記 -->
-<section class="card" id="s0" data-title="登記">
-  <header><span class="num">0</span><h2>登記</h2></header>
-  <div class="body">
-    <p>進度會自動儲存在這部電腦的瀏覽器。換電腦做的話，請用同一個瀏覽器帳戶，或最後一次過完成。</p>
-    <div class="row">
-      <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
-      <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
-      <label class="f">學號<input type="text" id="stNo" inputmode="numeric" autocomplete="off"></label>
-    </div>
-    <div class="row"><button class="btn go" id="btnStart">開始</button><span class="small" id="pyStatus">正在載入 Python 執行器…</span></div>
+<section class="card" id="s0" data-title="登記" data-short="登記">
+  <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
+  <p>這一堂有四章，每章都是「學 → 試 → 練」三步，然後做一個作品和小測。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
+  <div class="row">
+    <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
+    <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
+    <label class="f">學號<input type="text" id="stNo" inputmode="numeric" autocomplete="off"></label>
   </div>
+  <div class="row"><button class="btn go" id="btnStart">開始第 1 章</button><span class="small" id="pyStatus">正在載入 Python 執行器…</span></div>
 </section>
 
 <!-- 1 Get Started -->
-<section class="card locked" id="s1" data-title="開始">
-  <header><span class="num">1</span><h2>開始：第一個 Python 程式</h2><span class="marks" id="m1">0 / 10 分</span></header>
-  <div class="body">
-    <p>Python 是一種用<b>文字</b>寫的程式語言。你打一行指令，電腦就做一件事。我們用 <b>Thonny</b> 這個程式來寫和執行 Python。</p>
-    <h3>在 Thonny 執行第一個程式</h3>
-    <ol class="steps">
-      <li>開啟 Thonny。上半部白色的大格是<b>編輯器</b>，用來打程式；下半部「Shell」是<b>輸出</b>，結果會在這裏出現。</li>
-      <li>在編輯器打：<code>print("Hello, World!")</code></li>
-      <li>按綠色 ▶ 按鈕（或鍵盤 F5）。第一次會叫你儲存檔案，檔名用 <code>L01_你的名字.py</code>。</li>
-      <li>看 Shell：出現 <code>Hello, World!</code> 就成功了。</li>
+<section class="card" id="s1" data-title="開始：第一個 Python 程式" data-short="1 開始">
+  <header><div class="chapter">第 1 章</div><h2>第一個 Python 程式</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>在 Thonny 打一行程式並執行</li><li>知道 <code>print()</code> 是「印出來」</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">Python 是用文字寫的</div>
+    <p>你打一行指令，電腦就做一件事。我們用 <b>Thonny</b> 來寫和執行 Python。Thonny 的畫面分兩部分：</p>
+    <figure><svg viewBox="0 0 560 300" role="img" aria-label="Thonny 畫面示意：上方工具列有綠色執行按鈕，中間是編輯器，下方是 Shell 輸出">
+      <rect x="1" y="1" width="558" height="298" rx="10" fill="#f6f8fa" stroke="#aab4c0"/>
+      <rect x="1" y="1" width="558" height="34" rx="10" fill="#e3e8ee"/><rect x="1" y="20" width="558" height="15" fill="#e3e8ee"/>
+      <text x="16" y="23" font-size="13" fill="#4a5664" font-family="sans-serif">Thonny</text>
+      <rect x="92" y="8" width="20" height="20" rx="4" fill="#fff" stroke="#aab4c0"/><rect x="118" y="8" width="20" height="20" rx="4" fill="#fff" stroke="#aab4c0"/>
+      <rect x="150" y="6" width="26" height="24" rx="5" fill="#2ea043"/><path d="M159 11 L170 18 L159 25 Z" fill="#fff"/>
+      <text x="184" y="23" font-size="12" fill="#4a5664" font-family="sans-serif">← 綠色 ▶ 執行（或按 F5）</text>
+      <rect x="12" y="46" width="536" height="120" rx="6" fill="#fff" stroke="#aab4c0"/>
+      <text x="24" y="70" font-size="14" fill="#1c2733" font-family="monospace">print("Hello, World!")</text>
+      <text x="24" y="92" font-size="13" fill="#9aa5b1" font-family="monospace">|</text>
+      <rect x="430" y="52" width="110" height="24" rx="12" fill="#2f6fde"/><text x="485" y="69" font-size="12" fill="#fff" text-anchor="middle" font-family="sans-serif">編輯器：打程式</text>
+      <rect x="12" y="178" width="536" height="108" rx="6" fill="#fff" stroke="#aab4c0"/>
+      <text x="24" y="196" font-size="12" fill="#4a5664" font-family="sans-serif">Shell</text>
+      <text x="24" y="222" font-size="14" fill="#7b8794" font-family="monospace">&gt;&gt;&gt; %Run L01_陳大文.py</text>
+      <text x="24" y="246" font-size="14" fill="#1c2733" font-family="monospace">Hello, World!</text>
+      <text x="24" y="270" font-size="14" fill="#7b8794" font-family="monospace">&gt;&gt;&gt;</text>
+      <rect x="430" y="184" width="110" height="24" rx="12" fill="#1f8f5a"/><text x="485" y="201" font-size="12" fill="#fff" text-anchor="middle" font-family="sans-serif">Shell：看結果</text>
+    </svg><figcaption>Thonny 畫面示意圖。上面打程式，按綠色 ▶，結果在下面出現。</figcaption></figure>
+    <ol class="steps-list">
+      <li>開啟 Thonny。</li>
+      <li>在上面的編輯器打：<code>print("Hello, World!")</code></li>
+      <li>按綠色 ▶（或鍵盤 F5）。第一次會叫你儲存檔案，檔名用 <code>L01_你的名字.py</code>。</li>
+      <li>看下面的 Shell：出現 <code>Hello, World!</code> 就成功了。</li>
     </ol>
-    <div class="key"><code>print()</code> 的意思是「印出來」。括號裏面放你想印的東西，文字要用引號 <code>" "</code> 包住。</div>
-    <div id="c1"></div>
+    <div class="key"><code>print()</code> 的意思是「印出來」。括號裏面放你想印的東西；文字要用引號 <code>" "</code> 包住。</div>
   </div>
+  <div id="c1"></div>
+  <div class="summary" id="sum1"><b>小結</b>　<code>print("…")</code> 把引號裏的文字印出來；程式在 Thonny 上面寫，結果在下面看。</div>
 </section>
 
 <!-- 2 Syntax -->
-<section class="card locked" id="s2" data-title="語法">
-  <header><span class="num">2</span><h2>語法：Python 很在意空格和大小寫</h2><span class="marks" id="m2">0 / 10 分</span></header>
-  <div class="body">
-    <p>每種語言都有文法，程式語言的文法叫<b>語法（syntax）</b>。Python 有兩條規矩和其他語言很不同：</p>
+<section class="card" id="s2" data-title="語法：空格和大小寫" data-short="2 語法">
+  <header><div class="chapter">第 2 章</div><h2>Python 很在意空格和大小寫</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>知道行首的空格（縮排）是有意思的</li><li>知道 <code>print</code> 和 <code>Print</code> 不一樣</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">兩條和其他語言不同的規矩</div>
     <h3>一、行首的空格是有意思的</h3>
     <p>Python 用<b>縮排</b>（行首的空格，通常 4 個）表示「這一行屬於上一行」。看這個例子（<code>if</code> 第 4 堂才學，先看縮排就夠）：</p>
     <pre class="ex">if 5 > 2:
-    print("五大過二")</pre>
-    <p>第 2 行有 4 個空格，表示它是 <code>if</code> 底下的動作。如果你刪去這些空格，Python 會報錯。相反，一行普通的 <code>print</code> 前面<b>不可以</b>有空格。</p>
+    print("五大過二")   <span class="cm"># 前面 4 個空格：屬於 if</span></pre>
+    <p>相反，一行普通的 <code>print</code> 前面<b>不可以</b>有空格。Python 一看到不合規矩的縮排，整個程式都不會執行。</p>
     <h3>二、分大小寫</h3>
-    <p><code>print</code> 和 <code>Print</code> 是兩個不同的名字。Python 只認識小寫的 <code>print</code>。</p>
-    <div id="c2"></div>
+    <p><code>print</code> 和 <code>Print</code> 是兩個不同的名字。Python 只認識小寫的 <code>print</code>，打了大寫會出 <code>NameError</code>。</p>
+    <div class="tip">在 Thonny 看到的錯誤名稱可能和這裏的執行器略有不同，例如縮排錯誤在 Thonny 叫 <code>IndentationError</code>。看英文名稱的第一個字就夠。</div>
   </div>
+  <div id="c2"></div>
+  <div class="summary"><b>小結</b>　普通一行不可以有行首空格；指令要小寫。出錯時先看紅字的英文名稱和行號。</div>
 </section>
 
 <!-- 3 Output -->
-<section class="card locked" id="s3" data-title="輸出">
-  <header><span class="num">3</span><h2>輸出：print 可以印文字，也可以印數字</h2><span class="marks" id="m3">0 / 10 分</span></header>
-  <div class="body">
+<section class="card" id="s3" data-title="輸出：文字和數字" data-short="3 輸出">
+  <header><div class="chapter">第 3 章</div><h2>print 可以印文字，也可以印數字</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>分辨 <code>3 + 4</code> 和 <code>"3 + 4"</code></li><li>用逗號一次印幾樣東西</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">引號決定是文字還是計算</div>
     <h3>印文字</h3>
-    <p>文字放在引號裏。印出來時引號不會顯示。雙引號 <code>" "</code> 和單引號 <code>' '</code> 都可以，但要成對。</p>
+    <p>文字放在引號裏，印出來時引號不會顯示。雙引號 <code>" "</code> 和單引號 <code>' '</code> 都可以，但要成對。</p>
     <pre class="ex">print("你好")
 print('你好')</pre>
     <h3>印數字</h3>
     <p>數字<b>不用</b>引號。沒有引號的 <code>3 + 4</code> 會先計算，印出 <code>7</code>；有引號的 <code>"3 + 4"</code> 是文字，照樣印 <code>3 + 4</code>。</p>
-    <pre class="ex">print(3 + 4)
-print("3 + 4")</pre>
+    <pre class="ex">print(3 + 4)      <span class="cm"># 7</span>
+print("3 + 4")    <span class="cm"># 3 + 4</span></pre>
     <h3>一次印幾樣東西</h3>
     <p>用逗號分開，Python 會自動在中間加一個空格。每個 <code>print</code> 印完會自動換行；<code>print()</code> 括號留空就印一個空行。</p>
     <pre class="ex">print("分數：", 95)
 print()
 print("完")</pre>
-    <div id="c3"></div>
   </div>
+  <div id="c3"></div>
+  <div class="summary"><b>小結</b>　有引號照印，沒引號會計；逗號分隔會加空格；每個 print 一行。</div>
 </section>
 
 <!-- 4 Comments -->
-<section class="card locked" id="s4" data-title="註解">
-  <header><span class="num">4</span><h2>註解：寫給人看，電腦會跳過</h2><span class="marks" id="m4">0 / 10 分</span></header>
-  <div class="body">
-    <p><b>註解（comment）</b>由 <code>#</code> 開始，到該行結尾為止。Python 執行時會完全忽略它。註解是寫給自己和同學看的：這段程式做甚麼、為甚麼這樣寫。</p>
-    <pre class="ex"># 這是註解，不會執行
-print("你好")  # 註解也可以放在程式後面
-# print("這一行不會執行")</pre>
-    <p>第 3 行是一個常用技巧：暫時不想執行某一行，在前面加 <code>#</code> 把它「註解掉」，之後要用時刪去 <code>#</code> 就可以。</p>
+<section class="card" id="s4" data-title="註解：寫給人看" data-short="4 註解">
+  <header><div class="chapter">第 4 章</div><h2>註解：寫給人看，電腦會跳過</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>#</code> 寫註解</li><li>用 <code>#</code> 暫時關掉一行程式</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead"># 後面的全部不執行</div>
+    <p><b>註解（comment）</b>由 <code>#</code> 開始，到該行結尾為止，Python 會完全忽略。註解是寫給自己和同學看的：這段程式做甚麼、為甚麼這樣寫。</p>
+    <pre class="ex"><span class="cm"># 這是註解，不會執行</span>
+print("你好")  <span class="cm"># 註解也可以放在程式後面</span>
+<span class="cm"># print("這一行不會執行")</span></pre>
+    <p>第 3 行是常用技巧：暫時不想執行某一行，在前面加 <code>#</code> 把它「註解掉」；之後要用時刪去 <code>#</code> 就可以，不用重打。</p>
     <div class="key">好習慣：每個程式開頭寫一行註解，說明程式名稱和你的名字。</div>
-    <div id="c4"></div>
   </div>
+  <div id="c4"></div>
+  <div class="summary"><b>小結</b>　<code>#</code> 到行尾都是註解；註解掉比刪去安全。</div>
 </section>
 
 <!-- 5 作品 -->
-<section class="card locked" id="s5" data-title="作品">
-  <header><span class="num">5</span><h2>作品：我的名牌</h2><span class="marks" id="m5">0 / 40 分</span></header>
-  <div class="body">
-    <p>這部分<b>在 Thonny 做</b>，做好後把整個程式貼到下面的執行器按「檢查」。三層可以只做第一層；進階和挑戰給有時間的同學。</p>
-    <div class="tip">在 Thonny：File → New，打好程式，儲存為 <code>L01_你的名字.py</code>，按 ▶ 執行。全選（Ctrl+A）複製（Ctrl+C）後貼到下面。</div>
-    <div id="tiers"></div>
-  </div>
+<section class="card" id="s5" data-title="作品：我的名牌" data-short="5 作品">
+  <header><div class="chapter">作品</div><h2>我的名牌</h2>
+    <div class="goal"><b>這部分在 Thonny 做。</b>做好後全選（Ctrl+A）、複製（Ctrl+C），貼到下面的執行器按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
+  <div id="tiers"></div>
 </section>
 
 <!-- 6 小測 -->
-<section class="card locked" id="s6" data-title="小測">
-  <header><span class="num">6</span><h2>小測</h2><span class="marks" id="m6">0 / 20 分</span></header>
-  <div class="body">
-    <p>這裏<b>不可以執行</b>，純粹靠估。每題只可作答一次。</p>
-    <div id="quiz"></div>
-    <div class="predict">
-      <div class="q">自評（5 分）：今天程式出錯時，你是怎樣找到原因的？寫一兩句。</div>
-      <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅色字的最後一行，再看它說的行號……"></textarea>
-      <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
-    </div>
+<section class="card" id="s6" data-title="小測" data-short="6 小測">
+  <header><div class="chapter">小測</div><h2>靠估，不可以執行</h2>
+    <div class="goal">三題，每題只可作答一次；最後寫一句自評。</div></header>
+  <div id="quiz"></div>
+  <div class="step make"><span class="mark">評</span>
+    <div class="lead">自評<small>5 分</small></div>
+    <p class="small">今天程式出錯時，你是怎樣找到原因的？寫一兩句。</p>
+    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅色字的最後一行，再看它說的行號……"></textarea>
+    <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
   </div>
 </section>
 
 <!-- 7 報告 -->
-<section class="card locked" id="s7" data-title="報告">
-  <header><span class="num">7</span><h2>成績報告</h2></header>
-  <div class="body">
-    <div class="report" id="reportBox"></div>
-    <div class="row">
-      <button class="btn go" id="btnSave">儲存報告檔案</button>
-      <button class="btn" id="btnCopy">複製報告文字</button>
-      <span class="small" id="saveFb"></span>
-    </div>
-    <p class="small">把報告檔案交給老師。報告有驗證碼，改動內容會令驗證碼失效。</p>
-    <p class="links">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_getstarted.asp" target="_blank" rel="noopener">Get Started</a> · <a href="https://www.w3schools.com/python/python_syntax.asp" target="_blank" rel="noopener">Syntax</a> · <a href="https://www.w3schools.com/python/python_output.asp" target="_blank" rel="noopener">Output</a> · <a href="https://www.w3schools.com/python/python_comments.asp" target="_blank" rel="noopener">Comments</a></p>
+<section class="card" id="s7" data-title="成績報告" data-short="7 報告">
+  <header><div class="chapter">完成</div><h2>成績報告</h2></header>
+  <div class="report" id="reportBox"></div>
+  <div class="row">
+    <button class="btn go" id="btnSave">儲存報告檔案</button>
+    <button class="btn" id="btnCopy">複製報告文字</button>
+    <span class="small" id="saveFb"></span>
   </div>
+  <p class="small">把報告檔案交給老師。報告有驗證碼，改動內容會令驗證碼失效。</p>
+  <p class="small">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_getstarted.asp" target="_blank" rel="noopener">Get Started</a>、<a href="https://www.w3schools.com/python/python_syntax.asp" target="_blank" rel="noopener">Syntax</a>、<a href="https://www.w3schools.com/python/python_output.asp" target="_blank" rel="noopener">Output</a>、<a href="https://www.w3schools.com/python/python_comments.asp" target="_blank" rel="noopener">Comments</a></p>
 </section>
 
-<footer>
-  <span>中三 Python 編程 · 第 1 堂 · 版本 2.0</span>
-  <button class="btn" id="btnTeacher" style="min-height:36px;padding:4px 12px">老師</button>
-  <button class="btn" id="btnReset" style="min-height:36px;padding:4px 12px">清除進度</button>
-</footer>
+<div class="foot">
+  <span>中三 Python 編程 · 第 1 堂 · 版本 2.1</span>
+  <button class="btn quiet" id="btnTeacher">老師</button>
+  <button class="btn quiet" id="btnReset">清除進度</button>
 </div>
+</main>
+
+<div class="botbar"><div class="in">
+  <button class="btn" id="btnPrev">上一章</button>
+  <div class="status" id="navStatus"></div>
+  <button class="btn go" id="btnNext">下一章</button>
+</div></div>
 
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js"></script>
@@ -257,7 +344,7 @@ const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- 狀態 ---------- */
-function fresh(){return {v:2,stu:null,stage:0,pred:{},ex:{},tiers:{},quiz:{a:{},reflect:'',reflectScore:0,done:false},finished:null,teacherUsed:false};}
+function fresh(){return {v:2,stu:null,stage:0,view:0,pred:{},ex:{},tiers:{},quiz:{a:{},reflect:'',reflectScore:0,done:false},finished:null,teacherUsed:false};}
 let S=fresh();
 function load(){try{const r=localStorage.getItem(KEY);if(r){const o=JSON.parse(r);if(o&&o.v===2)S=Object.assign(fresh(),o);}}catch(e){}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
@@ -268,26 +355,48 @@ const PRED_PTS=4, EX_PTS=5;
 function chapterScore(ch){let s=0;Object.entries(S.pred).forEach(([k,v])=>{if(k.startsWith(ch+'_')&&v.ok)s+=PRED_PTS;});const e=S.ex[ch];if(e&&e.ok)s+=e.score;return s;}
 function scores(){
   const c={1:chapterScore('c1'),2:chapterScore('c2'),3:chapterScore('c3'),4:chapterScore('c4')};
-  // 第 3 章有 2 題試一試（8）+ 練習 5 = 13；第 1、2、4 章各 4+5 = 9；合共 40
   const tiers=Object.values(S.tiers).reduce((a,b)=>a+(b.score||0),0);
   const quiz=Object.values(S.quiz.a).filter(x=>x&&x.ok).length*5+(S.quiz.reflectScore||0);
-  const total=c[1]+c[2]+c[3]+c[4]+tiers+quiz;
-  return {c,tiers,quiz,total};
+  return {c,tiers,quiz,total:c[1]+c[2]+c[3]+c[4]+tiers+quiz};
 }
 const CH_MAX={1:9,2:9,3:13,4:9};
-function refreshScore(){const sc=scores();$('#scoreNow').textContent=sc.total;
-  [1,2,3,4].forEach(i=>{$('#m'+i).textContent=`${sc.c[i]} / ${CH_MAX[i]} 分`;});
-  $('#m5').textContent=`${sc.tiers} / 40 分`;$('#m6').textContent=`${sc.quiz} / 20 分`;}
+function refreshScore(){$('#scoreNow').textContent=scores().total;renderNav();}
 
-/* ---------- 階段 ---------- */
+/* ---------- 章節顯示：一次一章 ---------- */
 const SECS=['s0','s1','s2','s3','s4','s5','s6','s7'];
-function renderStages(){
-  SECS.forEach((id,i)=>{const el=$('#'+id);el.classList.toggle('locked',i>S.stage);el.classList.toggle('done',i<S.stage);
-    let m=el.querySelector('.lockmsg');if(i>S.stage){if(!m){m=document.createElement('div');m.className='lockmsg';m.textContent='完成上一章後解鎖';el.appendChild(m);}}else if(m)m.remove();});
-  $('#toc').innerHTML=SECS.map((id,i)=>`<a href="#${id}" class="${i<S.stage?'done':i===S.stage?'now':''}">${i}. ${$('#'+id).dataset.title}</a>`).join('');
-  refreshScore();
+function chapterComplete(i){
+  if(i===0)return !!S.stu;
+  if(i>=1&&i<=4){const ch='c'+i;const preds=Object.keys(PRED_IDS[ch]||{});return PRED_IDS[ch].every(id=>S.pred[id])&&S.ex[ch]&&S.ex[ch].ok;}
+  if(i===5)return !!(S.tiers.t1&&S.tiers.t1.ok);
+  if(i===6)return S.quiz.done;
+  return false;
 }
-function advance(to){if(S.stage<to){S.stage=to;save();renderStages();const el=$('#'+SECS[to]);if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),150);}}
+function remaining(i){
+  if(i>=1&&i<=4){const ch='c'+i;const p=PRED_IDS[ch].filter(id=>!S.pred[id]).length;const e=S.ex[ch]&&S.ex[ch].ok?0:1;const parts=[];if(p)parts.push(`試一試 ${p} 題`);if(e)parts.push('練習');return parts.join('、');}
+  if(i===5)return S.tiers.t1&&S.tiers.t1.ok?'':'必做層';
+  if(i===6)return S.quiz.done?'':'提交小測';
+  return '';
+}
+function show(i){S.view=i;save();SECS.forEach((id,k)=>$('#'+id).classList.toggle('current',k===i));window.scrollTo({top:0,behavior:'instant'});renderNav();
+  const h=$('#'+SECS[i]+' h2');if(h){h.setAttribute('tabindex','-1');h.focus({preventScroll:true});}}
+function renderNav(){
+  const st=$('#steps');st.innerHTML=SECS.map((id,i)=>{const done=i<S.stage;const now=i===S.view;const can=i<=S.stage;return `<button role="tab" aria-selected="${now}" data-i="${i}" class="${done?'done':''} ${now?'now':''}" ${can?'':'disabled'} title="${esc($('#'+id).dataset.title)}"><span class="bar"></span><span class="lbl">${esc($('#'+id).dataset.short)}</span></button>`;}).join('');
+  $$('button',st).forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+  const i=S.view;const prev=$('#btnPrev'),next=$('#btnNext'),status=$('#navStatus');
+  prev.disabled=i===0;
+  const canNext=i<7&&(i<S.stage||chapterComplete(i));
+  next.disabled=!canNext;next.textContent=i>=7?'已完成':i===6?'看成績報告':'下一章';
+  const sc=scores();
+  if(i===0)status.innerHTML=S.stu?`<b>${esc(S.stu.name)}</b>，已登記`:'填好三格再按「開始第 1 章」';
+  else if(i<=4){const r=remaining(i);status.innerHTML=r?`這章還有：<b>${esc(r)}</b>`:`第 ${i} 章完成，<b>${sc.c[i]} / ${CH_MAX[i]} 分</b>`;}
+  else if(i===5){const r=remaining(5);status.innerHTML=r?`完成<b>必做</b>才可去小測；進階和挑戰隨時可補做`:`作品 <b>${sc.tiers} / 40 分</b>`;}
+  else if(i===6)status.innerHTML=S.quiz.done?`小測 <b>${sc.quiz} / 20 分</b>`:'三題和自評都要完成才可提交';
+  else status.innerHTML=`總分 <b>${sc.total} / 100</b>`;
+  [1,2,3,4].forEach(k=>{const el=$('#sum'+k);});
+}
+$('#btnPrev').addEventListener('click',()=>{if(S.view>0)show(S.view-1);});
+$('#btnNext').addEventListener('click',()=>{if($('#btnNext').disabled)return;advance(S.view+1);show(S.view+1);});
+function advance(to){if(S.stage<to){S.stage=to;save();}renderNav();}
 
 /* ---------- Python 執行器（Skulpt） ---------- */
 const PY={ready:typeof Sk!=='undefined'};
@@ -313,17 +422,18 @@ async function runSilent(code,inputs){
 }
 function makeRunner(host,cfg){
   const wrap=document.createElement('div');wrap.className='runner';
-  wrap.innerHTML=`<div class="bar"><span>${esc(cfg.label||'程式')}</span><span style="margin-left:auto"></span><button class="btn run" type="button">▶ 執行</button></div>
-  <textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼"></textarea>
-  <div class="outlabel">輸出</div><div class="out" aria-live="polite"></div>`;
+  wrap.innerHTML=`<div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>${esc(cfg.label||'程式')}</span><button class="btn run" type="button">▶ 執行</button></div>
+  <textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼" placeholder="${esc(cfg.placeholder||'')}"></textarea>
+  <div class="out" aria-live="polite"></div>`;
   host.appendChild(wrap);
   const ta=$('textarea',wrap), out=$('.out',wrap), btn=$('.btn.run',wrap);
   ta.value=cfg.code;
   ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;}});
   let running=false;
   async function run(){
-    if(running)return;if(!PY.ready){out.innerHTML='<span class="err">這裏暫時不能執行（Python 執行器未載入）。請在 Thonny 執行。</span>';return;}
-    running=true;btn.disabled=true;out.textContent='';let text='';
+    if(running)return;out.classList.add('show');
+    if(!PY.ready){out.innerHTML='<span class="lab">輸出</span><span class="err">這裏暫時不能執行（Python 執行器未載入）。請在 Thonny 執行。</span>';return;}
+    running=true;btn.disabled=true;out.innerHTML='<span class="lab">輸出</span>';let text='';
     const print=t=>{text+=t;out.appendChild(document.createTextNode(t));};
     const ask=prompt=>new Promise(res=>{const line=document.createElement('div');line.className='pin';line.innerHTML=`<span>${esc(prompt||'')}</span><input type="text" aria-label="輸入" autocomplete="off">`;out.appendChild(line);const inp=$('input',line);inp.focus();
       inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:(prompt||'')+v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
@@ -339,85 +449,81 @@ function makeRunner(host,cfg){
 }
 
 /* ---------- 試一試（先估後執行） ---------- */
+const KEYS='ABCD';
 function makePredict(host,cfg,store,per,onDone,noRun){
   const box=document.createElement('div');box.className='predict';
-  box.innerHTML=`<div class="q">${esc(cfg.q)}</div><pre class="ex">${esc(cfg.code)}</pre>
-  <div class="opts">${cfg.options.map((o,i)=>`<button type="button" class="opt" data-i="${i}"><pre>${esc(o)}</pre></button>`).join('')}</div>
-  <div class="row"><button class="btn go" type="button">${noRun?'確定答案':'執行看答案'}</button></div><div class="fbhost"></div>`;
+  box.innerHTML=`<p class="q">${esc(cfg.q)}</p><div class="grid"><div class="left"><pre class="ex">${esc(cfg.code)}</pre></div>
+  <div class="right"><div class="opts">${cfg.options.map((o,i)=>`<button type="button" class="opt" data-i="${i}"><span class="k">${KEYS[i]}</span><pre>${esc(o)}</pre></button>`).join('')}</div>
+  <div class="row"><button class="btn go" type="button">${noRun?'確定答案':'執行看答案'}</button></div><div class="fbhost"></div></div></div>`;
   host.appendChild(box);
   const opts=$$('.opt',box),go=$('.btn.go',box),fbh=$('.fbhost',box);let sel=null;
   let runner=null;
-  if(!noRun){runner=makeRunner(box,{id:cfg.id,code:cfg.code,label:'執行器（估完才可按；之後可以隨便改）'});runner.btn.disabled=true;}
-  function show(rec){opts.forEach((o,i)=>{o.disabled=true;if(i===cfg.answer)o.classList.add('right');else if(i===rec.sel)o.classList.add('wrong');});go.disabled=true;
-    fbh.innerHTML=`<div class="fb ${rec.ok?'ok':'bad'}">${rec.ok?'估對了，+'+per+' 分。':'估錯了。'} ${esc(cfg.why||'')}</div>`;if(runner)runner.btn.disabled=false;}
-  if(store[cfg.id]){show(store[cfg.id]);}
+  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可執行，之後隨便改'});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
+  function reveal(rec){opts.forEach((o,i)=>{o.disabled=true;if(i===cfg.answer)o.classList.add('right');else if(i===rec.sel)o.classList.add('wrong');});go.disabled=true;
+    fbh.innerHTML=`<div class="fb ${rec.ok?'ok':'bad'}">${rec.ok?'估對了，+'+per+' 分。':'估錯了。答案是 '+KEYS[cfg.answer]+'。'} ${esc(cfg.why||'')}</div>`;if(runner)runner.btn.disabled=false;}
+  if(store[cfg.id]){reveal(store[cfg.id]);}
   opts.forEach(o=>o.addEventListener('click',()=>{if(store[cfg.id])return;sel=+o.dataset.i;opts.forEach(x=>x.classList.toggle('sel',x===o));}));
   go.addEventListener('click',async()=>{if(sel===null){fbh.innerHTML='<div class="fb neutral">先選一個答案。</div>';return;}
-    const rec={sel,ok:sel===cfg.answer};store[cfg.id]=rec;save();show(rec);refreshScore();if(runner){await runner.run();}if(onDone)onDone();});
+    const rec={sel,ok:sel===cfg.answer};store[cfg.id]=rec;save();reveal(rec);refreshScore();if(runner){await runner.run();}if(onDone)onDone();});
 }
 
-/* ---------- 練習（W3Schools 式填空，以執行結果核對） ---------- */
+/* ---------- 練習（填空，以執行結果核對） ---------- */
 function makeExercise(host,cfg,onDone){
-  // cfg:{id,ch,q,code(含 ____),expect(輸出) 或 check(code,res)->{ok,msg},hints:[...]}
-  const box=document.createElement('div');box.className='predict';
-  box.innerHTML=`<div class="q">${esc(cfg.q)}</div>${cfg.expect!==undefined?`<p class="small">應該輸出：</p><pre class="ex">${esc(cfg.expect.replace(/\n$/,''))}</pre>`:''}`;
+  const box=document.createElement('div');box.className='exbox';
+  box.innerHTML=`<p class="q">${esc(cfg.q)}</p>${cfg.expect!==undefined?`<div class="want"><span class="lab">應該輸出</span><pre class="ex" style="margin-top:4px">${esc(cfg.expect.replace(/\n$/,''))}</pre></div>`:''}`;
   host.appendChild(box);
   const rec=S.ex[cfg.ch]||{ok:false,score:0,tries:0,revealed:false,code:null};
-  const r=makeRunner(box,{id:cfg.id,code:rec.code||cfg.code,label:'填上缺少的部分'});
-  const row=document.createElement('div');row.className='row hints';
-  row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><button class="btn" type="button" data-h>提示</button><button class="btn" type="button" data-a>顯示答案（只得 1 分）</button><span class="small" data-fb></span>`;
-  box.appendChild(row);const hb=document.createElement('div');box.appendChild(hb);
-  const fb=$('[data-fb]',row);let hi=0;
-  function done(){fb.innerHTML=`<span class="badge">完成 ${rec.score} 分</span>`;r.ta.readOnly=true;$('[data-check]',row).disabled=true;$('[data-a]',row).disabled=true;}
+  const r=makeRunner(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容'});
+  const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
+  const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button><button class="btn quiet" type="button" data-a>直接看答案（只得 1 分）</button></div></div>`;box.appendChild(help);
+  const fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
+  function pushHint(){if(hi<cfg.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(cfg.hints[hi])}</div>`;hi++;help.open=true;}else{$('[data-h]',help).disabled=true;}}
+  function done(){fb.innerHTML=`<span class="badge">✓ 完成，${rec.score} 分</span>`;r.ta.readOnly=true;$('[data-check]',row).disabled=true;$('[data-a]',help).disabled=true;}
   if(rec.ok)done();
-  $('[data-h]',row).addEventListener('click',()=>{if(hi<cfg.hints.length){hb.innerHTML+=`<div class="fb neutral">${esc(cfg.hints[hi++])}</div>`;}});
-  $('[data-a]',row).addEventListener('click',()=>{if(rec.ok)return;rec.revealed=true;S.ex[cfg.ch]=rec;save();hb.innerHTML+=`<div class="fb neutral">答案：<pre class="ex" style="margin:6px 0 0">${esc(cfg.answer)}</pre></div>`;});
+  $('[data-h]',help).addEventListener('click',pushHint);
+  $('[data-a]',help).addEventListener('click',()=>{if(rec.ok)return;rec.revealed=true;S.ex[cfg.ch]=rec;save();hints.innerHTML+=`<div class="fb neutral">答案：<pre class="ex" style="margin:6px 0 0">${esc(cfg.answer)}</pre></div>`;});
   $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;rec.code=code;rec.tries++;
-    if(code.includes('____')){hb.innerHTML+='<div class="fb bad">還有 ____ 未填。</div>';S.ex[cfg.ch]=rec;save();return;}
+    if(code.includes('____')){box.insertAdjacentHTML('beforeend','');fb.innerHTML='<span class="badge off">還有 ____ 未填</span>';S.ex[cfg.ch]=rec;save();return;}
     const res=await runSilent(code,[]);let ok,msg;
-    if(cfg.check){const c=cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看下面的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，比較一下。';}
+    if(cfg.check){const c=cfg.check(code,res);ok=c.ok;msg=c.msg;}else{ok=!res.err&&res.out===cfg.expect;msg=res.err?'程式出錯，看看輸出的錯誤訊息。':ok?'正確。':'輸出和應該輸出的不一樣，逐行比較一下。';}
     await r.run();
-    if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{if(rec.tries>=2&&hi<cfg.hints.length){hb.innerHTML+=`<div class="fb neutral">${esc(cfg.hints[hi++])}</div>`;}}
-    hb.innerHTML+=`<div class="fb ${ok?'ok':'bad'}">${esc(msg)}</div>`;
+    if(ok){rec.ok=true;rec.score=rec.revealed?1:EX_PTS;done();}else{fb.innerHTML=`<span class="badge off">${esc(msg)}</span>`;if(rec.tries>=2)pushHint();}
     S.ex[cfg.ch]=rec;save();refreshScore();if(ok&&onDone)onDone();});
 }
 
-/* ---------- 章節定義 ---------- */
-function sub(host,text,cls){const d=document.createElement('div');d.className='sub';d.innerHTML=`<span class="tag ${cls}">${cls==='try'?'試一試':'練習'}</span>${esc(text)}`;host.appendChild(d);}
-function chapterDone(ch,predIds,next){return()=>{if(predIds.every(id=>S.pred[id])&&S.ex[ch]&&S.ex[ch].ok)advance(next);};}
+/* ---------- 章節 ---------- */
+function step(host,kind,lead,pts){const d=document.createElement('div');d.className='step '+kind;d.innerHTML=`<span class="mark">${kind==='try'?'試':kind==='ex'?'練':'做'}</span><div class="lead">${esc(lead)}${pts?`<small>${esc(pts)}</small>`:''}</div>`;host.appendChild(d);return d;}
+const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a','c3_b'],c4:['c4_a']};
+function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
 
-// 第 1 章
-(function(){const h=$('#c1');const done=chapterDone('c1',['c1_a'],2);
-  sub(h,'先估這個程式會印出甚麼，選了才按「執行看答案」。估對 4 分。','try');
-  makePredict(h,{id:'c1_a',q:'這個程式會印出甚麼？',code:'print("Hello, World!")',options:['Hello, World!','"Hello, World!"','print("Hello, World!")','甚麼都沒有'],answer:0,why:'引號只是告訴 Python 這是文字，印出來時不會顯示引號。'},S.pred,PRED_PTS,done);
-  sub(h,'填上缺少的部分，令程式印出 Hello, Python!。答對 5 分。','ex');
-  makeExercise(h,{id:'c1_ex',ch:'c1',q:'練習 1',code:'____("Hello, Python!")',expect:'Hello, Python!\n',answer:'print("Hello, Python!")',hints:['「印出來」的指令是哪個字？','全部小寫：print']},done);
+(function(){const h=$('#c1');const done=chapterDone(1);
+  const t=step(h,'try','先估，再執行看答案','估對 4 分');
+  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'print("Hello, World!")',options:['Hello, World!','"Hello, World!"','print("Hello, World!")','甚麼都沒有'],answer:0,why:'引號只是告訴 Python 這是文字，印出來時不會顯示引號。'},S.pred,PRED_PTS,done);
+  const e=step(h,'ex','練習','答對 5 分');
+  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上缺少的部分，令程式印出 Hello, Python!。',code:'____("Hello, Python!")',expect:'Hello, Python!\n',answer:'print("Hello, Python!")',hints:['「印出來」的指令是哪個字？','全部小寫：print']},done);
 })();
-// 第 2 章
-(function(){const h=$('#c2');const done=chapterDone('c2',['c2_a'],3);
-  sub(h,'這個程式第 2 行前面多了空格。估一估會怎樣。','try');
-  makePredict(h,{id:'c2_a',q:'執行後會怎樣？',code:'print("第一行")\n    print("第二行")',options:['印出兩行','只印出 第一行','出錯，兩行都不印','印出 第二行 前面有空格'],answer:2,why:'普通的 print 前面不可以有空格。Python 一看到不合語法的縮排就整個程式不執行，所以第一行也不會印。'},S.pred,PRED_PTS,done);
-  sub(h,'這個程式有兩個語法問題：一個大小寫、一個縮排。改好它，令它印出兩行。','ex');
-  makeExercise(h,{id:'c2_ex',ch:'c2',q:'練習 2',code:'Print("Python 分大小寫")\n  print("行首不可以有空格")',expect:'Python 分大小寫\n行首不可以有空格\n',answer:'print("Python 分大小寫")\nprint("行首不可以有空格")',hints:['先執行一次，看紅色字第一個英文字是甚麼 Error。','第 1 行的 P 要小寫；第 2 行開頭的空格要刪去。']},done);
+(function(){const h=$('#c2');const done=chapterDone(2);
+  const t=step(h,'try','第 2 行前面多了空格，估一估會怎樣','估對 4 分');
+  makePredict(t,{id:'c2_a',q:'執行後會怎樣？',code:'print("第一行")\n    print("第二行")',options:['印出兩行','只印出 第一行','出錯，兩行都不印','印出 第二行 前面有空格'],answer:2,why:'普通的 print 前面不可以有空格。Python 一看到不合語法的縮排就整個程式不執行，所以第一行也不會印。'},S.pred,PRED_PTS,done);
+  const e=step(h,'ex','練習','答對 5 分');
+  makeExercise(e,{id:'c2_ex',ch:'c2',q:'這個程式有兩個語法問題：一個大小寫、一個縮排。改好它，令它印出兩行。',code:'Print("Python 分大小寫")\n  print("行首不可以有空格")',expect:'Python 分大小寫\n行首不可以有空格\n',answer:'print("Python 分大小寫")\nprint("行首不可以有空格")',hints:['先按執行，看紅色字第一個英文字是甚麼 Error。','第 1 行的 P 要小寫；第 2 行開頭的空格要刪去。']},done);
 })();
-// 第 3 章
-(function(){const h=$('#c3');const done=chapterDone('c3',['c3_a','c3_b'],4);
-  sub(h,'有引號和沒有引號有甚麼分別？','try');
-  makePredict(h,{id:'c3_a',q:'這個程式會印出甚麼？',code:'print(3 + 4)\nprint("3 + 4")',options:['7\n7','3 + 4\n3 + 4','7\n3 + 4','3 + 4\n7'],answer:2,why:'沒有引號的 3 + 4 是計算，印 7；有引號的是文字，照印。'},S.pred,PRED_PTS,done);
-  sub(h,'逗號會做甚麼？','try');
-  makePredict(h,{id:'c3_b',q:'這個程式會印出甚麼？',code:'print("分數：", 95)',options:['分數：95','分數： 95','分數：,95','出錯'],answer:1,why:'逗號可以把文字和數字一起印，中間會自動加一個空格。'},S.pred,PRED_PTS,done);
-  sub(h,'填上缺少的部分，令程式印出三行：你好、10、一共 10 件。數字不可以用引號。','ex');
-  makeExercise(h,{id:'c3_ex',ch:'c3',q:'練習 3',code:'print("你好")\nprint(____)\nprint("一共", ____, "件")',expect:'你好\n10\n一共 10 件\n',answer:'print("你好")\nprint(10)\nprint("一共", 10, "件")',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看下面的錯誤訊息。'};if(res.out!=='你好\n10\n一共 10 件\n')return {ok:false,msg:'輸出和應該輸出的不一樣，逐行比較。'};if(/print\(\s*["']10["']\s*\)/.test(code)||/,\s*["']10["']\s*,/.test(code))return {ok:false,msg:'輸出對了，但 10 是數字，不要用引號。'};return {ok:true,msg:'正確。'};},
+(function(){const h=$('#c3');const done=chapterDone(3);
+  const t1=step(h,'try','有引號和沒有引號有甚麼分別？','估對 4 分');
+  makePredict(t1,{id:'c3_a',q:'這個程式會印出甚麼？',code:'print(3 + 4)\nprint("3 + 4")',options:['7\n7','3 + 4\n3 + 4','7\n3 + 4','3 + 4\n7'],answer:2,why:'沒有引號的 3 + 4 是計算，印 7；有引號的是文字，照印。'},S.pred,PRED_PTS,done);
+  const t2=step(h,'try','逗號會做甚麼？','估對 4 分');
+  makePredict(t2,{id:'c3_b',q:'這個程式會印出甚麼？',code:'print("分數：", 95)',options:['分數：95','分數： 95','分數：,95','出錯'],answer:1,why:'逗號可以把文字和數字一起印，中間會自動加一個空格。'},S.pred,PRED_PTS,done);
+  const e=step(h,'ex','練習','答對 5 分');
+  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上缺少的部分，令程式印出三行：你好、10、一共 10 件。數字不可以用引號。',code:'print("你好")\nprint(____)\nprint("一共", ____, "件")',expect:'你好\n10\n一共 10 件\n',answer:'print("你好")\nprint(10)\nprint("一共", 10, "件")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看輸出的錯誤訊息。'};if(res.out!=='你好\n10\n一共 10 件\n')return {ok:false,msg:'輸出和應該輸出的不一樣，逐行比較。'};if(/print\(\s*["']10["']\s*\)/.test(code)||/,\s*["']10["']\s*,/.test(code))return {ok:false,msg:'輸出對了，但 10 是數字，不要用引號。'};return {ok:true,msg:'正確。'};},
     hints:['第 2 行只印一個數字 10。','第 3 行三樣東西用逗號分開，中間的是數字 10。']},done);
 })();
-// 第 4 章
-(function(){const h=$('#c4');const done=chapterDone('c4',['c4_a'],5);
-  sub(h,'註解會不會影響輸出？','try');
-  makePredict(h,{id:'c4_a',q:'這個程式會印出幾行？',code:'# 名牌程式\nprint("陳大文")  # 姓名\n# print("3A")\nprint("中三")',options:['1 行','2 行','3 行','4 行'],answer:1,why:'# 後面的全部被跳過：第 1 行整行是註解，第 3 行被註解掉，所以只印 陳大文 和 中三。'},S.pred,PRED_PTS,done);
-  sub(h,'這個程式本來應該只印「開始」和「完結」。把多餘的一行註解掉，並在最頂加一行註解寫上程式名稱。','ex');
-  makeExercise(h,{id:'c4_ex',ch:'c4',q:'練習 4',code:'print("開始")\nprint("測試中，之後刪去")\nprint("完結")',expect:'開始\n完結\n',answer:'# 練習 4\nprint("開始")\n# print("測試中，之後刪去")\nprint("完結")',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看下面的錯誤訊息。'};if(res.out!=='開始\n完結\n')return {ok:false,msg:'輸出應該只有 開始 和 完結 兩行。'};const lines=code.split('\n');if(!/^\s*#/.test(lines[0]))return {ok:false,msg:'輸出對了，但最頂還未加一行註解。'};if(!lines.some(l=>/^\s*#\s*print\(/.test(l)))return {ok:false,msg:'輸出對了，但要用 # 把那一行註解掉，不是刪去。'};return {ok:true,msg:'正確。'};},
+(function(){const h=$('#c4');const done=chapterDone(4);
+  const t=step(h,'try','註解會不會影響輸出？','估對 4 分');
+  makePredict(t,{id:'c4_a',q:'這個程式會印出幾行？',code:'# 名牌程式\nprint("陳大文")  # 姓名\n# print("3A")\nprint("中三")',options:['1 行','2 行','3 行','4 行'],answer:1,why:'# 後面的全部被跳過：第 1 行整行是註解，第 3 行被註解掉，所以只印 陳大文 和 中三。'},S.pred,PRED_PTS,done);
+  const e=step(h,'ex','練習','答對 5 分');
+  makeExercise(e,{id:'c4_ex',ch:'c4',q:'這個程式本來應該只印「開始」和「完結」。把多餘的一行註解掉（不是刪去），並在最頂加一行註解寫上程式名稱。',code:'print("開始")\nprint("測試中，之後刪去")\nprint("完結")',expect:'開始\n完結\n',answer:'# 練習 4\nprint("開始")\n# print("測試中，之後刪去")\nprint("完結")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看輸出的錯誤訊息。'};if(res.out!=='開始\n完結\n')return {ok:false,msg:'輸出應該只有 開始 和 完結 兩行。'};const lines=code.split('\n');if(!/^\s*#/.test(lines[0]))return {ok:false,msg:'輸出對了，但最頂還未加一行註解。'};if(!lines.some(l=>/^\s*#\s*print\(/.test(l)))return {ok:false,msg:'輸出對了，但要用 # 把那一行註解掉，不是刪去。'};return {ok:true,msg:'正確。'};},
     hints:['在不想執行的那行最前面加 #。','第一行寫 # 再加程式名稱，例如 # 練習 4。']},done);
 })();
 
@@ -426,44 +532,45 @@ function outLines(res){return res.out.replace(/\n$/,'').split('\n');}
 const TIERS=[
   {id:'t1',pill:'必做',cls:'',pts:25,title:'名牌：最少 5 行',
    desc:'用 <code>print</code> 印出你的名牌：姓名、班別、三樣關於你的事（例如興趣、喜歡的食物、想去的地方）。最少 5 行，最頂和最底各加一行由 10 個以上相同符號組成的框線，例如 <code>==========</code>。',
-   code:'',hints:['每一行一個 print。','框線：print("==========")，兩行一樣。','最少 5 行內容再加 2 行框線，一共 7 個 print。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看下面的錯誤訊息。'};const L=outLines(res);const border=L.filter(l=>/^(.)\1{9,}$/.test(l.trim()));const body=L.filter(l=>l.trim()&&!/^(.)\1{9,}$/.test(l.trim()));
+   hints:['每一行一個 print。','框線：print("==========")，最頂和最底各一行。','最少 5 行內容再加 2 行框線，一共 7 個 print。'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看輸出的錯誤訊息。'};const L=outLines(res);const isB=l=>/^(.)\1{9,}$/.test(l.trim());const border=L.filter(isB);const body=L.filter(l=>l.trim()&&!isB(l));
      if(border.length<2)return {ok:false,msg:'要有兩行框線，每行由 10 個以上相同符號組成。'};if(body.length<5)return {ok:false,msg:`內容只有 ${body.length} 行，最少要 5 行。`};return {ok:true,msg:'名牌完成。'};}},
   {id:'t2',pill:'進階',cls:'g',pts:10,title:'加註解和一個計算',
    desc:'在必做的程式上：最頂加一行註解寫程式名稱和你的名字；最少再加一行註解說明某一行做甚麼；並加一行印出<b>計算結果</b>的 print，例如 <code>print("出生年份：", 2026 - 15)</code>，數字不用引號。',
-   code:'',hints:['註解由 # 開始。','計算放在括號內，不要用引號包住，Python 才會計。','例如 print("我今年", 2026 - 2011, "歲")。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看下面的錯誤訊息。'};const lines=code.split('\n');const comments=lines.filter(l=>/^\s*#/.test(l)||/\)\s*#/.test(l));if(comments.length<2)return {ok:false,msg:`只找到 ${comments.length} 行註解，最少要 2 行（其中一行在最頂）。`};if(!/^\s*#/.test(lines[0]))return {ok:false,msg:'最頂一行要是註解。'};
+   hints:['註解由 # 開始。','計算放在括號內，不要用引號包住，Python 才會計。','例如 print("我今年", 2026 - 2011, "歲")。'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看輸出的錯誤訊息。'};const lines=code.split('\n');const comments=lines.filter(l=>/^\s*#/.test(l)||/\)\s*#/.test(l));if(comments.length<2)return {ok:false,msg:`只找到 ${comments.length} 行註解，最少要 2 行（其中一行在最頂）。`};if(!/^\s*#/.test(lines[0]))return {ok:false,msg:'最頂一行要是註解。'};
      const stripped=code.replace(/"[^"]*"|'[^']*'/g,'""');if(!/print\([^)]*\d\s*[-+*/]\s*\d[^)]*\)/.test(stripped))return {ok:false,msg:'要有一行 print 裏面有數字計算（例如 2026 - 15），而且不在引號內。'};return {ok:true,msg:'進階完成。'};}},
   {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'文字圖案',
    desc:'只用符號（例如 <code>* / \\ | _ -</code>）印出一個最少 6 行的圖案，例如一棵樹、一隻貓或一間屋。整個圖案最少 20 個符號。',
-   code:'',hints:['先在紙上畫好，再逐行 print。','反斜線 \\ 要打兩個：print("\\\\")。','如果行首有空格，記得空格要在引號裏面。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看下面的錯誤訊息。'};const L=outLines(res).filter(l=>l.trim());if(L.length<6)return {ok:false,msg:`圖案只有 ${L.length} 行，最少 6 行。`};const ink=L.join('').replace(/\s/g,'').length;if(ink<20)return {ok:false,msg:`圖案只有 ${ink} 個符號，最少 20 個。`};const all=L.join('');const sym=(all.match(/[^\p{L}\p{N}\s]/gu)||[]).length;if(sym<all.replace(/\s/g,'').length*0.6)return {ok:false,msg:'圖案主要應由符號組成，不是文字。'};return {ok:true,msg:'挑戰完成。'};}},
+   hints:['先在紙上畫好，再逐行 print。','反斜線 \\ 要打兩個：print("\\\\")。','行首的空格要在引號裏面。'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看輸出的錯誤訊息。'};const L=outLines(res).filter(l=>l.trim());if(L.length<6)return {ok:false,msg:`圖案只有 ${L.length} 行，最少 6 行。`};const ink=L.join('').replace(/\s/g,'').length;if(ink<20)return {ok:false,msg:`圖案只有 ${ink} 個符號，最少 20 個。`};const all=L.join('');const sym=(all.match(/[^\p{L}\p{N}\s]/gu)||[]).length;if(sym<all.replace(/\s/g,'').length*0.6)return {ok:false,msg:'圖案主要應由符號組成，不是文字。'};return {ok:true,msg:'挑戰完成。'};}},
 ];
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
-  box.innerHTML=`<h3><span class="pill ${t.cls}">${t.pill}</span>${esc(t.title)}<span class="small" style="margin-left:auto" id="tfb_${t.id}"></span></h3><p>${t.desc}</p>`;host.appendChild(box);
+  box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
   const rec=S.tiers[t.id]||{ok:false,score:0,code:null};
-  const r=makeRunner(box,{id:t.id,code:rec.code||t.code,label:`${t.pill} · ${t.pts} 分 · 在 Thonny 做好後貼進來`});
-  const row=document.createElement('div');row.className='row hints';row.innerHTML=t.hints.map((h,i)=>`<button class="btn" type="button" data-h="${i}">提示 ${i+1}</button>`).join('')+`<button class="btn go" type="button" data-check>檢查</button>`;box.appendChild(row);
-  const hb=document.createElement('div');box.appendChild(hb);const fbEl=$('#tfb_'+t.id);
-  if(rec.ok){fbEl.innerHTML=`<span class="badge">完成 ${rec.score} 分</span>`;r.ta.readOnly=true;}
-  $$('[data-h]',row).forEach(b=>b.addEventListener('click',()=>{hb.innerHTML+=`<div class="fb neutral">${esc(t.hints[+b.dataset.h])}</div>`;}));
-  $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;if(!code.trim()){hb.innerHTML+='<div class="fb bad">先貼上程式。</div>';return;}rec.code=code;
-    const res=await runSilent(code,[]);const c=t.check(code,res);await r.run();hb.innerHTML+=`<div class="fb ${c.ok?'ok':'bad'}">${esc(c.msg)}</div>`;
-    if(c.ok){rec.ok=true;rec.score=t.pts;fbEl.innerHTML=`<span class="badge">完成 ${t.pts} 分</span>`;r.ta.readOnly=true;}
+  const r=makeRunner(box,{id:t.id,code:rec.code||'',label:'在 Thonny 做好後貼進來',placeholder:'# 把你在 Thonny 寫好的程式貼到這裏'});
+  const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
+  const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button></div></div>`;box.appendChild(help);
+  const fbEl=$('#tfb_'+t.id),fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
+  if(rec.ok){fbEl.innerHTML=`<span class="badge">✓ ${rec.score} 分</span>`;r.ta.readOnly=true;}else fbEl.innerHTML='<span class="badge off">未完成</span>';
+  $('[data-h]',help).addEventListener('click',()=>{if(hi<t.hints.length){hints.innerHTML+=`<div class="fb neutral">提示 ${hi+1}：${esc(t.hints[hi])}</div>`;hi++;}else $('[data-h]',help).disabled=true;});
+  $('[data-check]',row).addEventListener('click',async()=>{if(rec.ok)return;const code=r.ta.value;if(!code.trim()){fb.innerHTML='<span class="badge off">先貼上程式</span>';return;}rec.code=code;
+    const res=await runSilent(code,[]);const c=t.check(code,res);await r.run();
+    if(c.ok){rec.ok=true;rec.score=t.pts;fbEl.innerHTML=`<span class="badge">✓ ${t.pts} 分</span>`;fb.innerHTML=`<span class="badge">${esc(c.msg)}</span>`;r.ta.readOnly=true;}else fb.innerHTML=`<span class="badge off">${esc(c.msg)}</span>`;
     S.tiers[t.id]=rec;save();refreshScore();if(S.tiers.t1&&S.tiers.t1.ok)advance(6);});
 });
 
 /* ---------- 小測 ---------- */
 const QUIZ=[
-  {id:'q1',q:'小測 1（5 分）：印出甚麼？',code:'print("2 + 2")\nprint(2 + 2)',options:['2 + 2\n4','4\n4','2 + 2\n2 + 2','4\n2 + 2'],answer:0,why:'有引號是文字，沒有引號是計算。'},
-  {id:'q2',q:'小測 2（5 分）：哪一個程式會出錯？',code:'A: print("a")\nB: Print("a")\nC: print(\'a\')\nD: print("a")  # 印 a',options:['A','B','C','D'],answer:1,why:'Python 分大小寫，Print 不是 print。單引號和註解都沒有問題。'},
-  {id:'q3',q:'小測 3（5 分）：這個程式印出幾行？',code:'print("一")\n# print("二")\nprint()\nprint("三")',options:['2 行','3 行（其中一行空白）','4 行','出錯'],answer:1,why:'第 2 行被註解掉；print() 印一個空行；所以是「一」、空行、「三」共 3 行。'},
+  {id:'q1',q:'印出甚麼？',code:'print("2 + 2")\nprint(2 + 2)',options:['2 + 2\n4','4\n4','2 + 2\n2 + 2','4\n2 + 2'],answer:0,why:'有引號是文字，沒有引號是計算。'},
+  {id:'q2',q:'哪一個程式會出錯？',code:'A: print("a")\nB: Print("a")\nC: print(\'a\')\nD: print("a")  # 印 a',options:['A','B','C','D'],answer:1,why:'Python 分大小寫，Print 不是 print。單引號和註解都沒有問題。'},
+  {id:'q3',q:'這個程式印出幾行？',code:'print("一")\n# print("二")\nprint()\nprint("三")',options:['2 行','3 行（其中一行空白）','4 行','出錯'],answer:1,why:'第 2 行被註解掉；print() 印一個空行；所以是「一」、空行、「三」共 3 行。'},
 ];
-QUIZ.forEach(c=>makePredict($('#quiz'),c,S.quiz.a,5,null,true));
+QUIZ.forEach((c,i)=>{const s=step($('#quiz'),'try',`小測 ${i+1}`,'5 分');makePredict(s,c,S.quiz.a,5,()=>renderNav(),true);});
 if(S.quiz.done){$('#reflect').value=S.quiz.reflect;$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';}
 $('#btnExit').addEventListener('click',()=>{if(S.quiz.done)return;const missing=QUIZ.filter(c=>!S.quiz.a[c.id]).length;if(missing){$('#exitFb').textContent=`還有 ${missing} 題未作答。`;return;}
   const t=$('#reflect').value.trim();if(t.length<6){$('#exitFb').textContent='自評請最少寫一句。';return;}
-  S.quiz.reflect=t;S.quiz.reflectScore=5;S.quiz.done=true;S.finished=new Date().toISOString();save();$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';refreshScore();buildReport();advance(7);});
+  S.quiz.reflect=t;S.quiz.reflectScore=5;S.quiz.done=true;S.finished=new Date().toISOString();save();$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';refreshScore();buildReport();advance(7);show(7);});
 
 /* ---------- 報告 ---------- */
 async function hmac(msg){try{const enc=new TextEncoder();const k=await crypto.subtle.importKey('raw',enc.encode(SIGN),{name:'HMAC',hash:'SHA-256'},false,['sign']);const sig=await crypto.subtle.sign('HMAC',k,enc.encode(msg));return Array.from(new Uint8Array(sig)).slice(0,8).map(b=>b.toString(16).padStart(2,'0')).join('');}
@@ -477,7 +584,7 @@ async function buildReport(){if(!S.stu||!S.finished)return;const sc=scores();con
   $('#reportBox').innerHTML=`<h3 style="margin-top:0">中三 Python 第 1 堂 開始寫 Python · 成績報告</h3><p>${esc(S.stu.cls)} 班 ${esc(S.stu.no)} 號 ${esc(S.stu.name)} · ${esc(when)}${S.teacherUsed?' · <b>曾用老師模式</b>':''}</p>
   <div class="tablewrap"><table><thead><tr><th>部分</th><th>得分</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]} / ${r[2]}</td></tr>`).join('')}<tr><th>總分</th><th>${sc.total} / 100（${grade}）</th></tr></tbody></table></div>
   <p class="small">作品：${tierTxt}　小測：${QUIZ.map(c=>S.quiz.a[c.id]&&S.quiz.a[c.id].ok?'✓':'✗').join('')}</p>
-  <p class="small">自評：${esc(S.quiz.reflect)}</p><p class="mono">驗證碼 ${code}</p>`;
+  <p class="small">自評：${esc(S.quiz.reflect)}</p><p style="font-family:var(--font-mono)">驗證碼 ${code}</p>`;
   reportText=`中三 Python 第 1 堂 開始寫 Python 成績報告\n${S.stu.cls} 班 ${S.stu.no} 號 ${S.stu.name}\n${when}\n`+rows.map(r=>`${r[0]}：${r[1]} / ${r[2]}`).join('\n')+`\n總分：${sc.total} / 100（${grade}）\n作品：${tierTxt}\n自評：${S.quiz.reflect}\n驗證碼：${code}`;
   const codes=TIERS.filter(t=>S.tiers[t.id]&&S.tiers[t.id].code).map(t=>`<h3>${t.pill}：${esc(t.title)}</h3><pre>${esc(S.tiers[t.id].code)}</pre>`).join('');
   reportHTML=`<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><title>${APP} ${esc(S.stu.cls)} ${esc(S.stu.no)} ${esc(S.stu.name)}</title><style>body{font-family:"Noto Sans TC",sans-serif;max-width:720px;margin:30px auto;padding:0 16px;line-height:1.6}table{border-collapse:collapse}td,th{border:1px solid #999;padding:6px 10px}pre{background:#f0f0f0;padding:10px;white-space:pre-wrap}</style></head><body>${$('#reportBox').innerHTML}<hr>${codes}<p style="color:#666;font-size:.85em">${APP} · 資料行：${esc(canon())}</p></body></html>`;
@@ -492,22 +599,23 @@ function alertBox(html,actions){const m=document.createElement('div');m.classNam
   $$('button',m).forEach(b=>b.addEventListener('click',()=>{m.remove();const a=(actions||[])[+b.dataset.i];if(a&&a.fn)a.fn();}));}
 if(S.stu){$('#stName').value=S.stu.name;$('#stClass').value=S.stu.cls;$('#stNo').value=S.stu.no;}
 $('#btnStart').addEventListener('click',()=>{const name=$('#stName').value.trim(),cls=$('#stClass').value.trim(),no=$('#stNo').value.trim();
-  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();advance(1);});
+  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();advance(1);show(1);});
 $('#btnReset').addEventListener('click',()=>alertBox('清除這部電腦上的全部進度和分數？',[{t:'取消'},{t:'清除',go:true,fn:()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();}}]));
 $('#btnTeacher').addEventListener('click',()=>{const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h3 style="margin-top:0">老師模式</h3><div class="row"><input type="text" id="pin" placeholder="PIN" style="flex:1"><button class="btn go" id="pinGo">進入</button><button class="btn" id="pinX">關閉</button></div><div id="tpanel"></div></div>`;document.body.appendChild(m);
   $('#pinX',m).addEventListener('click',()=>m.remove());
   $('#pinGo',m).addEventListener('click',()=>{if($('#pin',m).value!==PIN){$('#tpanel',m).innerHTML='<p class="fb bad">PIN 不正確。</p>';return;}
     const p=$('#tpanel',m);
-    const preds=[['c1_a','Hello, World!'],['c2_a','出錯，兩行都不印'],['c3_a','7 / 3 + 4'],['c3_b','分數： 95'],['c4_a','2 行']];
+    const preds=[['c1_a','A Hello, World!'],['c2_a','C 出錯，兩行都不印'],['c3_a','C 7 / 3 + 4'],['c3_b','B 分數： 95'],['c4_a','B 2 行']];
     const exs=[['練習 1','print("Hello, Python!")'],['練習 2','print("Python 分大小寫") / print("行首不可以有空格")'],['練習 3','print(10) / print("一共", 10, "件")'],['練習 4','# 練習 4 / # print("測試中，之後刪去")']];
-    p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${esc(c.options[c.answer])}</li>`).join('')}</ul>
+    p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${KEYS[c.answer]} ${esc(c.options[c.answer])}</li>`).join('')}</ul>
     <h3>核對驗證碼</h3><p class="small">貼上報告底部的「資料行」。</p><textarea id="vline" rows="2"></textarea><div class="row"><button class="btn go" id="vgo">核對</button><span id="vfb" class="small"></span></div>
     <h3>跳到任何一章（會在報告標示）</h3><div class="row">${SECS.map((s,i)=>`<button class="btn" data-j="${i}">${i}</button>`).join('')}</div>`;
     $('#vgo',p).addEventListener('click',async()=>{const line=$('#vline',p).value.trim();const code=await hmac(line);$('#vfb',p).textContent=line.startsWith(APP+'|')?`此資料行的正確驗證碼：${code}。與報告上的驗證碼一致即未被改動。`:'資料行格式不對。';});
-    $$('[data-j]',p).forEach(b=>b.addEventListener('click',()=>{S.teacherUsed=true;if(!S.stu)S.stu={name:'老師',cls:'—',no:'—'};S.stage=+b.dataset.j;save();renderStages();m.remove();}));});});
+    $$('[data-j]',p).forEach(b=>b.addEventListener('click',()=>{S.teacherUsed=true;if(!S.stu)S.stu={name:'老師',cls:'—',no:'—'};S.stage=Math.max(S.stage,+b.dataset.j);save();show(+b.dataset.j);m.remove();}));});});
 
-renderStages();
+/* ---------- 啟動 ---------- */
 if(S.finished)buildReport();
+show(Math.min(S.view||0,S.stage));refreshScore();
 $('#pyStatus').textContent=PY.ready?'Python 執行器已就緒。':'Python 執行器未能載入：解說仍可閱讀，執行請用 Thonny。';
 })();
 </script>

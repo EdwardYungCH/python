@@ -8,7 +8,7 @@
 
 | 堂 | 主題 | W3Schools 章節 | 狀態 |
 |---|---|---|---|
-| 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 完成（第 2 版） |
+| 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 完成（第 2.1 版，教科書式版面） |
 | 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 規劃 |
 | 3 | 數字與運算符 | Numbers、Operators、Booleans | 規劃 |
 | 4 | If…Else | If…Else | 規劃 |
@@ -34,7 +34,9 @@ tools/skulpt/              Skulpt 建置檔（skulpt.min.js、skulpt-stdlib.js�
 
 - 登記及溫習 → 每堂 2 至 3 章（解說 → 試一試：先估後執行 → 練習：填空）→ 作品（必做／進階／挑戰，在 Thonny 做）→ 小測 → 成績報告。
 - 學生頁面只有 Python，不作 Scratch、Arduino 或高中課程代號的對照。
-- 進度自動儲存在瀏覽器（localStorage）；階段順序解鎖。
+- 版面：頂部進度列（可回看已完成的章）、一次只顯示一章、底部「上一章／下一章」；每章「學 → 試 → 練」三步以左側直線串連，章首有學習目標、章末有小結。
+- 進度自動儲存在瀏覽器（localStorage）；章節順序解鎖，完成本章才可按「下一章」。
+- 提示和「直接看答案」收在「需要幫忙？」摺疊區內；練習答錯兩次自動出提示。
 - 實作在 Thonny 完成，貼回網頁由 Skulpt 以測試輸入自動檢查。
 - 成績報告帶驗證碼（HMAC-SHA256），老師區（PIN）可核對答案和驗證碼。
 - 課堂頁沒有返回首頁的連結。
