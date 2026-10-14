@@ -100,23 +100,53 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--i
 .fb.ok{background:var(--green-tint);color:var(--green)}
 .fb.bad{background:var(--red-tint);color:var(--red)}
 .fb.neutral{background:var(--ground);color:var(--ink-2)}
-/* 執行器 */
-.runner{border:1px solid var(--rule);border-radius:10px;overflow:hidden;margin:10px 0;min-width:0;background:var(--code-bg)}
-.runner .bar{display:flex;gap:8px;align-items:center;padding:8px 12px;font-size:.8rem;color:var(--code-dim);border-bottom:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent)}
-.runner .bar>span:nth-child(2){flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.runner .bar .dots{display:flex;gap:5px}.runner .bar .dots i{width:10px;height:10px;border-radius:50%;background:color-mix(in srgb,var(--code-fg) 25%,transparent)}
-.runner .bar .btn{margin-left:auto;min-height:34px;padding:4px 14px;font-size:.9rem}
-textarea.code{display:block;width:100%;background:var(--code-bg);color:var(--code-fg);border:0;border-radius:0;padding:12px 16px;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;resize:vertical;min-height:84px;tab-size:4;white-space:pre;overflow-x:auto}
-.out{display:none;background:#161b22;color:var(--code-fg);border-top:1px solid color-mix(in srgb,var(--code-fg) 12%,transparent);padding:10px 16px;font-family:var(--font-mono);font-size:.95rem;white-space:pre-wrap;word-break:break-word;min-height:44px}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .out{background:#070a0f}}
-:root[data-theme="dark"] .out{background:#070a0f}
-.out.show{display:block}
-.out .lab{display:block;font-family:var(--font-body);font-size:.75rem;color:var(--code-dim);margin-bottom:4px}
-.out .err{color:#ff9d9d}
-.out .hint{color:var(--yellow);font-family:var(--font-body);font-size:.9rem;display:block;margin-top:8px;line-height:1.5}
-.out .pin{display:flex;gap:6px;align-items:center;margin-top:4px}
-.out .pin input{flex:1 1 80px;min-width:0;background:transparent;color:var(--code-prompt);border:0;border-bottom:1px solid var(--code-prompt);font-family:var(--font-mono);font-size:.95rem;padding:2px 4px;min-height:32px}
-.out .pin span,.out .inp{color:var(--code-prompt)}
+/* Thonny 模擬器（光面，像真 Thonny） */
+.th{border:1px solid #b9c2cc;border-radius:8px;overflow:hidden;margin:10px 0;min-width:0;background:#fff;color:#1c2733;font-size:.95rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}
+.th .ttl{display:flex;align-items:center;gap:8px;background:#e9edf2;padding:6px 10px;font-size:.8rem;color:#4a5664;border-bottom:1px solid #cfd6de}
+.th .ttl .ic{width:14px;height:14px;border-radius:3px;background:linear-gradient(135deg,#3572a5 50%,#ffd43b 50%)}
+.th .ttl .fn{font-weight:700;color:#1c2733}
+.th .ttl .st{margin-left:auto;color:#7b8794}
+.th .menu{display:flex;gap:14px;padding:4px 10px;font-size:.8rem;color:#4a5664;background:#f6f8fa;border-bottom:1px solid #e1e6ec}
+.th .tools{display:flex;gap:6px;align-items:center;padding:6px 10px;background:#f6f8fa;border-bottom:1px solid #cfd6de}
+.th .tools button{font:inherit;border:1px solid transparent;background:transparent;border-radius:5px;min-height:34px;min-width:34px;padding:4px 8px;cursor:pointer;color:#4a5664;font-size:.85rem;display:inline-flex;align-items:center;gap:6px}
+.th .tools button:hover{background:#e9edf2;border-color:#cfd6de}
+.th .tools button:disabled{opacity:.4;cursor:default}
+.th .tools button.run{background:#2ea043;color:#fff;border-color:#2ea043;font-weight:700;padding:4px 14px}
+.th .tools button.run:hover{background:#278f3b}
+.th .tools button.run:focus-visible{outline:3px solid var(--yellow)}
+.th .tools .sp{flex:1}
+.th .tools .lbl{font-size:.78rem;color:#7b8794;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.th .tab{display:inline-block;padding:4px 14px;font-size:.8rem;background:#fff;border:1px solid #cfd6de;border-bottom:0;border-radius:6px 6px 0 0;margin:6px 0 0 10px;color:#1c2733}
+.th .ed{display:flex;background:#fff;border-top:1px solid #cfd6de}
+.th .gut{flex:none;width:40px;padding:10px 6px 10px 0;text-align:right;color:#9aa5b1;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;background:#f6f8fa;border-right:1px solid #e1e6ec;user-select:none;overflow:hidden;white-space:pre}
+.th textarea.code{display:block;flex:1;min-width:0;background:#fff;color:#1c2733;border:0;border-radius:0;padding:10px 12px;font-family:var(--font-mono);font-size:.95rem;line-height:1.6;resize:vertical;min-height:84px;tab-size:4;white-space:pre;overflow:auto}
+.th textarea.code::placeholder{color:#9aa5b1}
+.th .panes{display:grid;grid-template-columns:1fr;border-top:1px solid #cfd6de}
+.th.full .panes.hasvars{grid-template-columns:1fr 220px}
+@media (max-width:700px){.th.full .panes.hasvars{grid-template-columns:1fr}}
+.th .pane{min-width:0}
+.th .pane .ph{font-size:.75rem;color:#4a5664;background:#f6f8fa;padding:3px 10px;border-bottom:1px solid #e1e6ec;display:flex;gap:8px;align-items:center}
+.th .pane .ph .x{margin-left:auto;color:#9aa5b1}
+.th .shell{padding:8px 12px;font-family:var(--font-mono);font-size:.93rem;line-height:1.55;white-space:pre-wrap;word-break:break-word;min-height:60px;max-height:320px;overflow:auto;background:#fff}
+.th .shell .run{color:#8250df}
+.th .shell .err{color:#c62828}
+.th .shell .pr{color:#1c2733}
+.th .shell .inp{color:#1a56c4}
+.th .shell .pin{display:inline-flex;gap:6px;align-items:center}
+.th .shell .pin input{min-width:120px;background:#fff8d6;color:#1a56c4;border:0;border-bottom:1px solid #1a56c4;font-family:var(--font-mono);font-size:.93rem;padding:0 4px;min-height:28px}
+.th .vars{border-left:1px solid #e1e6ec}
+@media (max-width:700px){.th .vars{border-left:0;border-top:1px solid #e1e6ec}}
+.th .vars table{font-size:.85rem;font-family:var(--font-mono)}
+.th .vars td,.th .vars th{border:0;border-bottom:1px solid #eef1f4;padding:3px 10px;text-align:left}
+.th .vars .none{padding:8px 10px;font-size:.8rem;color:#7b8794;font-family:var(--font-body)}
+.th .assist{border-top:1px solid #f0c36d;background:#fff8e6;padding:8px 12px;font-size:.9rem;line-height:1.55;color:#5c4a00;display:none}
+.th .assist.show{display:block}
+.th .assist b{color:#3b3000}
+.th .assist .at{font-size:.75rem;color:#8a7a2e;display:block;margin-bottom:2px}
+.th .toast{position:absolute;right:10px;top:40px;background:#1c2733;color:#fff;font-size:.8rem;padding:4px 10px;border-radius:6px;opacity:0;transition:opacity .2s}
+.th .toast.show{opacity:1}
+.th{position:relative}
+/* 深色模式仍保持 Thonny 淺色，像真程式視窗 */
 /* 試一試：桌面左右兩欄 */
 .predict{margin:6px 0 0}
 .predict .q{font-weight:500;margin:0 0 8px}
@@ -182,7 +212,7 @@ th{background:var(--ground);font-weight:700}
 <!-- 0 登記 -->
 <section class="card" id="s0" data-title="登記" data-short="登記">
   <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
-  <p>這一堂有四章，每章都是「學 → 試 → 練」三步，然後做一個作品和小測。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
+  <p>這一堂有四章，每章都是「學 → 試 → 練」三步，然後做一個作品和小測。所有程式都在網頁內的 Thonny 寫和執行，不用另外開軟件。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
   <div class="row">
     <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
     <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
@@ -197,35 +227,18 @@ th{background:var(--ground);font-weight:700}
     <div class="goal"><b>學完這章你會：</b><ul><li>在 Thonny 打一行程式並執行</li><li>知道 <code>print()</code> 是「印出來」</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
     <div class="lead">Python 是用文字寫的</div>
-    <p>你打一行指令，電腦就做一件事。我們用 <b>Thonny</b> 來寫和執行 Python。Thonny 的畫面分兩部分：</p>
-    <figure><svg viewBox="0 0 560 300" role="img" aria-label="Thonny 畫面示意：上方工具列有綠色執行按鈕，中間是編輯器，下方是 Shell 輸出">
-      <rect x="1" y="1" width="558" height="298" rx="10" fill="#f6f8fa" stroke="#aab4c0"/>
-      <rect x="1" y="1" width="558" height="34" rx="10" fill="#e3e8ee"/><rect x="1" y="20" width="558" height="15" fill="#e3e8ee"/>
-      <text x="16" y="23" font-size="13" fill="#4a5664" font-family="sans-serif">Thonny</text>
-      <rect x="92" y="8" width="20" height="20" rx="4" fill="#fff" stroke="#aab4c0"/><rect x="118" y="8" width="20" height="20" rx="4" fill="#fff" stroke="#aab4c0"/>
-      <rect x="150" y="6" width="26" height="24" rx="5" fill="#2ea043"/><path d="M159 11 L170 18 L159 25 Z" fill="#fff"/>
-      <text x="184" y="23" font-size="12" fill="#4a5664" font-family="sans-serif">← 綠色 ▶ 執行（或按 F5）</text>
-      <rect x="12" y="46" width="536" height="120" rx="6" fill="#fff" stroke="#aab4c0"/>
-      <text x="24" y="70" font-size="14" fill="#1c2733" font-family="monospace">print("Hello, World!")</text>
-      <text x="24" y="92" font-size="13" fill="#9aa5b1" font-family="monospace">|</text>
-      <rect x="430" y="52" width="110" height="24" rx="12" fill="#2f6fde"/><text x="485" y="69" font-size="12" fill="#fff" text-anchor="middle" font-family="sans-serif">編輯器：打程式</text>
-      <rect x="12" y="178" width="536" height="108" rx="6" fill="#fff" stroke="#aab4c0"/>
-      <text x="24" y="196" font-size="12" fill="#4a5664" font-family="sans-serif">Shell</text>
-      <text x="24" y="222" font-size="14" fill="#7b8794" font-family="monospace">&gt;&gt;&gt; %Run L01_陳大文.py</text>
-      <text x="24" y="246" font-size="14" fill="#1c2733" font-family="monospace">Hello, World!</text>
-      <text x="24" y="270" font-size="14" fill="#7b8794" font-family="monospace">&gt;&gt;&gt;</text>
-      <rect x="430" y="184" width="110" height="24" rx="12" fill="#1f8f5a"/><text x="485" y="201" font-size="12" fill="#fff" text-anchor="middle" font-family="sans-serif">Shell：看結果</text>
-    </svg><figcaption>Thonny 畫面示意圖。上面打程式，按綠色 ▶，結果在下面出現。</figcaption></figure>
-    <ol class="steps-list">
-      <li>開啟 Thonny。</li>
-      <li>在上面的編輯器打：<code>print("Hello, World!")</code></li>
-      <li>按綠色 ▶（或鍵盤 F5）。第一次會叫你儲存檔案，檔名用 <code>L01_你的名字.py</code>。</li>
-      <li>看下面的 Shell：出現 <code>Hello, World!</code> 就成功了。</li>
-    </ol>
+    <p>你打一行指令，電腦就做一件事。寫 Python 的程式叫 <b>Thonny</b>，這個網頁內有一個一模一樣的 Thonny 讓你用。它分兩部分：</p>
+    <ul class="steps-list">
+      <li><b>編輯器</b>（上面白色的大格）：打程式的地方，左邊有行號。</li>
+      <li><b>Shell</b>（下面）：按綠色 <b>▶ 執行</b>（或鍵盤 F5）後，結果在這裏出現。<code>&gt;&gt;&gt; %Run</code> 那一行是 Thonny 說「我開始執行你的檔案了」。</li>
+    </ul>
+    <p>試試：在下面打 <code>print("Hello, World!")</code>，然後按 ▶。</p>
+    <div id="demo1"></div>
     <div class="key"><code>print()</code> 的意思是「印出來」。括號裏面放你想印的東西；文字要用引號 <code>" "</code> 包住。</div>
+    <div class="tip">出錯時 Shell 會出現紅字，下面黃色的 <b>Assistant</b> 會用中文解釋是甚麼問題。先看英文名稱（例如 NameError）和行號。</div>
   </div>
   <div id="c1"></div>
-  <div class="summary" id="sum1"><b>小結</b>　<code>print("…")</code> 把引號裏的文字印出來；程式在 Thonny 上面寫，結果在下面看。</div>
+  <div class="summary" id="sum1"><b>小結</b>　<code>print("…")</code> 把引號裏的文字印出來；程式在編輯器寫，按 ▶，結果在 Shell 看。</div>
 </section>
 
 <!-- 2 Syntax -->
@@ -241,7 +254,7 @@ th{background:var(--ground);font-weight:700}
     <p>相反，一行普通的 <code>print</code> 前面<b>不可以</b>有空格。Python 一看到不合規矩的縮排，整個程式都不會執行。</p>
     <h3>二、分大小寫</h3>
     <p><code>print</code> 和 <code>Print</code> 是兩個不同的名字。Python 只認識小寫的 <code>print</code>，打了大寫會出 <code>NameError</code>。</p>
-    <div class="tip">在 Thonny 看到的錯誤名稱可能和這裏的執行器略有不同，例如縮排錯誤在 Thonny 叫 <code>IndentationError</code>。看英文名稱的第一個字就夠。</div>
+    <div class="tip">出錯時先看紅字最後一行的英文名稱（例如 <code>IndentationError</code>、<code>NameError</code>）和它說的行號，再看 Assistant 的中文解釋。</div>
   </div>
   <div id="c2"></div>
   <div class="summary"><b>小結</b>　普通一行不可以有行首空格；指令要小寫。出錯時先看紅字的英文名稱和行號。</div>
@@ -291,7 +304,7 @@ print("你好")  <span class="cm"># 註解也可以放在程式後面</span>
 <!-- 5 作品 -->
 <section class="card" id="s5" data-title="作品：我的名牌" data-short="5 作品">
   <header><div class="chapter">作品</div><h2>我的名牌</h2>
-    <div class="goal"><b>這部分在 Thonny 做。</b>做好後全選（Ctrl+A）、複製（Ctrl+C），貼到下面的執行器按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
+    <div class="goal"><b>直接在下面的 Thonny 寫。</b>先按 ▶ 試行，看 Shell 的結果滿意了才按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
   <div id="tiers"></div>
 </section>
 
@@ -303,7 +316,7 @@ print("你好")  <span class="cm"># 註解也可以放在程式後面</span>
   <div class="step make"><span class="mark">評</span>
     <div class="lead">自評<small>5 分</small></div>
     <p class="small">今天程式出錯時，你是怎樣找到原因的？寫一兩句。</p>
-    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅色字的最後一行，再看它說的行號……"></textarea>
+    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅字最後一行的英文名稱和行號，再看 Assistant……"></textarea>
     <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
   </div>
 </section>
@@ -322,7 +335,7 @@ print("你好")  <span class="cm"># 註解也可以放在程式後面</span>
 </section>
 
 <div class="foot">
-  <span>中三 Python 編程 · 第 1 堂 · 版本 2.1</span>
+  <span>中三 Python 編程 · 第 1 堂 · 版本 2.2</span>
   <button class="btn quiet" id="btnTeacher">老師</button>
   <button class="btn quiet" id="btnReset">清除進度</button>
 </div>
@@ -411,42 +424,103 @@ function pyHint(msg,code){
 function runPython(code,opts){
   if(!PY.ready)return Promise.reject(new Error('NOPY'));
   Sk.configure({output:opts.out,read:(x)=>{if(Sk.builtinFiles&&Sk.builtinFiles.files[x]!==undefined)return Sk.builtinFiles.files[x];throw "File not found: '"+x+"'";},
-    __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:8000,retainGlobals:false});
+    __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:8000,retainGlobals:true});
   return Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true));
 }
 async function runSilent(code,inputs){
-  const q=(inputs||[]).slice();let out='',err='',asked=0;
+  const q=(inputs||[]).slice();let out='',err='',asked=0;Sk.globals={};
   try{await runPython(code,{out:t=>{out+=t;},input:p=>{asked++;const v=q.length?q.shift():'';out+=(p||'')+v+'\n';return Promise.resolve(v);}});}
   catch(e){err=e.toString();}
   return {out,err,asked};
 }
-function makeRunner(host,cfg){
-  const wrap=document.createElement('div');wrap.className='runner';
-  wrap.innerHTML=`<div class="bar"><span class="dots"><i></i><i></i><i></i></span><span>${esc(cfg.label||'程式')}</span><button class="btn run" type="button">▶ 執行</button></div>
-  <textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼" placeholder="${esc(cfg.placeholder||'')}"></textarea>
-  <div class="out" aria-live="polite"></div>`;
+function thonnyError(e,code,filename){
+  // 把 Skulpt 的錯誤改成 Thonny 的樣子
+  let msg=e.toString().replace(/ on line \d+\.?$/,'');let ln=0;
+  try{if(e.traceback&&e.traceback.length)ln=e.traceback[0].lineno;}catch(x){}
+  if(!ln){const m=/line (\d+)/.exec(e.toString());if(m)ln=+m[1];}
+  const lines=code.split('\n');const bad=ln?lines[ln-1]||'':'';
+  if(/^SyntaxError: bad input/.test(msg)&&/^\s+\S/.test(bad)&&!/^\s+\S/.test(lines[ln-2]||'x'))msg='IndentationError: unexpected indent';
+  else if(/^SyntaxError: bad token|^SyntaxError: bad input|^SyntaxError: EOF/.test(msg)){
+    const q=(bad.match(/"/g)||[]).length,sq=(bad.match(/'/g)||[]).length;
+    if(q%2||sq%2)msg='SyntaxError: unterminated string literal';
+    else if((bad.match(/\(/g)||[]).length!==(bad.match(/\)/g)||[]).length)msg="SyntaxError: '(' was never closed";
+    else msg='SyntaxError: invalid syntax';
+  }
+  const kind=msg.split(':')[0];
+  let tb;
+  if(/SyntaxError|IndentationError/.test(kind))tb=`  File "${filename}", line ${ln}\n    ${bad.trim()}\n${msg}`;
+  else tb=`Traceback (most recent call last):\n  File "${filename}", line ${ln}, in <module>\n    ${bad.trim()}\n${msg}`;
+  return {tb,msg,kind,ln};
+}
+function assistText(err,code){
+  const k=err.kind,m=err.msg;
+  if(k==='IndentationError')return `第 ${err.ln} 行開頭多了空格。普通的一行程式要頂格寫，不可以有行首空格。`;
+  if(/unterminated string/.test(m))return `第 ${err.ln} 行的引號不成對。文字要用一對引號包住，開了 " 就要用 " 關上。`;
+  if(/never closed/.test(m))return `第 ${err.ln} 行的括號沒有關上。每個 ( 都要有一個 )。`;
+  if(k==='SyntaxError')return `第 ${err.ln} 行不符合 Python 的寫法。檢查引號、括號是否成對，有沒有打錯符號或多了字。`;
+  if(k==='NameError'){const nm=/name '([^']+)'/.exec(m);const n=nm?nm[1]:'';if(/^Print$/.test(n))return `Python 分大小寫。你打了 Print，但指令是小寫的 print。`;return `Python 不認識「${n}」。可能是打錯字、大小寫不對，或者文字忘記加引號（例如 print(你好) 應寫成 print("你好")）。`;}
+  if(k==='TypeError')return `類型錯誤：數字和文字不可以直接用 + 相連。改用逗號分開，或者把數字放在引號內。`;
+  if(k==='ZeroDivisionError')return `不可以除以 0。`;
+  return `第 ${err.ln} 行出錯：${m}。`;
+}
+function varsOf(mod){
+  const out=[];try{const d=mod&&mod.$d;if(!d)return out;
+    const entries=d.entries?Object.values(d.entries).map(e=>[e.lhs.v,e.rhs]):Object.keys(d).map(k=>[k,d[k]]);
+    for(let [k,v] of entries){if(typeof k!=='string'||k.startsWith('__'))continue;k=k.replace(/_\$rw\$$/,'');if(!v||v instanceof Sk.builtin.func||v instanceof Sk.builtin.module)continue;
+      let val;try{val=Sk.ffi.remapToJs(v);}catch(x){val=String(v);}
+      let txt;if(typeof val==='string')txt=JSON.stringify(val);else if(Array.isArray(val))txt='['+val.map(x=>typeof x==='string'?JSON.stringify(x):String(x)).join(', ')+']';else txt=String(val);
+      let ty='';try{ty=Sk.abstr.typeName(v);}catch(x){}
+      out.push({k,txt,ty});}
+  }catch(x){}
+  return out;
+}
+let THONNY_N=0;
+function makeThonny(host,cfg){
+  // cfg:{id,code,label,placeholder,compact,filename,onRun}
+  const full=!cfg.compact;const fnOf=()=>cfg.filename||('L01_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
+  const wrap=document.createElement('div');wrap.className='th'+(full?' full':' compact');
+  wrap.innerHTML=`${full?`<div class="ttl"><span class="ic"></span><span class="fn">${esc(fn)}</span><span>— Thonny</span><span class="st"></span></div>
+  <div class="menu"><span>File</span><span>Edit</span><span>View</span><span>Run</span><span>Tools</span><span>Help</span></div>`:''}
+  <div class="tools"><button type="button" class="run">▶ 執行</button>${full?`<button type="button" data-save title="儲存">💾 儲存</button>`:''}<span class="sp"></span><span class="lbl">${esc(cfg.label||'')}</span></div>
+  ${full?`<span class="tab">${esc(fn)}</span>`:''}
+  <div class="ed"><div class="gut">1</div><textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼" placeholder="${esc(cfg.placeholder||'')}"></textarea></div>
+  <div class="panes"><div class="pane"><div class="ph">Shell<span class="x">×</span></div><div class="shell" aria-live="polite"><span class="pr">&gt;&gt;&gt; </span></div><div class="assist"><span class="at">Assistant</span><span class="atxt"></span></div></div>
+  ${full?`<div class="pane vars"><div class="ph">Variables<span class="x">×</span></div><div class="vbody"><div class="none">執行後會顯示程式中的變量</div></div></div>`:''}</div>
+  <div class="toast"></div>`;
   host.appendChild(wrap);
-  const ta=$('textarea',wrap), out=$('.out',wrap), btn=$('.btn.run',wrap);
-  ta.value=cfg.code;
-  ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;}});
+  const ta=$('textarea',wrap), gut=$('.gut',wrap), shell=$('.shell',wrap), btn=$('.btn.run,button.run',wrap), assist=$('.assist',wrap), panes=$('.panes',wrap), vbody=$('.vbody',wrap), toast=$('.toast',wrap);
+  ta.value=cfg.code||'';
+  function gutter(){const n=Math.max(1,ta.value.split('\n').length);gut.textContent=Array.from({length:n},(_,i)=>i+1).join('\n');}
+  gutter();ta.addEventListener('input',gutter);ta.addEventListener('scroll',()=>{gut.scrollTop=ta.scrollTop;});
+  ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart;ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(ta.selectionEnd);ta.selectionStart=ta.selectionEnd=s+4;gutter();}
+    if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveToast();}if(e.key==='F5'){e.preventDefault();run();}});
+  function saveToast(){toast.textContent='已儲存 '+fn;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400);const st=$('.ttl .st',wrap);if(st)st.textContent='已儲存';}
+  const sv=$('[data-save]',wrap);if(sv)sv.addEventListener('click',saveToast);
+  // 模擬 Thonny：直接重複同一個 shell，加 %Run
   let running=false;
   async function run(){
-    if(running)return;out.classList.add('show');
-    if(!PY.ready){out.innerHTML='<span class="lab">輸出</span><span class="err">這裏暫時不能執行（Python 執行器未載入）。請在 Thonny 執行。</span>';return;}
-    running=true;btn.disabled=true;out.innerHTML='<span class="lab">輸出</span>';let text='';
-    const print=t=>{text+=t;out.appendChild(document.createTextNode(t));};
-    const ask=prompt=>new Promise(res=>{const line=document.createElement('div');line.className='pin';line.innerHTML=`<span>${esc(prompt||'')}</span><input type="text" aria-label="輸入" autocomplete="off">`;out.appendChild(line);const inp=$('input',line);inp.focus();
-      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:(prompt||'')+v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
-    let err='';
+    if(running)return;
+    if(!PY.ready){shell.innerHTML='<span class="err">Python 執行器未能載入，請重新整理頁面。</span>';return;}
+    running=true;btn.disabled=true;assist.classList.remove('show');fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);
+    shell.innerHTML='';const add=(cls,t)=>{const s=document.createElement('span');if(cls)s.className=cls;s.textContent=t;shell.appendChild(s);return s;};
+    add('pr','>>> ');add('run','%Run '+fn+'\n');
+    let text='',err='';
+    const print=t=>{text+=t;add('',t);};
+    const ask=prompt=>new Promise(res=>{if(prompt)add('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
+    Sk.globals={};
     try{await runPython(ta.value,{out:print,input:ask});}
-    catch(e){err=e.toString();const s=document.createElement('span');s.className='err';s.textContent=err;out.appendChild(s);const h=pyHint(err,ta.value);if(h){const hs=document.createElement('span');hs.className='hint';hs.textContent='提示：'+h;out.appendChild(hs);}}
-    if(!text&&!err)out.appendChild(Object.assign(document.createElement('span'),{className:'hint',textContent:'（程式沒有輸出任何東西）'}));
+    catch(e){const te=thonnyError(e,ta.value,fn);err=te.msg;add('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');}
+    add('pr','>>> ');
+    if(full&&vbody){const vs=varsOf({$d:Sk.globals||{}});if(vs.length){panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${vs.map(v=>`<tr><td>${esc(v.k)}</td><td>${esc(v.txt)}</td></tr>`).join('')}</tbody></table>`;}else{panes.classList.remove('hasvars');vbody.innerHTML='<div class="none">這個程式沒有變量</div>';}}
+    shell.scrollTop=shell.scrollHeight;
     running=false;btn.disabled=false;
     if(cfg.onRun)cfg.onRun({out:text,err});
   }
   btn.addEventListener('click',run);
-  return {ta,out,btn,run,wrap};
+  return {ta,out:shell,btn,run,wrap};
 }
+function makeRunner(host,cfg){return makeThonny(host,Object.assign({compact:true},cfg));}
 
 /* ---------- 試一試（先估後執行） ---------- */
 const KEYS='ABCD';
@@ -458,7 +532,7 @@ function makePredict(host,cfg,store,per,onDone,noRun){
   host.appendChild(box);
   const opts=$$('.opt',box),go=$('.btn.go',box),fbh=$('.fbhost',box);let sel=null;
   let runner=null;
-  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可執行，之後隨便改'});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
+  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可按 ▶'});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
   function reveal(rec){opts.forEach((o,i)=>{o.disabled=true;if(i===cfg.answer)o.classList.add('right');else if(i===rec.sel)o.classList.add('wrong');});go.disabled=true;
     fbh.innerHTML=`<div class="fb ${rec.ok?'ok':'bad'}">${rec.ok?'估對了，+'+per+' 分。':'估錯了。答案是 '+KEYS[cfg.answer]+'。'} ${esc(cfg.why||'')}</div>`;if(runner)runner.btn.disabled=false;}
   if(store[cfg.id]){reveal(store[cfg.id]);}
@@ -473,7 +547,7 @@ function makeExercise(host,cfg,onDone){
   box.innerHTML=`<p class="q">${esc(cfg.q)}</p>${cfg.expect!==undefined?`<div class="want"><span class="lab">應該輸出</span><pre class="ex" style="margin-top:4px">${esc(cfg.expect.replace(/\n$/,''))}</pre></div>`:''}`;
   host.appendChild(box);
   const rec=S.ex[cfg.ch]||{ok:false,score:0,tries:0,revealed:false,code:null};
-  const r=makeRunner(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容'});
+  const r=makeThonny(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容，然後按 ▶'});
   const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
   const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button><button class="btn quiet" type="button" data-a>直接看答案（只得 1 分）</button></div></div>`;box.appendChild(help);
   const fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
@@ -497,6 +571,7 @@ const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a','c3_b'],c4:['c4_a']};
 function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
 
 (function(){const h=$('#c1');const done=chapterDone(1);
+  makeThonny($('#demo1'),{id:'demo1',code:'',label:'打一行程式，按 ▶',placeholder:'print("Hello, World!")'});
   const t=step(h,'try','先估，再執行看答案','估對 4 分');
   makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'print("Hello, World!")',options:['Hello, World!','"Hello, World!"','print("Hello, World!")','甚麼都沒有'],answer:0,why:'引號只是告訴 Python 這是文字，印出來時不會顯示引號。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
@@ -548,7 +623,7 @@ const TIERS=[
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
   box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
   const rec=S.tiers[t.id]||{ok:false,score:0,code:null};
-  const r=makeRunner(box,{id:t.id,code:rec.code||'',label:'在 Thonny 做好後貼進來',placeholder:'# 把你在 Thonny 寫好的程式貼到這裏'});
+  const r=makeThonny(box,{id:t.id,code:rec.code||'',label:'在這裏寫，按 ▶ 試行，滿意後按「檢查」',placeholder:'# 在這裏寫你的程式'});
   const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
   const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button></div></div>`;box.appendChild(help);
   const fbEl=$('#tfb_'+t.id),fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
