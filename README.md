@@ -15,7 +15,7 @@
 | 5 | While 迴圈 | While Loops、Random | 完成 |
 | 6 | For 迴圈與 Range | For Loops、Range；turtle | 完成（模擬器加海龜畫布） |
 | 7 | 字串 | Strings、Slicing、Methods、f-string | 完成 |
-| 8 | 列表 | Lists | 規劃 |
+| 8 | 列表 | Lists | 完成 |
 | 9 | 函數入門與除錯 | Functions；錯誤類型 | 規劃 |
 | 10 | 迷你專題及選科導航 | — | 規劃 |
 
@@ -54,6 +54,7 @@ python3 tools/test_lesson4.py
 python3 tools/test_lesson5.py
 python3 tools/test_lesson6.py
 python3 tools/test_lesson7.py
+python3 tools/test_lesson8.py
 ```
 
 需要 Playwright 及 Chromium。測試會走完整個流程（含故意答錯、看答案扣分、重新載入後保留、老師 PIN、手機闊度）。
