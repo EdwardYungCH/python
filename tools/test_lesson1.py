@@ -1,12 +1,15 @@
-import asyncio, sys, json
+"""第 1 堂「開始寫 Python」流程測試（第 2 版）。python3 tools/test_lesson1.py"""
+import asyncio, sys, os
 from playwright.async_api import async_playwright
 
-import os
 URL = 'file://' + os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'lesson1', 'index.html'))
-errors = []
-res = []
+errors, res = [], []
 def check(name, ok, extra=''):
-    res.append((name, ok, extra)); print(('PASS ' if ok else 'FAIL ') + name + (' — ' + extra if extra else ''))
+    res.append((name, ok)); print(('PASS ' if ok else 'FAIL ') + name + (' — ' + extra if extra else ''))
+def locked(pg, sid): return pg.locator('#' + sid).evaluate('e=>e.classList.contains("locked")')
+
+async def predict(pg, box, pick):
+    await box.locator('.opt').nth(pick).click(); await box.locator('.btn.go').click(); await pg.wait_for_timeout(900)
 
 async def main():
     async with async_playwright() as p:
@@ -14,136 +17,93 @@ async def main():
         pg = await b.new_page(viewport={'width': 1200, 'height': 900})
         pg.on('console', lambda m: errors.append(m.text) if m.type == 'error' else None)
         pg.on('pageerror', lambda e: errors.append(str(e)))
-        await pg.goto(URL)
-        await pg.wait_for_timeout(800)
-        st = await pg.text_content('#pyStatus')
-        check('Skulpt 載入', '就緒' in st, st)
-        # s0
-        await pg.fill('#stName', '測試同學'); await pg.fill('#stClass', '3A'); await pg.fill('#stNo', '12')
-        await pg.click('#btnStart'); await pg.wait_for_timeout(300)
-        check('登記後解鎖第 1 節', not await pg.locator('#s1').evaluate('e=>e.classList.contains("locked")'))
-        # s1 matching: 4 right, 1 wrong
-        ans = ['print("你好")', 'name = input("你叫甚麼名字？")', 'score = 0', 'if score > 50:', 'while True:']
-        for i, a in enumerate(ans):
-            await pg.select_option(f'#match_{i}', a)
-        await pg.click('#btnMatch'); await pg.wait_for_timeout(300)
-        fb = await pg.text_content('#matchFb')
-        check('配對 4/5 得 8 分', '4 / 5' in fb and '8 分' in fb, fb)
-        check('第 2 節解鎖', not await pg.locator('#s2').evaluate('e=>e.classList.contains("locked")'))
-        # s2 predictions: answer all; one wrong on purpose
-        preds2 = await pg.locator('#pred2 .predict').all()
-        correct = [0, 1, 2, 1]
-        for i, box in enumerate(preds2):
-            pick = correct[i] if i != 1 else 0
-            await box.locator('.opt').nth(pick).click()
-            await box.locator('.btn.go').click()
-            await pg.wait_for_timeout(1200)
-        out0 = await preds2[0].locator('.out').last.text_content()
-        check('執行器印出 你好，中三', '你好，中三' in out0, out0.strip())
-        out2 = await preds2[2].locator('.out').last.text_content()
-        check('3+4 與 "3 + 4" 輸出', '7' in out2 and '3 + 4' in out2, out2.strip())
-        score = await pg.text_content('#scoreNow')
-        check('分數 8 + 7.5 = 15.5', score == '15.5', score)
-        check('第 3 節解鎖', not await pg.locator('#s3').evaluate('e=>e.classList.contains("locked")'))
-        # s3: interactive input test on first runner
-        preds3 = await pg.locator('#pred3 .predict').all()
-        box = preds3[0]
-        await box.locator('.opt').nth(1).click(); await box.locator('.btn.go').click()
-        await pg.wait_for_timeout(800)
-        pin = box.locator('.out .pin input')
-        check('input() 顯示輸入框', await pin.count() == 1)
-        await pin.fill('小明'); await pin.press('Enter'); await pg.wait_for_timeout(800)
-        out = await box.locator('.out').last.text_content()
-        check('輸入小明後印出 你好，小明！', '你好，小明！' in out, out.strip())
-        for i, box in enumerate(preds3[1:], start=1):
-            await box.locator('.opt').nth([1, 1, 0][i-1]).click(); await box.locator('.btn.go').click()
-            await pg.wait_for_timeout(600)
-            # answer any pending inputs
-            for _ in range(3):
-                pins = box.locator('.out .pin input')
-                if await pins.count():
-                    await pins.first.fill('3'); await pins.first.press('Enter'); await pg.wait_for_timeout(500)
-        check('第 4 節解鎖', not await pg.locator('#s4').evaluate('e=>e.classList.contains("locked")'))
-        # s4 bugs
-        tiers4 = await pg.locator('#bugs .tier').all()
-        # bug1: run wrong first to see hint
-        await tiers4[0].locator('.btn.run').click(); await pg.wait_for_timeout(600)
-        o = await tiers4[0].locator('.out').text_content()
-        check('錯誤一執行顯示 SyntaxError 及中文提示', 'SyntaxError' in o and '引號' in o, o.strip()[:120])
-        await tiers4[0].locator('textarea').fill('print("歡迎來到中三 Python")')
-        await tiers4[0].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
-        check('錯誤一修正 5 分', '5 分' in await pg.text_content('#bugfb_b1'))
-        # bug2 reveal then fix -> 1 point
-        await tiers4[1].locator('[data-h="2"]').click()
-        await tiers4[1].locator('textarea').fill('print("第一堂完成")')
-        await tiers4[1].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
-        check('錯誤二看答案後只得 1 分', '1 分' in await pg.text_content('#bugfb_b2'), await pg.text_content('#bugfb_b2'))
-        # bug3 wrong fix first
-        await tiers4[2].locator('textarea').fill('name = input("你叫甚麼名字？")\nprint("你好，" + name')
-        await tiers4[2].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
-        check('錯誤三未修正不給分', '仍未' in await pg.text_content('#bugfb_b3'))
-        await tiers4[2].locator('textarea').fill('name = input("你叫甚麼名字？")\nprint("你好，" + name)')
-        await tiers4[2].locator('[data-check]').click(); await pg.wait_for_timeout(800)
-        # the run() will show an input box; answer it
-        pins = tiers4[2].locator('.out .pin input')
-        if await pins.count():
-            await pins.first.fill('小明'); await pins.first.press('Enter'); await pg.wait_for_timeout(500)
-        check('錯誤三修正 5 分', '5 分' in await pg.text_content('#bugfb_b3'))
-        check('第 5 節解鎖', not await pg.locator('#s5').evaluate('e=>e.classList.contains("locked")'))
-        # s5 tiers
-        t = await pg.locator('#tiers .tier').all()
-        await t[0].locator('[data-check]').click(); await pg.wait_for_timeout(500)
-        check('必做未填 ____ 被拒', '____' in await t[0].text_content())
-        await t[0].locator('textarea').fill('name = input("你叫甚麼名字？")\ncls = input("你讀哪一班？")\nhobby = input("你的興趣是甚麼？")\nprint("你好，" + name + "！")\nprint("你讀 " + cls + " 班。")\nprint("你的興趣是" + hobby + "。")')
-        await t[0].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
-        check('必做完成 20 分', '20 分' in await pg.text_content('#tfb_t1'))
-        check('第 6 節解鎖（必做即可）', not await pg.locator('#s6').evaluate('e=>e.classList.contains("locked")'))
-        await t[1].locator('textarea').fill('a=input("1")\nb=input("2")\nc=input("3")\nprint(a,b,c)')
-        await t[1].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
-        check('進階只問 3 條被拒', '只問了 3' in await t[1].text_content())
-        await t[1].locator('textarea').fill('a=input("1")\nb=input("2")\nc=input("3")\nd=input("4")\nprint(a,b,c)\nprint("科目："+d)')
-        await t[1].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
+        await pg.goto(URL); await pg.wait_for_timeout(800)
+        check('Skulpt 載入', '就緒' in await pg.text_content('#pyStatus'))
+        check('頁面沒有 Scratch／Arduino 字眼', 'Scratch' not in await pg.content() and 'Arduino' not in await pg.content())
+        await pg.fill('#stName', '測試同學'); await pg.fill('#stClass', '3A'); await pg.fill('#stNo', '12'); await pg.click('#btnStart'); await pg.wait_for_timeout(300)
+        check('登記後解鎖第 1 章', not await locked(pg, 's1'))
+        # 第 1 章
+        c1 = pg.locator('#c1 .predict')
+        await predict(pg, c1.nth(0), 0)
+        check('試一試 1 執行印出 Hello, World!', 'Hello, World!' in await c1.nth(0).locator('.out').text_content())
+        check('試一試後仍鎖第 2 章（練習未做）', await locked(pg, 's2'))
+        ex1 = c1.nth(1)
+        await ex1.locator('[data-check]').click(); await pg.wait_for_timeout(300)
+        check('練習 1 未填 ____ 被拒', '____' in await ex1.text_content())
+        await ex1.locator('textarea').fill('Print("Hello, Python!")'); await ex1.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('練習 1 大小寫錯誤顯示 NameError 提示', 'NameError' in await ex1.locator('.out').text_content() and '大小寫' in await ex1.locator('.out').text_content())
+        await ex1.locator('textarea').fill('print("Hello, Python!")'); await ex1.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('練習 1 完成 5 分', '5 分' in await ex1.locator('[data-fb]').text_content())
+        check('第 1 章 9 分', await pg.text_content('#m1') == '9 / 9 分', await pg.text_content('#m1'))
+        check('第 2 章解鎖', not await locked(pg, 's2'))
+        # 第 2 章：估錯
+        c2 = pg.locator('#c2 .predict')
+        await predict(pg, c2.nth(0), 0)
+        o = await c2.nth(0).locator('.out').text_content()
+        check('縮排錯誤執行出錯並有中文提示', 'Error' in o and '縮排' in o, o[:100])
+        ex2 = c2.nth(1)
+        await ex2.locator('[data-a]').click()
+        await ex2.locator('textarea').fill('print("Python 分大小寫")\nprint("行首不可以有空格")'); await ex2.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('練習 2 看答案後只得 1 分', '1 分' in await ex2.locator('[data-fb]').text_content())
+        check('第 2 章 1 分', await pg.text_content('#m2') == '1 / 9 分', await pg.text_content('#m2'))
+        # 第 3 章
+        c3 = pg.locator('#c3 .predict')
+        await predict(pg, c3.nth(0), 2); await predict(pg, c3.nth(1), 1)
+        ex3 = c3.nth(2)
+        await ex3.locator('textarea').fill('print("你好")\nprint("10")\nprint("一共", 10, "件")'); await ex3.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('練習 3 用引號包數字被拒', '不要用引號' in await ex3.text_content())
+        await ex3.locator('textarea').fill('print("你好")\nprint(10)\nprint("一共", 10, "件")'); await ex3.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('第 3 章 13 分', await pg.text_content('#m3') == '13 / 13 分', await pg.text_content('#m3'))
+        # 第 4 章
+        c4 = pg.locator('#c4 .predict')
+        await predict(pg, c4.nth(0), 1)
+        ex4 = c4.nth(1)
+        await ex4.locator('textarea').fill('print("開始")\nprint("完結")'); await ex4.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('練習 4 刪行而非註解被拒', '最頂' in await ex4.text_content() or '註解掉' in await ex4.text_content())
+        await ex4.locator('textarea').fill('# 練習 4\nprint("開始")\n# print("測試中，之後刪去")\nprint("完結")'); await ex4.locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('第 4 章 9 分', await pg.text_content('#m4') == '9 / 9 分', await pg.text_content('#m4'))
+        check('第 5 節作品解鎖', not await locked(pg, 's5'))
+        # 作品
+        t = pg.locator('#tiers .tier')
+        await t.nth(0).locator('textarea').fill('print("==========")\nprint("陳大文")\nprint("3A")\nprint("==========")'); await t.nth(0).locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('必做內容不足 5 行被拒', '最少要 5 行' in await t.nth(0).text_content())
+        good = 'print("==========")\nprint("陳大文")\nprint("3A")\nprint("興趣：打籃球")\nprint("食物：魚蛋")\nprint("想去：日本")\nprint("==========")'
+        await t.nth(0).locator('textarea').fill(good); await t.nth(0).locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('必做完成 25 分', '25 分' in await pg.text_content('#tfb_t1'))
+        check('第 6 節小測解鎖', not await locked(pg, 's6'))
+        await t.nth(1).locator('textarea').fill('# 名牌 陳大文\n' + good + '\nprint("出生年份：", "2026 - 15")  # 計算'); await t.nth(1).locator('[data-check]').click(); await pg.wait_for_timeout(900)
+        check('進階計算放在引號內被拒', '不在引號內' in await t.nth(1).text_content())
+        await t.nth(1).locator('textarea').fill('# 名牌 陳大文\n' + good + '\nprint("出生年份：", 2026 - 15)  # 計算'); await t.nth(1).locator('[data-check]').click(); await pg.wait_for_timeout(900)
         check('進階完成 10 分', '10 分' in await pg.text_content('#tfb_t2'))
-        await t[2].locator('textarea').fill('f=input("食物？")\np=input("地方？")\nprint("我最喜歡在"+p+"吃"+f+"。")')
-        await t[2].locator('[data-check]').click(); await pg.wait_for_timeout(1000)
+        await t.nth(2).locator('textarea').fill('print("   *   ")\nprint("  ***  ")\nprint(" ***** ")\nprint("*******")\nprint("  |||  ")\nprint("  |||  ")'); await t.nth(2).locator('[data-check]').click(); await pg.wait_for_timeout(900)
         check('挑戰完成 5 分', '5 分' in await pg.text_content('#tfb_t3'))
-        # s6 exit
-        ex = await pg.locator('#exitq .predict').all()
-        check('出口卡預測沒有執行器', await ex[0].locator('.runner').count() == 0)
-        await ex[0].locator('.opt').nth(0).click(); await ex[0].locator('.btn.go').click()
-        await ex[1].locator('.opt').nth(2).click(); await ex[1].locator('.btn.go').click()
-        await pg.wait_for_timeout(300)
-        await ex[2].locator('textarea').fill('print("今天是第 1 堂")')
-        await ex[2].locator('.btn.go').click(); await pg.wait_for_timeout(800)
-        check('出口卡改錯正確', '+5' in await ex[2].locator('.row span').text_content())
+        # 小測
+        q = pg.locator('#quiz .predict')
+        check('小測沒有執行器', await q.nth(0).locator('.runner').count() == 0)
+        await predict(pg, q.nth(0), 0); await predict(pg, q.nth(1), 1); await predict(pg, q.nth(2), 2)
         await pg.click('#btnExit'); await pg.wait_for_timeout(200)
         check('自評太短被拒', '一句' in await pg.text_content('#exitFb'))
-        await pg.fill('#reflect', '我先看錯誤訊息最後一行，再找行號。')
-        await pg.click('#btnExit'); await pg.wait_for_timeout(800)
-        rep = await pg.text_content('#reportBox')
-        score = await pg.text_content('#scoreNow')
-        # expected: warm 8 + p2 7.5 + p3 10 + bugs 11 + tiers 35 + exit (5+0+5+5)=15 -> 86.5
-        check('總分 86.5', score == '86.5', score)
-        check('報告有驗證碼', '驗證碼' in rep)
-        # persistence
+        await pg.fill('#reflect', '我先看 Shell 紅字最後一行，再找行號。'); await pg.click('#btnExit'); await pg.wait_for_timeout(800)
+        # 9 + 1 + 13 + 9 + 40 + (5+5+0+5) = 87
+        check('總分 87', await pg.text_content('#scoreNow') == '87', await pg.text_content('#scoreNow'))
+        check('報告有驗證碼', '驗證碼' in await pg.text_content('#reportBox'))
         await pg.reload(); await pg.wait_for_timeout(800)
-        check('重新載入後分數保留', await pg.text_content('#scoreNow') == '86.5')
-        check('重新載入後出口卡鎖定', await pg.locator('#btnExit').is_disabled())
-        # teacher PIN
+        check('重新載入後分數保留', await pg.text_content('#scoreNow') == '87')
+        check('重新載入後小測鎖定', await pg.locator('#btnExit').is_disabled())
         await pg.click('#btnTeacher'); await pg.fill('#pin', 'wrong'); await pg.click('#pinGo'); await pg.wait_for_timeout(200)
         check('錯 PIN 拒絕', 'PIN 不正確' in await pg.text_content('#tpanel'))
         await pg.fill('#pin', 'py2026'); await pg.click('#pinGo'); await pg.wait_for_timeout(200)
-        check('正確 PIN 顯示答案', '配對 1' in await pg.text_content('#tpanel'))
+        check('正確 PIN 顯示答案', '練習 1' in await pg.text_content('#tpanel'))
+        await pg.keyboard.press('Escape'); await pg.locator('#pinX').click()
         await pg.screenshot(path='/tmp/py3_shot_desktop.png', full_page=True)
-        # mobile
         m = await b.new_page(viewport={'width': 390, 'height': 844})
         await m.goto(URL); await m.wait_for_timeout(800)
         sw = await m.evaluate('document.documentElement.scrollWidth')
         check('手機闊度無橫向捲動', sw <= 392, str(sw))
         await m.screenshot(path='/tmp/py3_shot_mobile.png', full_page=True)
         await b.close()
-    real=[e for e in errors if 'ERR_TUNNEL_CONNECTION_FAILED' not in e and 'ERR_INTERNET_DISCONNECTED' not in e]
-    check('沒有 console 錯誤（不計 Google Fonts 載入失敗）', not real, '; '.join(real)[:300])
+    real = [e for e in errors if 'ERR_TUNNEL_CONNECTION_FAILED' not in e and 'ERR_INTERNET_DISCONNECTED' not in e]
+    check('沒有 console 錯誤（不計 Google Fonts）', not real, '; '.join(real)[:300])
     fails = [r for r in res if not r[1]]
     print(f'\n{len(res)-len(fails)} / {len(res)} 通過')
     sys.exit(1 if fails else 0)

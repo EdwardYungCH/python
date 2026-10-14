@@ -8,7 +8,7 @@
 
 | 堂 | 主題 | W3Schools 章節 | 狀態 |
 |---|---|---|---|
-| 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 第 1 版完成（含 Scratch 對照，待按第 2 版重做） |
+| 1 | 開始寫 Python | Get Started、Syntax、Output、Comments | 完成（第 2 版） |
 | 2 | 變量與輸入 | Variables、Data Types、Casting、User Input | 規劃 |
 | 3 | 數字與運算符 | Numbers、Operators、Booleans | 規劃 |
 | 4 | If…Else | If…Else | 規劃 |
@@ -26,6 +26,8 @@ index.html                 首頁：LESSONS 陣列列出各堂（href 留空 = �
 lessonN/index.html         第 N 堂成品（單一檔案，含 Skulpt，約 1 MB）
 src/lessonN/lessonN.src.html   第 N 堂原始碼（Skulpt 由 CDN 載入，約 46 KB，改這個）
 tools/test_lessonN.py      Playwright 流程測試
+tools/build.py             建置：python3 tools/build.py N（把 Skulpt 內嵌進 lessonN/index.html）
+tools/skulpt/              Skulpt 建置檔（skulpt.min.js、skulpt-stdlib.js）
 ```
 
 ## 每堂的設計
@@ -49,4 +51,4 @@ python3 tools/test_lesson1.py
 
 - 公開 repo 內的老師 PIN（`py2026`）和報告密鑰任何人都看得到；驗證碼只防學生隨手改報告，不防有心人。
 - 同一部電腦輪流使用時，要按頁底「清除進度」。
-- 重新建置離線版：把原始碼中兩行 Skulpt CDN `<script src>` 換成內嵌的 `skulpt.min.js` 和 `skulpt-stdlib.js`（取自 [skulpt](https://github.com/skulpt/skulpt) 的建置檔）。
+- 改動原始碼後執行 `python3 tools/build.py N` 重新建置，再跑測試。
