@@ -26,6 +26,7 @@ index.html                 首頁：LESSONS 陣列列出各堂（href 留空 = �
 lessonN/index.html         第 N 堂成品（單一檔案，含 Skulpt，約 1 MB）
 src/lessonN/lessonN.src.html   第 N 堂原始碼（Skulpt 由 CDN 載入，約 46 KB，改這個）
 tools/test_lessonN.py      Playwright 流程測試
+tools/make_lesson2.py      由第 1 堂模板產生第 2 堂原始碼（之後每堂一個）
 tools/build.py             建置：python3 tools/build.py N（把 Skulpt 內嵌進 lessonN/index.html）
 tools/skulpt/              Skulpt 建置檔（skulpt.min.js、skulpt-stdlib.js）
 ```

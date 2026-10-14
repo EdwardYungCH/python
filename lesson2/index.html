@@ -214,7 +214,7 @@ th{background:var(--ground);font-weight:700}
 <!-- 0 登記 -->
 <section class="card" id="s0" data-title="登記" data-short="登記">
   <header><div class="chapter">開始之前</div><h2>先登記</h2></header>
-  <p>這一堂學<b>變量</b>：讓程式記住東西，再問使用者問題。四章都是「學 → 試 → 練」三步，然後做作品和小測。程式在網頁內的 Thonny 寫和執行；進度會自動儲存在這部電腦的瀏覽器裏。</p>
+  <p>這一堂有四章：變量、數據類型、輸入、類型轉換，每章都是「學 → 試 → 練」三步，然後做一個會問問題的作品和小測。所有程式都在網頁內的 Thonny 寫和執行，不用另外開軟件。進度會自動儲存在這部電腦的瀏覽器裏，中途離開再回來也可以。</p>
   <div class="row">
     <label class="f">姓名<input type="text" id="stName" autocomplete="off"></label>
     <label class="f">班別<input type="text" id="stClass" placeholder="例如 3A" autocomplete="off"></label>
@@ -224,114 +224,115 @@ th{background:var(--ground);font-weight:700}
 </section>
 
 <!-- 1 Variables -->
-<section class="card" id="s1" data-title="變量：讓程式記住東西" data-short="1 變量">
-  <header><div class="chapter">第 1 章</div><h2>變量：讓程式記住東西</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>=</code> 把一個值放進變量</li><li>印出變量的值，並知道怎樣改它</li></ul></div></header>
+<section class="card" id="s1" data-title="變量：給資料一個名字" data-short="1 變量">
+  <header><div class="chapter">第 1 章</div><h2>變量：給資料一個名字</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>=</code> 把資料放進一個變量</li><li>把變量印出來，也可以改它的值</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
     <div class="lead">變量（variable）是一個有名字的盒子</div>
-    <p>把東西放進盒子，之後用盒子的名字就可以拿回來。放東西用 <code>=</code>，叫<b>賦值</b>：左邊是名字，右邊是值。</p>
-    <pre class="ex">name = "陳大文"     <span class="cm"># 把文字放進 name</span>
-age = 15            <span class="cm"># 把數字放進 age</span>
-print(name)         <span class="cm"># 陳大文</span>
-print("年齡：", age)  <span class="cm"># 年齡： 15</span></pre>
-    <p>留意 <code>print(name)</code> 印的是盒子<b>裏面</b>的東西；<code>print("name")</code> 有引號，印的只是四個字母 n-a-m-e。</p>
-    <h3>改變量的值</h3>
-    <p>再賦值一次，舊的值就被新的取代：</p>
-    <pre class="ex">age = 15
-age = 16
-print(age)          <span class="cm"># 16</span></pre>
-    <h3>名字的規矩</h3>
+    <p>上一堂每次都把文字直接寫在 <code>print</code> 裏。如果同一樣東西要用很多次，先把它放進一個<b>變量</b>，之後叫名字就可以。</p>
+    <pre class="ex">name = "陳大文"     <span class="cm"># 把文字放進叫 name 的變量</span>
+print(name)         <span class="cm"># 印出盒子裏的東西：陳大文</span>
+print("你好，", name)
+name = "李小明"     <span class="cm"># 盒子裏的東西可以換</span>
+print(name)         <span class="cm"># 李小明</span></pre>
+    <p>一個 <code>=</code> 的意思是「把右邊放進左邊」，不是數學的「等於」。</p>
+    <h3>名字怎樣改</h3>
     <ul class="steps-list">
-      <li>只可用英文字母、數字和底線 <code>_</code>；不可以用空格，不可以由數字開頭。</li>
-      <li>分大小寫：<code>age</code> 和 <code>Age</code> 是兩個盒子。</li>
-      <li>要有意思：<code>score</code> 比 <code>s</code> 好，<code>first_name</code> 比 <code>fn</code> 好。</li>
+      <li>用英文字母、數字和底線 <code>_</code>；不可以用空格，不可以由數字開頭。</li>
+      <li>分大小寫：<code>name</code> 和 <code>Name</code> 是兩個盒子。</li>
+      <li>名字要有意思：<code>score</code> 比 <code>s</code> 好，<code>my_name</code> 比 <code>mn</code> 好。</li>
     </ul>
-    <div class="key">執行後看右邊的 <b>Variables</b> 視窗，可以見到每個盒子現在裝着甚麼。</div>
+    <h3>印變量</h3>
+    <p>變量<b>不加引號</b>。加了引號就變成印那幾個字母。</p>
+    <pre class="ex">cls = "3A"
+print("我讀", cls, "班")     <span class="cm"># 我讀 3A 班（逗號會加空格）</span>
+print("我讀" + cls + "班")   <span class="cm"># 我讀3A班（+ 直接黐在一起）</span>
+print("我讀 cls 班")          <span class="cm"># 我讀 cls 班（引號裏的 cls 只是文字）</span></pre>
+    <div class="key">執行後看右邊 <b>Variables</b> 視窗：每個變量和它現在的值都列出來。</div>
   </div>
   <div id="c1"></div>
-  <div class="summary"><b>小結</b>　<code>名字 = 值</code> 把值放進變量；用名字取回；再賦值會覆蓋舊值。</div>
+  <div class="summary"><b>小結</b>　<code>名字 = 值</code> 放進盒子；印變量不加引號；逗號加空格，<code>+</code> 直接相連。</div>
 </section>
 
 <!-- 2 Data Types -->
-<section class="card" id="s2" data-title="數據類型：文字、整數、小數、真假" data-short="2 類型">
-  <header><div class="chapter">第 2 章</div><h2>數據類型：文字、整數、小數、真假</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>認得四種常用類型：<code>str</code>、<code>int</code>、<code>float</code>、<code>bool</code></li><li>用 <code>type()</code> 查一個值是甚麼類型</li></ul></div></header>
+<section class="card" id="s2" data-title="數據類型：文字還是數字" data-short="2 類型">
+  <header><div class="chapter">第 2 章</div><h2>數據類型：文字還是數字</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>分辨 <code>str</code>、<code>int</code>、<code>float</code>、<code>bool</code> 四種類型</li><li>用 <code>type()</code> 查一個值是甚麼類型</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
-    <div class="lead">Python 會記住每個值是甚麼「類型」</div>
+    <div class="lead">Python 會記住每個值是哪一種</div>
     <div class="tablewrap"><table>
       <thead><tr><th>類型</th><th>英文</th><th>例子</th><th>怎樣認</th></tr></thead>
       <tbody>
-        <tr><td>字串（文字）</td><td><code>str</code></td><td><code>"你好"</code>、<code>"15"</code></td><td>有引號</td></tr>
-        <tr><td>整數</td><td><code>int</code></td><td><code>15</code>、<code>-3</code></td><td>沒有引號、沒有小數點</td></tr>
-        <tr><td>浮點數（小數）</td><td><code>float</code></td><td><code>1.65</code>、<code>3.0</code></td><td>有小數點</td></tr>
-        <tr><td>布爾值（真假）</td><td><code>bool</code></td><td><code>True</code>、<code>False</code></td><td>只有這兩個，首字母大寫</td></tr>
+        <tr><td>字串（文字）</td><td><code>str</code></td><td><code>"你好"</code>、<code>"3A"</code>、<code>"15"</code></td><td>有引號</td></tr>
+        <tr><td>整數</td><td><code>int</code></td><td><code>15</code>、<code>-3</code>、<code>2026</code></td><td>沒有引號，沒有小數點</td></tr>
+        <tr><td>小數</td><td><code>float</code></td><td><code>1.65</code>、<code>49.5</code></td><td>沒有引號，有小數點</td></tr>
+        <tr><td>布爾（真假）</td><td><code>bool</code></td><td><code>True</code>、<code>False</code></td><td>只有這兩個，開頭大寫</td></tr>
       </tbody>
     </table></div>
-    <p>用 <code>type()</code> 可以問 Python 一個值是甚麼類型：</p>
-    <pre class="ex">print(type("你好"))   <span class="cm"># &lt;class 'str'&gt;</span>
-print(type(15))       <span class="cm"># &lt;class 'int'&gt;</span>
-print(type(1.65))     <span class="cm"># &lt;class 'float'&gt;</span>
-print(type(True))     <span class="cm"># &lt;class 'bool'&gt;</span></pre>
-    <div class="key">最容易混淆的是 <code>15</code> 和 <code>"15"</code>：前者是數字，可以計算；後者是文字，只是兩個字符。</div>
+    <p>最容易混淆的是 <code>"15"</code> 和 <code>15</code>：有引號的是文字 15，沒引號的是數字 15。文字只能「黐」，數字才能「計」。</p>
+    <pre class="ex">print(15 + 1)       <span class="cm"># 16（數字相加）</span>
+print("15" + "1")   <span class="cm"># 151（文字相連）</span>
+print(type(15))     <span class="cm"># &lt;class 'int'&gt;</span>
+print(type("15"))   <span class="cm"># &lt;class 'str'&gt;</span></pre>
+    <div class="key"><code>type(x)</code> 會告訴你 <code>x</code> 是甚麼類型。不肯定時就用它查一查。</div>
   </div>
   <div id="c2"></div>
-  <div class="summary"><b>小結</b>　有引號是 str；沒有引號的整數是 int、有小數點是 float；True／False 是 bool。<code>type()</code> 可以查。</div>
+  <div class="summary"><b>小結</b>　有引號是 <code>str</code>；數字分 <code>int</code>（整數）和 <code>float</code>（小數）；<code>True</code>／<code>False</code> 是 <code>bool</code>。</div>
 </section>
 
-<!-- 3 Casting -->
-<section class="card" id="s3" data-title="類型轉換：文字變數字" data-short="3 轉換">
-  <header><div class="chapter">第 3 章</div><h2>類型轉換：文字變數字，數字變文字</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>int()</code>、<code>float()</code> 把文字變成數字</li><li>用 <code>str()</code> 把數字變成文字，才可以和文字相連</li></ul></div></header>
-  <div class="step learn"><span class="mark">學</span>
-    <div class="lead">同一個「15」，是文字還是數字，結果差很遠</div>
-    <pre class="ex">a = "3"
-b = "4"
-print(a + b)              <span class="cm"># 34   文字接文字</span>
-print(int(a) + int(b))    <span class="cm"># 7    先變成數字再加</span></pre>
-    <p>三個轉換函數：</p>
-    <ul class="steps-list">
-      <li><code>int("15")</code> → <code>15</code>　文字變整數（文字必須是整數的樣子，<code>int("1.5")</code> 會出錯）</li>
-      <li><code>float("1.65")</code> → <code>1.65</code>　文字變小數</li>
-      <li><code>str(15)</code> → <code>"15"</code>　數字變文字</li>
-    </ul>
-    <h3>甚麼時候要 str()？</h3>
-    <p><code>+</code> 兩邊必須同一類型。文字和數字直接相加會出 <code>TypeError</code>：</p>
-    <pre class="ex">age = 15
-print("我今年" + age + "歲")        <span class="cm"># TypeError</span>
-print("我今年" + str(age) + "歲")   <span class="cm"># 我今年15歲</span>
-print("我今年", age, "歲")          <span class="cm"># 我今年 15 歲（逗號不用轉換）</span></pre>
-  </div>
-  <div id="c3"></div>
-  <div class="summary"><b>小結</b>　要計算就 <code>int()</code>／<code>float()</code>；要和文字用 <code>+</code> 相連就 <code>str()</code>；用逗號則不用轉換。</div>
-</section>
-
-<!-- 4 User Input -->
-<section class="card" id="s4" data-title="輸入：問使用者問題" data-short="4 輸入">
-  <header><div class="chapter">第 4 章</div><h2>輸入：問使用者問題</h2>
-    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>input()</code> 問問題並把答案放進變量</li><li>知道 <code>input()</code> 拿到的永遠是文字，要計算就先轉換</li></ul></div></header>
+<!-- 3 User Input -->
+<section class="card" id="s3" data-title="輸入：問使用者" data-short="3 輸入">
+  <header><div class="chapter">第 3 章</div><h2>輸入：問使用者一條問題</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>input()</code> 問問題，把答案放進變量</li><li>知道 <code>input()</code> 給的永遠是文字</li></ul></div></header>
   <div class="step learn"><span class="mark">學</span>
     <div class="lead">input() 會停下來等你打字</div>
-    <p>括號裏的文字是問題，會先顯示出來；你在 Shell 打字再按 Enter，打的字就交給左邊的變量。</p>
-    <pre class="ex">name = input("你叫甚麼名字？")
+    <pre class="ex">name = input("你叫甚麼名字？")   <span class="cm"># 括號內是問題，會印出來</span>
 print("你好，" + name + "！")</pre>
-    <p>執行時 Shell 會顯示 <code>你叫甚麼名字？</code> 然後停下來。你打「小明」按 Enter，就印出 <code>你好，小明！</code></p>
-    <h3>input() 拿到的永遠是文字</h3>
-    <p>就算你打的是數字，<code>input()</code> 給你的也是 <code>str</code>。要計算，先用 <code>int()</code> 轉換：</p>
-    <pre class="ex">age = input("你幾歲？")
-print(age + 1)              <span class="cm"># TypeError：文字不能加 1</span>
+    <p>執行時 Shell 會印出問題，然後<b>停住</b>等你打字。你按 Enter 之後，打的字就放進 <code>name</code>，程式才繼續。</p>
+    <ul class="steps-list">
+      <li>問題後面不會自動換行，你打的字會緊接在問題後面。</li>
+      <li>問題文字最好以「？」或「：」結尾，再加一個空格，看起來才整齊。</li>
+      <li><b>不論你打甚麼，<code>input()</code> 給的都是文字（<code>str</code>）</b>。打 15，得到的是 <code>"15"</code>。</li>
+    </ul>
+    <div class="key">想自己試：在模擬器執行後，Shell 會出現一個黃色輸入格，打字後按 Enter。</div>
+  </div>
+  <div id="c3"></div>
+  <div class="summary"><b>小結</b>　<code>變量 = input("問題")</code>；答案是文字；程式會等你按 Enter 才繼續。</div>
+</section>
 
-age = int(input("你幾歲？"))
-print("明年你", age + 1, "歲")   <span class="cm"># 可以了</span></pre>
-    <div class="key"><code>int(input("…"))</code> 是常見寫法：先問，再即時轉成整數。</div>
+<!-- 4 Casting -->
+<section class="card" id="s4" data-title="類型轉換：文字變數字" data-short="4 轉換">
+  <header><div class="chapter">第 4 章</div><h2>類型轉換：把文字變成數字</h2>
+    <div class="goal"><b>學完這章你會：</b><ul><li>用 <code>int()</code>、<code>float()</code> 把輸入變成數字再計算</li><li>用 <code>str()</code> 把數字變成文字再相連</li></ul></div></header>
+  <div class="step learn"><span class="mark">學</span>
+    <div class="lead">input 給文字，計算要數字</div>
+    <p>上一章說過 <code>input()</code> 給的是文字。所以這樣寫會出錯：</p>
+    <pre class="ex">age = input("你幾歲？")
+print(age + 1)      <span class="cm"># TypeError：文字不可以加數字</span></pre>
+    <p>解決方法是先把文字<b>轉換</b>成數字：</p>
+    <pre class="ex">age = int(input("你幾歲？"))   <span class="cm"># int() 把 "15" 變成 15</span>
+print(age + 1)                  <span class="cm"># 16</span></pre>
+    <div class="tablewrap"><table>
+      <thead><tr><th>函數</th><th>作用</th><th>例子</th></tr></thead>
+      <tbody>
+        <tr><td><code>int()</code></td><td>變成整數</td><td><code>int("15")</code> → <code>15</code>；<code>int(3.9)</code> → <code>3</code>（直接去掉小數）</td></tr>
+        <tr><td><code>float()</code></td><td>變成小數</td><td><code>float("1.65")</code> → <code>1.65</code>；<code>float(5)</code> → <code>5.0</code></td></tr>
+        <tr><td><code>str()</code></td><td>變成文字</td><td><code>str(16)</code> → <code>"16"</code>，之後可以用 <code>+</code> 和文字相連</td></tr>
+      </tbody>
+    </table></div>
+    <pre class="ex">age = 15
+print("明年你 " + str(age + 1) + " 歲")   <span class="cm"># 數字要先 str() 才可以用 + 相連</span>
+print("明年你", age + 1, "歲")            <span class="cm"># 用逗號就不用轉換</span></pre>
+    <div class="key"><code>int("abc")</code> 會出錯（ValueError），因為 abc 不是數字。之後學了判斷才處理這情況。</div>
   </div>
   <div id="c4"></div>
-  <div class="summary"><b>小結</b>　<code>變量 = input("問題")</code>；答案是 str；要計算就包一層 <code>int()</code>。</div>
+  <div class="summary"><b>小結</b>　<code>int(input(...))</code> 是最常用的寫法；數字要 <code>str()</code> 才可以用 <code>+</code> 黐文字，用逗號則不用。</div>
 </section>
 
 <!-- 5 作品 -->
 <section class="card" id="s5" data-title="作品：自我介紹機械人" data-short="5 作品">
   <header><div class="chapter">作品</div><h2>自我介紹機械人</h2>
-    <div class="goal"><b>直接在下面的 Thonny 寫。</b>程式會問使用者問題，再用答案回話。按 ▶ 試行時要在 Shell 打答案；「檢查」會用固定的測試答案自動試一次。三層可以只做第一層。</div></header>
+    <div class="goal"><b>直接在下面的 Thonny 寫。</b>先按 ▶ 試行，看 Shell 的結果滿意了才按「檢查」。三層可以只做第一層；進階和挑戰留給有時間的同學。</div></header>
   <div id="tiers"></div>
 </section>
 
@@ -343,7 +344,7 @@ print("明年你", age + 1, "歲")   <span class="cm"># 可以了</span></pre>
   <div class="step make"><span class="mark">評</span>
     <div class="lead">自評<small>5 分</small></div>
     <p class="small">今天程式出錯時，你是怎樣找到原因的？寫一兩句。</p>
-    <textarea id="reflect" rows="3" placeholder="例如：我先看 Shell 紅字最後一行的英文名稱和行號，再看 Assistant……"></textarea>
+    <textarea id="reflect" rows="3" placeholder="例如：TypeError 出現時我想起 input 給的是文字，要加 int()……"></textarea>
     <div class="row"><button class="btn go" id="btnExit">提交小測</button><span class="small" id="exitFb"></span></div>
   </div>
 </section>
@@ -358,7 +359,7 @@ print("明年你", age + 1, "歲")   <span class="cm"># 可以了</span></pre>
     <span class="small" id="saveFb"></span>
   </div>
   <p class="small">把報告檔案交給老師。報告有驗證碼，改動內容會令驗證碼失效。</p>
-  <p class="small">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_variables.asp" target="_blank" rel="noopener">Variables</a>、<a href="https://www.w3schools.com/python/python_datatypes.asp" target="_blank" rel="noopener">Data Types</a>、<a href="https://www.w3schools.com/python/python_casting.asp" target="_blank" rel="noopener">Casting</a>、<a href="https://www.w3schools.com/python/python_user_input.asp" target="_blank" rel="noopener">User Input</a></p>
+  <p class="small">課後重溫（英文）：<a href="https://www.w3schools.com/python/python_variables.asp" target="_blank" rel="noopener">Variables</a>、<a href="https://www.w3schools.com/python/python_datatypes.asp" target="_blank" rel="noopener">Data Types</a>、<a href="https://www.w3schools.com/python/python_user_input.asp" target="_blank" rel="noopener">User Input</a>、<a href="https://www.w3schools.com/python/python_casting.asp" target="_blank" rel="noopener">Casting</a></p>
 </section>
 
 <div class="foot">
@@ -380,7 +381,7 @@ print("明年你", age + 1, "歲")   <span class="cm"># 可以了</span></pre>
 <script>
 (function(){
 'use strict';
-const KEY='py3:L2v1', PIN='py2026', SIGN='py3-l2-sign-2026', APP='PY3-L2';
+const KEY='py3:L2v2', PIN='py2026', SIGN='py3-l2-sign-2026', APP='PY3-L2';
 const $=(s,r)=>(r||document).querySelector(s), $$=(s,r)=>Array.from((r||document).querySelectorAll(s));
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
@@ -400,7 +401,7 @@ function scores(){
   const quiz=Object.values(S.quiz.a).filter(x=>x&&x.ok).length*5+(S.quiz.reflectScore||0);
   return {c,tiers,quiz,total:c[1]+c[2]+c[3]+c[4]+tiers+quiz};
 }
-const CH_MAX={1:9,2:9,3:13,4:9};
+const CH_MAX={1:9,2:9,3:9,4:13};
 function refreshScore(){$('#scoreNow').textContent=scores().total;renderNav();}
 
 /* ---------- 章節顯示：一次一章 ---------- */
@@ -502,7 +503,7 @@ function varsOf(mod){
   }catch(x){}
   return out;
 }
-let THONNY_N=0;
+const THONNYS=[];function refreshFilenames(){THONNYS.forEach(t=>t());}
 function makeThonny(host,cfg){
   // cfg:{id,code,label,placeholder,compact,filename,onRun}
   const full=!cfg.compact;const fnOf=()=>cfg.filename||('L02_'+((S.stu&&S.stu.name)||'姓名')+'.py');let fn=fnOf();
@@ -524,6 +525,7 @@ function makeThonny(host,cfg){
     if((e.ctrlKey||e.metaKey)&&e.key==='s'){e.preventDefault();saveToast();}if(e.key==='F5'){e.preventDefault();run();}});
   function saveToast(){toast.textContent='已儲存 '+fn;toast.classList.add('show');setTimeout(()=>toast.classList.remove('show'),1400);const st=$('.ttl .st',wrap);if(st)st.textContent='已儲存';}
   const sv=$('[data-save]',wrap);if(sv)sv.addEventListener('click',saveToast);
+  THONNYS.push(()=>{fn=fnOf();$$('.ttl .fn,.tab',wrap).forEach(e=>e.textContent=fn);});
   // 模擬 Thonny：直接重複同一個 shell，加 %Run
   let running=false;
   async function run(){
@@ -598,58 +600,60 @@ function makeExercise(host,cfg,onDone){
 
 /* ---------- 章節 ---------- */
 function step(host,kind,lead,pts){const d=document.createElement('div');d.className='step '+kind;d.innerHTML=`<span class="mark">${kind==='try'?'試':kind==='ex'?'練':'做'}</span><div class="lead">${esc(lead)}${pts?`<small>${esc(pts)}</small>`:''}</div>`;host.appendChild(d);return d;}
-const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a','c3_b'],c4:['c4_a']};
+const PRED_IDS={c1:['c1_a'],c2:['c2_a'],c3:['c3_a'],c4:['c4_a','c4_b']};
 function chapterDone(i){return()=>{refreshScore();if(chapterComplete(i))advance(i+1);};}
 
 (function(){const h=$('#c1');const done=chapterDone(1);
-  const t=step(h,'try','先估，再執行看答案','估對 4 分');
-  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'name = "陳大文"\nprint("name")\nprint(name)',options:['陳大文\n陳大文','name\n陳大文','name\nname','陳大文\nname'],answer:1,why:'有引號的 "name" 是文字，照印；沒引號的 name 是變量，印出盒子裏的 陳大文。執行後看 Variables 視窗。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','變量換了值之後印甚麼？','估對 4 分');
+  makePredict(t,{id:'c1_a',q:'這個程式會印出甚麼？',code:'food = "魚蛋"\nprint("我喜歡", food)\nfood = "燒賣"\nprint("我喜歡 food")',options:['我喜歡 魚蛋\n我喜歡 燒賣','我喜歡 魚蛋\n我喜歡 food','我喜歡 燒賣\n我喜歡 燒賣','出錯'],answer:1,why:'第 2 行印變量（不加引號）得到 魚蛋；第 4 行的 food 在引號裏面，只是四個字母。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上缺少的部分：把「3A」放進變量 cls，再印出「我讀 3A 班」。',code:'____ = "3A"\nprint("我讀", ____, "班")',expect:'我讀 3A 班\n',answer:'cls = "3A"\nprint("我讀", cls, "班")',hints:['第 1 行左邊是變量的名字 cls。','第 2 行中間要印盒子裏的東西，寫 cls，不要引號。']},done);
+  makeExercise(e,{id:'c1_ex',ch:'c1',q:'填上缺少的部分：把班別 3A 放進變量 cls，然後印出「我讀 3A 班」。',code:'____ = "3A"\nprint("我讀", ____, "班")',expect:'我讀 3A 班\n',answer:'cls = "3A"\nprint("我讀", cls, "班")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out!=='我讀 3A 班\n')return {ok:false,msg:'輸出應該是「我讀 3A 班」。'};if(!/^\s*cls\s*=/m.test(code))return {ok:false,msg:'輸出對了，但變量要叫 cls。'};if(/print\([^)]*"3A"[^)]*\)/.test(code))return {ok:false,msg:'輸出對了，但 print 裏要用變量 cls，不要直接寫 "3A"。'};return {ok:true,msg:'正確。'};},
+    hints:['第 1 行左邊是變量的名字 cls。','第 2 行中間放變量 cls，不加引號。']},done);
 })();
 (function(){const h=$('#c2');const done=chapterDone(2);
-  const t=step(h,'try','15 和 "15" 是甚麼類型？','估對 4 分');
-  makePredict(t,{id:'c2_a',q:'這個程式會印出甚麼？',code:'print(type(15))\nprint(type("15"))\nprint(type(1.5))',options:["<class 'int'>\n<class 'int'>\n<class 'float'>","<class 'int'>\n<class 'str'>\n<class 'float'>","<class 'str'>\n<class 'str'>\n<class 'float'>","<class 'int'>\n<class 'str'>\n<class 'int'>"],answer:1,why:'15 沒有引號是 int；"15" 有引號是 str；1.5 有小數點是 float。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','文字和數字相加有甚麼分別？','估對 4 分');
+  makePredict(t,{id:'c2_a',q:'這個程式會印出甚麼？',code:'a = "20"\nb = "26"\nc = 20\nd = 26\nprint(a + b)\nprint(c + d)',options:['46\n46','2026\n2026','2026\n46','出錯'],answer:2,why:'a、b 有引號是文字，+ 把它們黐成 2026；c、d 是數字，+ 計出 46。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c2_ex',ch:'c2',q:'填上四個值，令四行分別印出 str、int、float、bool 的類型。每個 ____ 填一個合適的值（不要用例子裏的）。',code:'print(type(____))\nprint(type(____))\nprint(type(____))\nprint(type(____))',expect:"<class 'str'>\n<class 'int'>\n<class 'float'>\n<class 'bool'>\n",answer:'print(type("早晨"))\nprint(type(7))\nprint(type(2.5))\nprint(type(False))',hints:['str 要有引號；int 是沒有小數點的數字。','float 要有小數點；bool 只有 True 或 False。']},done);
+  makeExercise(e,{id:'c2_ex',ch:'c2',q:'填上四個值，令程式印出四種類型：第一個是文字、第二個是整數、第三個是小數、第四個是布爾值。',code:'print(type(____))\nprint(type(____))\nprint(type(____))\nprint(type(____))',expect:"<class 'str'>\n<class 'int'>\n<class 'float'>\n<class 'bool'>\n",answer:'print(type("你好"))\nprint(type(15))\nprint(type(1.65))\nprint(type(True))',
+    hints:['文字要有引號，例如 "你好"。','整數沒有小數點（15），小數有（1.65）。','布爾值只有 True 和 False，開頭大寫。']},done);
 })();
 (function(){const h=$('#c3');const done=chapterDone(3);
-  const t1=step(h,'try','文字相加和數字相加','估對 4 分');
-  makePredict(t1,{id:'c3_a',q:'這個程式會印出甚麼？',code:'a = "10"\nb = "5"\nprint(a + b)\nprint(int(a) + int(b))',options:['15\n15','105\n15','105\n105','出錯'],answer:1,why:'"10" + "5" 是文字接文字，得 "105"；int() 轉成數字後 10 + 5 = 15。'},S.pred,PRED_PTS,done);
-  const t2=step(h,'try','文字和數字用 + 相連','估對 4 分');
-  makePredict(t2,{id:'c3_b',q:'這個程式會怎樣？',code:'age = 15\nprint("我今年" + age + "歲")',options:['我今年15歲','我今年 15 歲','出錯：TypeError','我今年age歲'],answer:2,why:'+ 兩邊一邊是文字一邊是數字，Python 不知道你想接還是想加，所以報 TypeError。要寫 str(age) 或改用逗號。'},S.pred,PRED_PTS,done);
+  const t=step(h,'try','執行時輸入「小明」，最後印出甚麼？','估對 4 分');
+  makePredict(t,{id:'c3_a',q:'這個程式最後一行會印出甚麼？（執行時請輸入 小明）',code:'name = input("你叫甚麼名字？")\nprint("你好，" + name + "！")',options:['你好，小明！','你好，name！','你好，+ name +！','出錯'],answer:0,why:'input 把你打的字放進 name；+ 把三段文字黐起來。執行時試試打自己的名字。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上兩個轉換函數，令程式印出「總分：170」。第 3 行用 +，不可以改用逗號。',code:'chi = "85"\neng = "85"\ntotal = ____(chi) + ____(eng)\nprint("總分：" + ____(total))',expect:'總分：170\n',answer:'chi = "85"\neng = "85"\ntotal = int(chi) + int(eng)\nprint("總分：" + str(total))',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.out==='總分： 170\n')return {ok:false,msg:'結果對，但這題要用 + 相連，所以要 str(total)，不可以改用逗號。'};if(res.out!=='總分：170\n')return {ok:false,msg:'輸出應該是 總分：170。如果見到 8585，表示仍是文字相接。'};if(!/str\(/.test(code))return {ok:false,msg:'第 4 行要用 str() 把 total 變成文字才可以用 + 相連。'};return {ok:true,msg:'正確。'};},
-    hints:['第 3 行要計算，所以兩個都用 int()。','第 4 行要和文字相連，所以用 str()。']},done);
+  makeExercise(e,{id:'c3_ex',ch:'c3',q:'填上缺少的部分：問使用者最喜歡的科目，然後印出「我最喜歡 ___ 科」。',code:'subject = ____("你最喜歡哪一科？")\nprint("我最喜歡", ____, "科")',answer:'subject = input("你最喜歡哪一科？")\nprint("我最喜歡", subject, "科")',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<1)return {ok:false,msg:'程式要用 input() 問一條問題。'};if(!res.out.includes('我最喜歡 電腦 科'))return {ok:false,msg:'測試輸入「電腦」時，應印出「我最喜歡 電腦 科」。'};return {ok:true,msg:'正確。'};},
+    hints:['問問題的指令是 input。','第 2 行中間放變量 subject。'],inputs:['電腦']},done);
 })();
 (function(){const h=$('#c4');const done=chapterDone(4);
-  const t=step(h,'try','輸入數字之後可以直接加嗎？','估對 4 分');
-  makePredict(t,{id:'c4_a',q:'執行時輸入 15，會怎樣？',code:'age = input("你幾歲？")\nprint(age + 1)',options:['16','151','出錯：TypeError','15 1'],answer:2,why:'input() 給的是文字 "15"，文字不能加數字 1。要寫 int(age) + 1。執行時在 Shell 輸入 15 看看。'},S.pred,PRED_PTS,done);
+  const t1=step(h,'try','先輸入 3，再輸入 4，印出甚麼？','估對 4 分');
+  makePredict(t1,{id:'c4_a',q:'執行時先輸入 3，再輸入 4。最後印出甚麼？',code:'a = input("第一個數：")\nb = input("第二個數：")\nprint(a + b)',options:['7','34','3 + 4','出錯'],answer:1,why:'input 給的是文字，"3" + "4" 是黐起來，變成 34。'},S.pred,PRED_PTS,done);
+  const t2=step(h,'try','加了 int() 之後呢？','估對 4 分');
+  makePredict(t2,{id:'c4_b',q:'執行時輸入 15。最後印出甚麼？',code:'age = int(input("你幾歲？"))\nprint("明年你", age + 1, "歲")',options:['明年你 151 歲','明年你 16 歲','明年你 age + 1 歲','出錯'],answer:1,why:'int() 把 "15" 變成數字 15，15 + 1 = 16；用逗號印數字不用轉換。'},S.pred,PRED_PTS,done);
   const e=step(h,'ex','練習','答對 5 分');
-  makeExercise(e,{id:'c4_ex',ch:'c4',q:'填上缺少的部分：問使用者的名字和出生年份，然後印出「小明 今年 15 歲」（輸入小明、2011 時）。',code:'name = ____("你叫甚麼名字？")\nyear = ____(input("你哪一年出生？"))\nprint(name, "今年", 2026 - ____, "歲")',expect:'你叫甚麼名字？小明\n你哪一年出生？2011\n小明 今年 15 歲\n',answer:'name = input("你叫甚麼名字？")\nyear = int(input("你哪一年出生？"))\nprint(name, "今年", 2026 - year, "歲")',
-    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<2)return {ok:false,msg:'程式要問兩條問題。'};if(!/小明 今年 15 歲/.test(res.out))return {ok:false,msg:'輸入小明、2011 時，最後一行應該是 小明 今年 15 歲。'};return {ok:true,msg:'正確。'};},
-    inputs:['小明','2011'],hints:['第 1 行問名字用 input()。','第 2 行年份要計算，所以 input() 外面包一層 int()。','第 3 行 2026 減去出生年份。']},done);
+  makeExercise(e,{id:'c4_ex',ch:'c4',q:'這個程式想計算兩個數的和，但執行會出錯或得到錯的答案。加上轉換，令輸入 3 和 4 時印出 7。',code:'a = input("第一個數：")\nb = input("第二個數：")\nprint("和是", a + b)',answer:'a = int(input("第一個數："))\nb = int(input("第二個數："))\nprint("和是", a + b)',
+    check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<2)return {ok:false,msg:'要問兩個數。'};if(!/和是 7\s*$/m.test(res.out))return {ok:false,msg:'輸入 3 和 4 時，應印出「和是 7」，現在印了：'+res.out.trim().split('\n').pop()};return {ok:true,msg:'正確。'};},
+    hints:['input() 外面包一層 int()：int(input("…"))。','兩個輸入都要轉換。'],inputs:['3','4']},done);
 })();
 
 /* ---------- 作品三層 ---------- */
 function outLines(res){return res.out.replace(/\n$/,'').split('\n');}
 const TIERS=[
-  {id:'t1',pill:'必做',cls:'',pts:25,title:'自我介紹機械人：三條問題',
-   desc:'程式問三條問題：名字、班別、興趣，然後用三個 <code>print</code> 回話，每句都要用到答案，例如「你好，小明！」「你讀 3A 班。」「原來你喜歡打籃球。」。檢查會用「小明、3A、打籃球」測試。',
-   inputs:['小明','3A','打籃球'],
-   hints:['三個 input()，每個放進不同的變量。','回話用 + 或逗號把文字和變量接起來。','三個答案都要在輸出出現。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<3)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問 3 條。`};const body=res.out.split('\n').filter(l=>!/？$|\?$/.test(l.trim())).join('\n');const miss=['小明','3A','打籃球'].filter(x=>!body.includes(x));if(miss.length)return {ok:false,msg:'回話沒有用到：'+miss.join('、')};const prints=(code.match(/print\(/g)||[]).length;if(prints<3)return {ok:false,msg:'要有三個 print 回話。'};return {ok:true,msg:'機械人完成。'};}},
-  {id:'t2',pill:'進階',cls:'g',pts:10,title:'加問出生年份，計算年齡',
-   desc:'多問一條「你哪一年出生？」，用 <code>int()</code> 轉換後計算年齡（2026 減出生年份），印出例如「你今年 15 歲。」。檢查會用「小明、3A、打籃球、2011」測試，要見到 15。',
-   inputs:['小明','3A','打籃球','2011'],
-   hints:['year = int(input("…"))。','年齡 = 2026 - year。','印出時用逗號，或 str(2026 - year)。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息（文字不能直接減數）。'};if(res.asked<4)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問 4 條。`};if(!/int\(/.test(code))return {ok:false,msg:'要用 int() 把出生年份變成數字。'};if(!/\b15\b/.test(res.out))return {ok:false,msg:'輸入 2011 時，輸出要見到 15。'};return {ok:true,msg:'進階完成。'};}},
-  {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'身高體重',
-   desc:'再問身高（米，小數）和體重（公斤），用 <code>float()</code> 轉換，印出一句包含兩個數字的話，並用 <code>type()</code> 印出身高的類型。檢查會輸入「小明、3A、打籃球、2011、1.65、52.5」。',
-   inputs:['小明','3A','打籃球','2011','1.65','52.5'],
-   hints:['height = float(input("…"))。','print(type(height)) 會印 <class \'float\'>。'],
-   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<6)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問 6 條。`};if(!/float\(/.test(code))return {ok:false,msg:'要用 float() 轉換身高和體重。'};if(!/1\.65/.test(res.out)||!/52\.5/.test(res.out))return {ok:false,msg:'輸出要見到 1.65 和 52.5。'};if(!/<class 'float'>/.test(res.out))return {ok:false,msg:'要用 type() 印出身高的類型。'};return {ok:true,msg:'挑戰完成。'};}},
+  {id:'t1',pill:'必做',cls:'',pts:25,title:'問三條問題，介紹自己',
+   desc:'程式要用 <code>input()</code> 問三條問題：姓名、班別、興趣，然後印出三行，每行都用到一個答案。例如：「你好，陳大文！」「你讀 3A 班。」「你的興趣是打籃球。」',
+   hints:['三個 input，三個 print。','每個 input 的答案放進一個變量，例如 name、cls、hobby。','print 裏用逗號或 + 把文字和變量連起來。'],inputs:['小明','3A','打籃球'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。'};if(res.asked<3)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問 3 條。`};
+     const miss=['小明','3A','打籃球'].filter(x=>!res.out.split('\n').some(l=>l.includes(x)&&!l.includes('？')&&!l.includes('?')));
+     if(miss.length)return {ok:false,msg:'輸出沒有用到答案：'+miss.join('、')+'（測試輸入：小明、3A、打籃球）'};return {ok:true,msg:'三條問題都用上了。'};}},
+  {id:'t2',pill:'進階',cls:'g',pts:10,title:'多問年齡，計出明年幾歲',
+   desc:'在必做的程式上加第四條問題「你幾歲？」，用 <code>int()</code> 轉成數字，然後印出「明年你 __ 歲」。',
+   hints:['age = int(input("你幾歲？"))','print("明年你", age + 1, "歲")'],inputs:['小明','3A','打籃球','15'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。輸入 15 時 age + 1 要先把文字轉成數字。'};if(res.asked<4)return {ok:false,msg:`程式只問了 ${res.asked} 條問題，要問 4 條。`};if(!/16/.test(res.out))return {ok:false,msg:'輸入 15 歲時，應印出 16（明年）。'};if(!/int\(/.test(code))return {ok:false,msg:'要用 int() 把輸入轉成數字。'};return {ok:true,msg:'進階完成。'};}},
+  {id:'t3',pill:'挑戰',cls:'y',pts:5,title:'由出生年份計年齡',
+   desc:'改為問「你哪一年出生？」，用今年（2026）減去出生年份，印出「你今年 __ 歲」。要用 <code>+</code> 把句子黐起來，所以數字要 <code>str()</code>。',
+   hints:['year = int(input("你哪一年出生？"))','age = 2026 - year','print("你今年 " + str(age) + " 歲")：用 + 就要 str()。'],inputs:['小明','3A','打籃球','2011'],
+   check:(code,res)=>{if(res.err)return {ok:false,msg:'程式出錯，看看 Shell 的錯誤訊息。用 + 黐數字要先 str()。'};if(!/你今年 ?15 ?歲/.test(res.out))return {ok:false,msg:'輸入 2011 時，應印出「你今年 15 歲」。'};if(!/str\(/.test(code))return {ok:false,msg:'輸出對了，但這題要練習 str()：用 + 把句子黐起來。'};return {ok:true,msg:'挑戰完成。'};}},
 ];
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
   box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
@@ -669,9 +673,9 @@ TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div')
 
 /* ---------- 小測 ---------- */
 const QUIZ=[
-  {id:'q1',q:'印出甚麼？',code:'x = 5\nx = x + 2\nprint(x)',options:['5','7','x + 2','出錯'],answer:1,why:'第 2 行先計算右邊 5 + 2 = 7，再放回 x。'},
-  {id:'q2',q:'哪一行會出錯？',code:'A: n = "7"\nB: print(n + "7")\nC: print(int(n) + 7)\nD: print(n + 7)',options:['A','B','C','D'],answer:3,why:'D 把文字 "7" 和數字 7 相加，TypeError。B 是文字接文字得 77；C 先轉成數字得 14。'},
-  {id:'q3',q:'執行時輸入 3，印出甚麼？',code:'n = input("數字？")\nprint(type(n))',options:["<class 'int'>","<class 'str'>","3","出錯"],answer:1,why:'input() 拿到的永遠是文字，就算你打的是數字。'},
+  {id:'q1',q:'印出甚麼？',code:'x = 5\nx = x + 2\nprint(x)',options:['5','7','x + 2','出錯'],answer:1,why:'第 2 行把 5 + 2 = 7 放回 x。'},
+  {id:'q2',q:'印出甚麼？',code:'print("3" + "4")\nprint(3 + 4)',options:['7\n7','34\n34','34\n7','7\n34'],answer:2,why:'有引號是文字相連，沒有引號是數字相加。'},
+  {id:'q3',q:'執行時輸入 15，會怎樣？',code:'age = input("你幾歲？")\nprint(age + 1)',options:['印出 16','印出 151','出錯（TypeError）','印出 15'],answer:2,why:'input 給的是文字 "15"，文字不可以加數字 1，所以 TypeError。要先 int()。'},
 ];
 QUIZ.forEach((c,i)=>{const s=step($('#quiz'),'try',`小測 ${i+1}`,'5 分');makePredict(s,c,S.quiz.a,5,()=>renderNav(),true);});
 if(S.quiz.done){$('#reflect').value=S.quiz.reflect;$('#reflect').readOnly=true;$('#btnExit').disabled=true;$('#exitFb').textContent='已提交';}
@@ -685,7 +689,7 @@ async function hmac(msg){try{const enc=new TextEncoder();const k=await crypto.su
 function canon(){const sc=scores();return [APP,S.stu.cls,S.stu.no,S.stu.name,sc.c[1],sc.c[2],sc.c[3],sc.c[4],sc.tiers,sc.quiz,sc.total,S.finished||'',S.teacherUsed?'T':''].join('|');}
 let reportText='',reportHTML='';
 async function buildReport(){if(!S.stu||!S.finished)return;const sc=scores();const code=await hmac(canon());const grade=sc.total>=85?'優異':sc.total>=70?'良好':sc.total>=50?'合格':'仍需努力';
-  const rows=[['第 1 章 變量',sc.c[1],9],['第 2 章 數據類型',sc.c[2],9],['第 3 章 類型轉換',sc.c[3],13],['第 4 章 輸入',sc.c[4],9],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
+  const rows=[['第 1 章 變量',sc.c[1],9],['第 2 章 數據類型',sc.c[2],9],['第 3 章 輸入',sc.c[3],9],['第 4 章 類型轉換',sc.c[4],13],['作品（必做／進階／挑戰）',sc.tiers,40],['小測',sc.quiz,20]];
   const tierTxt=TIERS.map(t=>`${t.pill}${S.tiers[t.id]&&S.tiers[t.id].ok?'✓':'✗'}`).join(' ');
   const when=new Date(S.finished).toLocaleString('zh-HK');
   $('#reportBox').innerHTML=`<h3 style="margin-top:0">中三 Python 第 2 堂 變量與輸入 · 成績報告</h3><p>${esc(S.stu.cls)} 班 ${esc(S.stu.no)} 號 ${esc(S.stu.name)} · ${esc(when)}${S.teacherUsed?' · <b>曾用老師模式</b>':''}</p>
@@ -706,14 +710,14 @@ function alertBox(html,actions){const m=document.createElement('div');m.classNam
   $$('button',m).forEach(b=>b.addEventListener('click',()=>{m.remove();const a=(actions||[])[+b.dataset.i];if(a&&a.fn)a.fn();}));}
 if(S.stu){$('#stName').value=S.stu.name;$('#stClass').value=S.stu.cls;$('#stNo').value=S.stu.no;}
 $('#btnStart').addEventListener('click',()=>{const name=$('#stName').value.trim(),cls=$('#stClass').value.trim(),no=$('#stNo').value.trim();
-  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();advance(1);show(1);});
+  if(!name||!cls||!no){alertBox('請填齊姓名、班別和學號。');return;}S.stu={name,cls,no};save();refreshFilenames();advance(1);show(1);});
 $('#btnReset').addEventListener('click',()=>alertBox('清除這部電腦上的全部進度和分數？',[{t:'取消'},{t:'清除',go:true,fn:()=>{try{localStorage.removeItem(KEY);}catch(e){}location.reload();}}]));
 $('#btnTeacher').addEventListener('click',()=>{const m=document.createElement('div');m.className='modal';m.innerHTML=`<div class="box"><h3 style="margin-top:0">老師模式</h3><div class="row"><input type="text" id="pin" placeholder="PIN" style="flex:1"><button class="btn go" id="pinGo">進入</button><button class="btn" id="pinX">關閉</button></div><div id="tpanel"></div></div>`;document.body.appendChild(m);
   $('#pinX',m).addEventListener('click',()=>m.remove());
   $('#pinGo',m).addEventListener('click',()=>{if($('#pin',m).value!==PIN){$('#tpanel',m).innerHTML='<p class="fb bad">PIN 不正確。</p>';return;}
     const p=$('#tpanel',m);
-    const preds=[['c1_a','B name / 陳大文'],['c2_a','B int / str / float'],['c3_a','B 105 / 15'],['c3_b','C TypeError'],['c4_a','C TypeError']];
-    const exs=[['練習 1','cls = "3A" / print("我讀", cls, "班")'],['練習 2','任何 str / int / float / bool 值各一'],['練習 3','int(chi) + int(eng) / str(total)'],['練習 4','input(…) / int(input(…)) / 2026 - year']];
+    const preds=[['c1_a','B 我喜歡 魚蛋 / 我喜歡 food'],['c2_a','C 2026 / 46'],['c3_a','A 你好，小明！'],['c4_a','B 34'],['c4_b','B 明年你 16 歲']];
+    const exs=[['練習 1','cls = "3A" / print("我讀", cls, "班")'],['練習 2','type("你好") type(15) type(1.65) type(True)'],['練習 3','input("…") / print("我最喜歡", subject, "科")'],['練習 4','a = int(input(…)) b = int(input(…))']];
     p.innerHTML=`<h3>答案</h3><ul>${preds.map(x=>`<li>試一試 ${x[0]}：${esc(x[1])}</li>`).join('')}${exs.map(x=>`<li>${x[0]}：<code>${esc(x[1])}</code></li>`).join('')}${QUIZ.map(c=>`<li>${c.id}：${KEYS[c.answer]} ${esc(c.options[c.answer])}</li>`).join('')}</ul>
     <h3>核對驗證碼</h3><p class="small">貼上報告底部的「資料行」。</p><textarea id="vline" rows="2"></textarea><div class="row"><button class="btn go" id="vgo">核對</button><span id="vfb" class="small"></span></div>
     <h3>跳到任何一章（會在報告標示）</h3><div class="row">${SECS.map((s,i)=>`<button class="btn" data-j="${i}">${i}</button>`).join('')}</div>`;
