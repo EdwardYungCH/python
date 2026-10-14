@@ -146,6 +146,10 @@ label.f{display:flex;flex-direction:column;gap:4px;font-size:.9rem;color:var(--i
 .th .toast{position:absolute;right:10px;top:40px;background:#1c2733;color:#fff;font-size:.8rem;padding:4px 10px;border-radius:6px;opacity:0;transition:opacity .2s}
 .th .toast.show{opacity:1}
 .th{position:relative}
+.th .tpane{border-top:1px solid #cfd6de;background:#fff}
+.th .tpane .tdiv{display:block;padding:8px;min-height:120px;background:#fafbfc;overflow-x:auto}
+.th .tpane canvas{margin-left:auto!important;margin-right:auto!important}
+.th .tpane canvas:last-child{border:1px solid #e1e6ec;background:#fff}
 /* 深色模式仍保持 Thonny 淺色，像真程式視窗 */
 /* 試一試：桌面左右兩欄 */
 .predict{margin:6px 0 0}
@@ -441,17 +445,27 @@ function pyHint(msg,code){
   if(/TypeError/.test(msg))return '類型錯誤：數字和文字不可以直接用 + 相連，可以改用逗號。';
   return '';
 }
+let TG_N=0;
+function turtleTarget(id){
+  // 每次執行前設定海龜畫布目標；沒有指定就畫到隱藏的 div
+  let hid=document.getElementById('tg_hidden');if(!hid){hid=document.createElement('div');hid.id='tg_hidden';hid.style.cssText='position:absolute;left:-9999px;top:0;width:320px;height:240px;overflow:hidden';document.body.appendChild(hid);}
+  const el=id?document.getElementById(id):hid;if(el)el.innerHTML='';
+  Sk.TurtleGraphics={target:id||'tg_hidden',width:320,height:240};
+}
 function runPython(code,opts){
   if(!PY.ready)return Promise.reject(new Error('NOPY'));
+  turtleTarget(opts.turtle||null);
   Sk.configure({output:opts.out,read:(x)=>{if(Sk.builtinFiles&&Sk.builtinFiles.files[x]!==undefined)return Sk.builtinFiles.files[x];throw "File not found: '"+x+"'";},
     __future__:Sk.python3,inputfun:opts.input,inputfunTakesPrompt:true,execLimit:4000,retainGlobals:true});
   return Sk.misceval.asyncToPromise(()=>Sk.importMainWithBody('<stdin>',false,code,true));
 }
+function turtleInk(id){try{const el=document.getElementById(id||'tg_hidden');const cs=el?el.querySelectorAll('canvas'):[];let ink=0;cs.forEach(c=>{const d=c.getContext('2d').getImageData(0,0,c.width,c.height).data;for(let i=3;i<d.length;i+=4)if(d[i]>0)ink++;});return ink;}catch(e){return 0;}}
 async function runSilent(code,inputs){
   const q=(inputs||[]).slice();let out='',err='',asked=0;Sk.globals={};
   try{await runPython(code,{out:t=>{out+=t;if(out.length>50000)throw new Error('OutputLimit');},input:p=>{asked++;if(!q.length)throw new Error('NoMoreInput');const v=q.shift();out+=(p||'')+v+'\n';return Promise.resolve(v);}});}
   catch(e){err=e.toString();if(/NoMoreInput/.test(err))err='程式問了多過 '+(inputs||[]).length+' 次輸入（測試輸入已用完）';}
-  return {out,err,asked};
+  await new Promise(r=>setTimeout(r,150));
+  return {out,err,asked,ink:turtleInk()};
 }
 function thonnyError(e,code,filename){
   // 把 Skulpt 的錯誤改成 Thonny 的樣子
@@ -509,6 +523,7 @@ function makeThonny(host,cfg){
   <div class="tools"><button type="button" class="run">▶ 執行</button>${full?`<button type="button" data-save title="儲存">💾 儲存</button>`:''}<span class="sp"></span><span class="lbl">${esc(cfg.label||'')}</span></div>
   ${full?`<span class="tab">${esc(fn)}</span>`:''}
   <div class="ed"><div class="gut">1</div><textarea class="code" id="code_${cfg.id}" spellcheck="false" aria-label="程式碼" placeholder="${esc(cfg.placeholder||'')}"></textarea></div>
+  ${cfg.turtle?`<div class="tpane"><div class="ph">海龜畫布<span class="x">×</span></div><div class="tdiv" id="tg_${cfg.id}"></div></div>`:''}
   <div class="panes"><div class="pane"><div class="ph">Shell<span class="x">×</span></div><div class="shell" aria-live="polite"><span class="pr">&gt;&gt;&gt; </span></div><div class="assist"><span class="at">Assistant</span><span class="atxt"></span></div></div>
   ${full?`<div class="pane vars"><div class="ph">Variables<span class="x">×</span></div><div class="vbody"><div class="none">執行後會顯示程式中的變量</div></div></div>`:''}</div>
   <div class="toast"></div>`;
@@ -535,7 +550,7 @@ function makeThonny(host,cfg){
     const ask=prompt=>new Promise(res=>{cur=null;if(prompt)add('',prompt);const line=document.createElement('span');line.className='pin';line.innerHTML=`<input type="text" aria-label="輸入" autocomplete="off">`;shell.appendChild(line);const inp=$('input',line);inp.focus();
       inp.addEventListener('keydown',e=>{if(e.key==='Enter'){const v=inp.value;line.replaceWith(Object.assign(document.createElement('span'),{className:'inp',textContent:v+'\n'}));text+=(prompt||'')+v+'\n';res(v);}});});
     Sk.globals={};
-    try{await runPython(ta.value,{out:print,input:ask});}
+    try{await runPython(ta.value,{out:print,input:ask,turtle:cfg.turtle?('tg_'+cfg.id):null});}
     catch(e){const te=thonnyError(e,ta.value,fn);err=te.msg;add('err',te.tb+'\n');$('.atxt',assist).textContent=assistText(te,ta.value);assist.classList.add('show');}
     add('pr','>>> ');
     if(full&&vbody){const vs=varsOf({$d:Sk.globals||{}});if(vs.length){panes.classList.add('hasvars');vbody.innerHTML=`<table><tbody>${vs.map(v=>`<tr><td>${esc(v.k)}</td><td>${esc(v.txt)}</td></tr>`).join('')}</tbody></table>`;}else{panes.classList.remove('hasvars');vbody.innerHTML='<div class="none">這個程式沒有變量</div>';}}
@@ -561,7 +576,7 @@ function makePredict(host,cfg,store,per,onDone,noRun){
   host.appendChild(box);
   const opts=$$('.opt',box),go=$('.btn.go',box),fbh=$('.fbhost',box);let sel=null;
   let runner=null;
-  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可按 ▶'});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
+  if(!noRun){runner=makeRunner($('.left',box),{id:cfg.id,code:cfg.code,label:'估完才可按 ▶',turtle:cfg.turtle});runner.btn.disabled=true;$('.left pre.ex',box).remove();}
   function reveal(rec){opts.forEach((o,i)=>{o.disabled=true;if(i===cfg.answer)o.classList.add('right');else if(i===rec.sel)o.classList.add('wrong');});go.disabled=true;
     fbh.innerHTML=`<div class="fb ${rec.ok?'ok':'bad'}">${rec.ok?'估對了，+'+per+' 分。':'估錯了。答案是 '+KEYS[cfg.answer]+'。'} ${esc(cfg.why||'')}</div>`;if(runner)runner.btn.disabled=false;}
   if(store[cfg.id]){reveal(store[cfg.id]);}
@@ -576,7 +591,7 @@ function makeExercise(host,cfg,onDone){
   box.innerHTML=`<p class="q">${esc(cfg.q)}</p>${cfg.expect!==undefined?`<div class="want"><span class="lab">應該輸出</span><pre class="ex" style="margin-top:4px">${esc(cfg.expect.replace(/\n$/,''))}</pre></div>`:''}`;
   host.appendChild(box);
   const rec=S.ex[cfg.ch]||{ok:false,score:0,tries:0,revealed:false,code:null};
-  const r=makeThonny(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容，然後按 ▶'});
+  const r=makeThonny(box,{id:cfg.id,code:rec.code||cfg.code,label:'把 ____ 換成正確的內容，然後按 ▶',turtle:cfg.turtle});
   const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
   const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button><button class="btn quiet" type="button" data-a>直接看答案（只得 1 分）</button></div></div>`;box.appendChild(help);
   const fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;
@@ -659,7 +674,7 @@ const TIERS=[
 TIERS.forEach(t=>{const host=$('#tiers');const box=document.createElement('div');box.className='tier';
   box.innerHTML=`<div class="th"><span class="pill ${t.cls}">${t.pill}</span><h3 style="margin:0">${esc(t.title)}</h3><span class="pts">${t.pts} 分</span><span class="st" id="tfb_${t.id}"></span></div><p>${t.desc}</p>`;host.appendChild(box);
   const rec=S.tiers[t.id]||{ok:false,score:0,code:null};
-  const r=makeThonny(box,{id:t.id,code:rec.code||'',label:'在這裏寫，按 ▶ 試行，滿意後按「檢查」',placeholder:'# 在這裏寫你的程式'});
+  const r=makeThonny(box,{id:t.id,code:rec.code||'',label:'在這裏寫，按 ▶ 試行，滿意後按「檢查」',placeholder:'# 在這裏寫你的程式',turtle:t.turtle});
   const row=document.createElement('div');row.className='row';row.innerHTML=`<button class="btn go" type="button" data-check>檢查</button><span class="small" data-fb></span>`;box.appendChild(row);
   const help=document.createElement('details');help.className='help';help.innerHTML=`<summary>需要幫忙？</summary><div class="hb"><div data-hints></div><div class="row"><button class="btn" type="button" data-h>給我一個提示</button></div></div>`;box.appendChild(help);
   const fbEl=$('#tfb_'+t.id),fb=$('[data-fb]',row),hints=$('[data-hints]',help);let hi=0;

@@ -20,9 +20,15 @@ async def feed(pg, box, values):
 async def predict(pg, box, pick, inputs=()):
     await box.locator('.opt').nth(pick).click(); await box.locator('.btn.go').click(); await pg.wait_for_timeout(600)
     await feed(pg, box, inputs); await pg.wait_for_timeout(400)
-async def check_ex(pg, box, code, inputs=()):
+async def check_ex(pg, box, code, inputs=(), wait=8000):
+    fbl = box.locator('[data-fb]'); old = await fbl.text_content() if await fbl.count() else ''
     await box.locator('textarea').fill(code); await box.locator('[data-check]').click(); await pg.wait_for_timeout(700)
-    await feed(pg, box, inputs); await pg.wait_for_timeout(400)
+    await feed(pg, box, inputs)
+    # 等檢查結果出現（海龜等較慢的檢查可能要幾秒）
+    for _ in range(int(wait / 200)):
+        if await fbl.count() and (await fbl.text_content()) not in ('', old): break
+        await pg.wait_for_timeout(200)
+    await pg.wait_for_timeout(300)
 async def fb(box): return await box.locator('[data-fb]').text_content()
 async def register(pg):
     await pg.fill('#stName', '測試同學'); await pg.fill('#stClass', '3A'); await pg.fill('#stNo', '12'); await pg.click('#btnStart'); await pg.wait_for_timeout(300)
