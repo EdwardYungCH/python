@@ -16,7 +16,7 @@
 | 6 | For 迴圈與 Range | For Loops、Range；turtle | 完成（模擬器加海龜畫布） |
 | 7 | 字串 | Strings、Slicing、Methods、f-string | 完成 |
 | 8 | 列表 | Lists | 完成 |
-| 9 | 函數入門與除錯 | Functions；錯誤類型 | 規劃 |
+| 9 | 函數入門與除錯 | Functions、Return；錯誤類型；逐步執行 | 完成（模擬器加逐步執行） |
 | 10 | 迷你專題及選科導航 | — | 規劃 |
 
 ## 結構
@@ -40,7 +40,7 @@ tools/skulpt/              Skulpt 建置檔（skulpt.min.js、skulpt-stdlib.js�
 - 版面：頂部進度列（可回看已完成的章）、一次只顯示一章、底部「上一章／下一章」；每章「學 → 試 → 練」三步以左側直線串連，章首有學習目標、章末有小結。
 - 進度自動儲存在瀏覽器（localStorage）；章節順序解鎖，完成本章才可按「下一章」。
 - 提示和「直接看答案」收在「需要幫忙？」摺疊區內；練習答錯兩次自動出提示。
-- 全部程式在網頁內的 Thonny 模擬器寫和執行（Skulpt）：標題列、工具列（▶ 執行、儲存）、行號、Shell（`>>> %Run 檔名.py`）、Thonny 格式的 Traceback、Assistant 中文解釋、Variables 視窗。試一試用精簡版（編輯器＋Shell），練習和作品用完整版。檢查時以測試輸入自動評分。
+- 全部程式在網頁內的 Thonny 模擬器寫和執行（Skulpt）：標題列、工具列（▶ 執行、儲存）、行號、Shell（`>>> %Run 檔名.py`）、Thonny 格式的 Traceback、Assistant 中文解釋、Variables 視窗、🐞 逐步執行（debug:true：逐行按「下一步」，高亮現行，Variables 即時更新）、海龜畫布（turtle:true）。試一試用精簡版（編輯器＋Shell），練習和作品用完整版。檢查時以測試輸入自動評分。
 - 成績報告帶驗證碼（HMAC-SHA256），老師區（PIN）可核對答案和驗證碼。
 - 課堂頁沒有返回首頁的連結。
 
@@ -55,6 +55,7 @@ python3 tools/test_lesson5.py
 python3 tools/test_lesson6.py
 python3 tools/test_lesson7.py
 python3 tools/test_lesson8.py
+python3 tools/test_lesson9.py
 ```
 
 需要 Playwright 及 Chromium。測試會走完整個流程（含故意答錯、看答案扣分、重新載入後保留、老師 PIN、手機闊度）。
